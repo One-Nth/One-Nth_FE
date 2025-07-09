@@ -38,4 +38,8 @@
     <color name="text_gray_dark">#717171</color>
     <color name="btn_x">#A5A5A5</color>
 
+    <!-- 채팅 -->
+    <color name="chat_background">#F1F1F1</color>
+    <color name="cancel_button">#8E8E8E</color>
+
 </resources>
