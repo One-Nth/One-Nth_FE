@@ -13,3 +13,12 @@
 .externalNativeBuild
 .cxx
 local.properties
+/.idea/
+/.idea/*
+*.kotlin_module
+*.log
+*.class
+*.apk
+*.aab
+gradle/libs.versions.toml.lock
+Thumbs.db
