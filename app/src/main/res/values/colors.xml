@@ -12,13 +12,30 @@
     <!-- 자주 쓰이는 공통 컬러 -->
     <color name="light_gray">#A7A0A0</color>
     <color name="gray">#616161</color>
+    <color name="dark_gray">#717171</color>
     <color name="red">#F70D0D</color>
 
     <!-- 첫 화면 회원가입 로그인 텍스트 -->
     <color name="splash_gray">#999999</color>
 
-    <!-- 같이사요, 함께나눠요 -->
-
-    <!-- 게시판 -->
+    <!-- 같이사요, 함께나눠요, 게시판 -->
+    <color name="search_gray">#EFEFEF</color>
+    <color name="text_search">#A4A4A4</color>
+    <color name="bookmark_gray">#1E1E1E80</color>
+    <color name="marker_gray">#0000004D</color>
+    <color name="back_scrollbar">#FCFCFC</color>
+    <color name="border_upperbar">#C9C9C9</color>
+    <color name="text_cost">#5DAF79</color>
+    <color name="star_yellow">#FFC700</color>
+    <color name="image_placeholder">#DFDFDF</color>
+    <color name="text_placeholder">#A7A0A0</color>
+    <color name="text_descript">#616161</color>
+    <color name="btn_green">#EDF9F2</color>
+    <color name="gps_blue">#38A2FF</color>
+    <color name="btn_ok">#EEEEEE</color>
+    <color name="text_btn_ok">#AFAFAF</color>
+    <color name="back_gray">#D9D9D9</color>
+    <color name="text_gray_dark">#717171</color>
+    <color name="btn_x">#A5A5A5</color>
 
 </resources>
