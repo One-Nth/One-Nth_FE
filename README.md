@@ -28,6 +28,16 @@ One-Nth Front-End Repository
 
 ---
 
+### 📱 Android SDK 버전
+
+| 항목 | 버전 |
+|------|------|
+| `compileSdk` | 34 |
+| `targetSdk`  | 34 |
+| `minSdk`     | 24 |
+
+---
+
 ## 🔀 Git Flow Branch 전략
 
 ### ✅ 기본 브랜치
