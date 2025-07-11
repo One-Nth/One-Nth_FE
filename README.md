@@ -6,9 +6,10 @@ One-Nth Front-End Repository
 
 | 기능 | 라이브러리 / 기술 스택 | 사용 목적 |
 |------|------------------------|-----------|
-| 스플래시 | `androidx.core:core-splashscreen` | 공식 스플래시 API로 깔끔한 화면 전환 |
-| 회원가입 / 로그인 | Retrofit2<br>`com.squareup.retrofit2:converter-gson:2.9.0` | REST API 통신 |
-| 프로필 | ImagePicker<br>`com.github.dhaval2404:imagepicker` | 카메라·갤러리 사진 선택 기능 |
+| 스플래시 | splashscreen | 공식 스플래시 API로 깔끔한 화면 전환 지원 |
+| 소셜 로그인 | Kakao SDK | 카카로 소셜 계정 연동 |
+| JWT 세션 처리 | OkHttp Interceptor | JWT 토큰을 헤더에 자동으로 추가 |
+| 프로필 | ImagePicker | 카메라·갤러리 사진 선택 기능 |
 | 서버 API 통신 | Retrofit2 | REST API를 통해 서버와 통신 (데이터 요청/응답) |
 | 게시글 목록 UI | RecyclerView | 게시글을 리스트 형태로 표시 |
 | 게시글 무한 스크롤 | Paging3 | 스크롤 시 데이터를 자동으로 로드하여 무한 스크롤 구현 |
