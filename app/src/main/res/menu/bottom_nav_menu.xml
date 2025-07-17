@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_navigation_n"
+        android:title="홈" />
+    <item
+        android:id="@+id/chatFragment"
+        android:icon="@drawable/ic_navigation_chat"
+        android:title="채팅" />
+    <item
+        android:id="@+id/plusFragment"
+        android:title="게시글 버튼 placeholder"
+        android:enabled="false"
+        />
+    <item
+        android:id="@+id/statsFragment"
+        android:icon="@drawable/ic_navigation_stats"
+        android:title="통계" />
+    <item
+        android:id="@+id/mypageFragment"
+        android:icon="@drawable/ic_navigation_mypage"
+        android:title="마이페이지" />
+</menu>
