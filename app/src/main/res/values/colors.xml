@@ -14,6 +14,7 @@
     <color name="gray">#616161</color>
     <color name="dark_gray">#717171</color>
     <color name="red">#F70D0D</color>
+    <color name="transparent">#00000000</color>
 
     <!-- 첫 화면 회원가입 로그인 텍스트 -->
     <color name="splash_gray">#999999</color>
