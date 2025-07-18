@@ -11,6 +11,7 @@ class PlusFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return null
+        val view = inflater.inflate(R.layout.fragment_plus, container, false)
+        return view
     }
 }
