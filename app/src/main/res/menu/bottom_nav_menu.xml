@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_navigation_n"
+        android:icon="@drawable/ic_navigation_home"
         android:title="홈" />
     <item
         android:id="@+id/chatFragment"
@@ -10,7 +10,7 @@
         android:title="채팅" />
     <item
         android:id="@+id/plusFragment"
-        android:title="게시글 버튼 placeholder"
+        android:title="placeholder"
         android:enabled="false"
         />
     <item
