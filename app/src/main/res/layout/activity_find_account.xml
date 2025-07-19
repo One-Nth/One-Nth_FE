@@ -1,0 +1,116 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="20dp">
+
+    <!-- 상단 바 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="7dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:src="@drawable/ep_arrow_up_bold"
+            android:contentDescription="뒤로가기"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="7dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="계정 찾기"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/main_black"
+            android:layout_marginStart="42dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginBottom="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이름"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/main_black"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp">
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="330dp"
+            android:layout_height="40dp"
+            android:hint="ex) 홍길동"
+            android:textColor="@color/light_gray"
+            android:textSize="13sp"
+            android:background="@drawable/edittext_border"
+            android:paddingEnd="90dp"
+            android:paddingStart="10dp"
+            android:inputType="textEmailAddress"/>
+
+    </RelativeLayout>
+
+    <!-- 이메일 -->
+    <TextView
+        android:layout_width="52dp"
+        android:layout_height="20dp"
+        android:text="이메일"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:textColor="@color/main_black"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp">
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
+            android:hint="ex) abc1234@example.com"
+            android:textColor="@color/light_gray"
+            android:textSize="13sp"
+            android:background="@drawable/edittext_border2"
+            android:paddingEnd="90dp"
+            android:paddingStart="10dp"
+            android:inputType="textEmailAddress"/>
+
+        <ImageButton
+            android:id="@+id/btnVerifyEmail"
+            android:layout_width="54dp"
+            android:layout_height="30dp"
+            android:src="@drawable/frame_427318993"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"/>
+    </RelativeLayout>
+
+
+</LinearLayout>

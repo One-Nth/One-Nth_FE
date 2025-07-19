@@ -43,4 +43,6 @@
     <color name="chat_background">#F1F1F1</color>
     <color name="cancel_button">#8E8E8E</color>
 
+    <!-- N원 아꼈어요 -->
+    <color name="N_saved_gray">#767676</color>
 </resources>
