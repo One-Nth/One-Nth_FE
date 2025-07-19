@@ -11,6 +11,7 @@ class StatsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return null
+        val view = inflater.inflate(R.layout.activity_nwon_saved, container, false)
+        return view
     }
 }
