@@ -58,6 +58,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             android:text="이번달 거래 내역"
+            android:clickable="true"
             android:textColor="@color/main_black"
             android:textStyle="bold" />
 

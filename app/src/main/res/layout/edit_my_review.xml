@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- 상단 바 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="20dp">
+
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:src="@drawable/ep_arrow_up_bold"
+                android:contentDescription="뒤로가기"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                style="@style/PretendardSubtitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내가 쓴 후기 수정하기"
+                android:textColor="@color/main_black"
+                android:layout_marginStart="30dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- 프로필 + 닉네임 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/profileImage2"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/avatar"
+                    android:scaleType="centerCrop"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/reviewerNameDetail2"
+                    android:layout_width="54dp"
+                    android:layout_height="16dp"
+                    android:text="닉네임"
+                    android:textSize="12sp"
+                    android:textColor="@color/main_black" />
+            </LinearLayout>
+
+            <!-- 상품명 -->
+            <TextView
+                android:id="@+id/productNameText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상품명"
+                android:textSize="16sp"
+                android:textColor="@color/main_black"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- 구분선 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/image_placeholder"
+                android:layout_marginBottom="15dp" />
+
+            <!-- 별점 -->
+            <TextView
+                android:id="@+id/starRatingDetail2"
+                android:layout_width="124dp"
+                android:layout_height="wrap_content"
+                android:text="★★★★★"
+                android:textColor="#FFC107"
+                android:textSize="20sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp" />
+        </LinearLayout>
+
+        <!-- ✅ 후기 텍스트가 이미지 위에 덮이는 구조 -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="282dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:id="@+id/reviewBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/rectangle_29"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/reviewTextDetail2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="연락 빠르게 보시고 상품 설명도 자세하게 해주셨어요\n~~~~\n~~~~~"
+                android:textSize="14sp"
+                android:textColor="@color/main_black"
+                android:padding="20dp"
+                android:gravity="top|start" />
+        </FrameLayout>
+
+        <!-- 추가 이미지 (예: 썸네일) -->
+        <ImageView
+            android:src="@drawable/rectangle_32"
+            android:layout_width="98dp"
+            android:layout_height="93dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="12dp"
+            android:scaleType="centerCrop" />
+
+        <!-- 수정 버튼 -->
+        <ImageView
+            android:src="@drawable/editbutton"
+            android:layout_width="335dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="12dp"
+            android:scaleType="centerCrop" />
+    </LinearLayout>
+</ScrollView>

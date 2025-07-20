@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="220dp"
+    android:layout_height="116dp"
+    android:orientation="vertical"
+    android:background="#EEEEEE"
+    android:padding="12dp"
+    android:layout_marginEnd="12dp">
+
+    <!-- 상단: 프로필 + 닉네임 + 별점 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="top|center_vertical">
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/avatar"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/reviewerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="닉네임"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/main_black"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/starRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="★★★★★"
+            android:layout_marginStart="50dp"
+            android:textColor="#FFC107"
+            android:textSize="12sp"
+
+            android:gravity="center_vertical" />
+    </LinearLayout>
+
+    <!-- 하단: 후기 텍스트 -->
+    <TextView
+        android:id="@+id/reviewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="정말 친절했어요!"
+        android:textSize="12sp"
+        android:textColor="#333333"
+        android:layout_marginTop="8dp"
+        android:maxLines="2"
+        android:ellipsize="end" />
+</LinearLayout>
+
