@@ -1,8 +1,14 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
+}
+val properties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -17,6 +23,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["naverMapClientId"] = properties.getProperty("naverMapClientId")
+
     }
 
     buildTypes {
@@ -38,6 +46,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding=true
+        buildConfig = true
     }
     dataBinding {
         enable = true
@@ -56,6 +65,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation("com.naver.maps:map-sdk:3.22.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
