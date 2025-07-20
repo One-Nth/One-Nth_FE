@@ -94,6 +94,13 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="PretendardSubtitle4">
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">-0.017</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <style name="PretendardBody3">
         <item name="android:fontFamily">@font/pretendard_regular</item>
         <item name="android:textSize">16sp</item>
@@ -104,6 +111,13 @@
     <style name="PretendardBody4">
         <item name="android:fontFamily">@font/pretendard_regular</item>
         <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">-0.017</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="PretendardBody5">
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:letterSpacing">-0.017</item>
         <item name="android:textAlignment">center</item>
     </style>
