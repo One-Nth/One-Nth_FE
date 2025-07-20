@@ -1,0 +1,65 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF">
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="93dp"
+        android:layout_height="93dp"
+        android:layout_marginStart="154dp"
+        android:layout_marginTop="209dp"
+        android:alpha="1"
+        android:rotation="0"
+        android:src="@drawable/group_54"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/appTitleImage"
+        android:layout_width="198dp"
+        android:layout_height="41.72dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="348dp"
+        android:alpha="1"
+        android:rotation="0"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/group_44" />
+
+
+    <!-- 회원가입 -->
+    <TextView
+        android:id="@+id/signUpText"
+        android:layout_width="52dp"
+        android:layout_height="20dp"
+        android:text="회원가입"
+        android:textSize="14sp"
+        android:textColor="@color/splash_gray"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="525dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- 로그인 -->
+    <TextView
+        android:id="@+id/loginText"
+        android:layout_width="39dp"
+        android:layout_height="20dp"
+        android:text="로그인"
+        android:textSize="14sp"
+        android:textColor="@color/splash_gray"
+        android:layout_marginStart="217dp"
+        android:layout_marginTop="525dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
