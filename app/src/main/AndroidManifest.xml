@@ -31,7 +31,8 @@
             android:exported="false" />
         <activity android:name=".BuyerReview" />
         <activity android:name=".EditMyReviewActivity" />
-
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".AlertSettingsActivity" />
 
 
     </application>

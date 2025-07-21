@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="12dp"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/menuIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/stash_save_ribbon"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="메뉴 아이콘" />
+
+    <TextView
+        style="@style/PretendardSubtitle1"
+        android:id="@+id/menuText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="스크랩한 글"
+        android:textColor="@color/main_black" />
+</LinearLayout>

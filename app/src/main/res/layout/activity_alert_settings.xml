@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/main_white"
+    android:padding="20dp">
+
+        <!-- 상단 바 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="20dp">
+
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:src="@drawable/ep_arrow_up_bold"
+                android:contentDescription="뒤로가기"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                style="@style/PretendardSubtitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="알림 설정"
+                android:layout_marginStart="30dp"
+                android:textColor="@color/main_black" />
+        </LinearLayout>
+
+        <!-- 구분선 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/image_placeholder"
+            android:layout_marginBottom="15dp" />
+
+
+    <LinearLayout
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="30dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSemibold3"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="게시글 스크랩 알림 설정"
+            android:textColor="@color/main_black" />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:checked="true" />
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="30dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSemibold3"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="거래 후기 알림 설정"
+            android:textColor="@color/main_black" />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:checked="true" />
+    </LinearLayout>
+
+
+    <TextView
+        style="@style/PretendardSemibold3"
+        android:layout_width="115dp"
+        android:layout_height="20dp"
+        android:text="알림 받을 지역 추가"
+        android:textColor="@color/main_black"
+        android:layout_marginStart="34dp"
+        android:layout_marginBottom="10dp"/>
+
+        <!-- 키워드 입력 -->
+    <RelativeLayout
+        android:layout_width="329dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp">
+
+        <EditText
+            style="@style/PretendardBody5"
+            android:id="@+id/alertLocationText"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
+            android:hint="ex) abc1234@example.com"
+            android:textColor="@color/light_gray"
+            android:background="@drawable/edittext_border2"
+            android:paddingEnd="90dp"
+            android:paddingStart="-30dp"
+            android:inputType="textEmailAddress"/>
+
+        <ImageButton
+            android:id="@+id/btnRegisterLocation"
+            android:layout_width="43dp"
+            android:layout_height="27dp"
+            android:src="@drawable/frame_427318963"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"/>
+    </RelativeLayout>
+
+
+    <TextView
+        style="@style/PretendardSemibold3"
+        android:layout_width="157dp"
+        android:layout_height="20dp"
+        android:text="알림 받을 상품 키워드 추가"
+        android:textColor="@color/main_black"
+        android:layout_marginStart="34dp"
+        android:layout_marginBottom="10dp"/>
+
+        <!-- 등록 키워드 목록 -->
+    <RelativeLayout
+        android:layout_width="329dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp">
+
+        <EditText
+            style="@style/PretendardBody5"
+            android:id="@+id/emailEditText"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
+            android:hint="ex) abc1234@example.com"
+            android:textColor="@color/light_gray"
+            android:background="@drawable/edittext_border2"
+            android:paddingEnd="90dp"
+            android:paddingStart="-30dp"
+            android:inputType="textEmailAddress"/>
+
+        <ImageButton
+            android:id="@+id/btnRegisterProduct"
+            android:layout_width="43dp"
+            android:layout_height="27dp"
+            android:src="@drawable/frame_427318963"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="30dp"
+        android:paddingRight="15dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="5dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSemibold3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내가 등록한 알림 보기"
+            android:textColor="@color/main_black" />
+
+        <ImageView
+            android:id="@+id/modifyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_modify"
+            android:contentDescription="수정 버튼"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+
+        <!-- 등록된 키워드 예시 -->
+    <LinearLayout
+        android:layout_width="329dp"
+        android:layout_height="44dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/alert_settings_border_box"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <TextView
+            android:id="@+id/alertKeyword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="# 옥실청소"
+            android:textSize="14sp"
+            android:textColor="#000000" />
+
+        <ImageView
+            android:id="@+id/alertIcon"
+            android:layout_width="18dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_alarmbell"
+            android:contentDescription="알림 상태 아이콘" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="329dp"
+        android:layout_height="44dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/alert_settings_border_box"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <TextView
+            android:id="@+id/alertKeyword2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="# 물"
+            android:textSize="14sp"
+            android:textColor="#000000" />
+
+        <ImageView
+            android:id="@+id/alertIcon2"
+            android:layout_width="18dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_alarmbell"
+            android:contentDescription="알림 상태 아이콘" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="329dp"
+        android:layout_height="44dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/alert_settings_border_box"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <TextView
+            android:id="@+id/alertKeyword3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="# 월곡동"
+            android:textSize="14sp"
+            android:textColor="#000000" />
+
+        <ImageView
+            android:id="@+id/alertIcon3"
+            android:layout_width="18dp"
+            android:layout_height="20dp"
+            android:src="@drawable/alarm_off"
+            android:contentDescription="알림 상태 아이콘" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

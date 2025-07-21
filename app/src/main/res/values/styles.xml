@@ -87,6 +87,13 @@
     </style>
 
     <!-- 그 외 추가 -->
+    <style name="PretendardH5">
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:letterSpacing">-0.017</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <style name="PretendardSubtitle3">
         <item name="android:fontFamily">@font/pretendard_medium</item>
         <item name="android:textSize">16sp</item>

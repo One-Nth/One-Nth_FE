@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/main_white"
+    android:padding="1dp">
+
+    <!-- 상단 타이틀과 설정 버튼을 가로로 정렬 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="31dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp">
+
+        <TextView
+            android:id="@+id/titleText"
+            style="@style/PretendardH5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="마이페이지"
+            android:textColor="@color/main_green"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageView
+            android:id="@+id/settingsButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/uil_setting"
+            android:contentDescription="설정 버튼"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 프로필 영역 -->
+    <LinearLayout
+        android:id="@+id/profileSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="44dp"
+        android:paddingBottom="12dp"
+        android:paddingStart="57dp"
+        android:paddingEnd="24dp"
+        android:background="@color/main_white">
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/avatar"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="10dp" />
+
+        <TextView
+            style="@style/PretendardSubtitle1"
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="닉네임"
+            android:textColor="@color/main_black"
+            android:paddingEnd="20dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="175dp" />
+
+        <ImageView
+            android:id="@+id/profileArrow"
+            android:layout_width="23dp"
+            android:layout_height="13dp"
+            android:src="@drawable/mypage_vector"
+            android:contentDescription="프로필 상세 이동" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/menuList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
+
+        <!-- 구분선 (선택적으로 여기에 두세요) -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="15dp"
+            android:background="#CCCCCC" />
+
+        <!-- 메뉴 항목 include -->
+        <include layout="@layout/mypage_item_menu_scrap" />
+        <include layout="@layout/mypage_item_menu_like" />
+        <include layout="@layout/mypage_item_menu_written" />
+        <include layout="@layout/mypage_item_menu_review" />
+        <include layout="@layout/mypage_item_menu_policy" />
+        <include layout="@layout/mypage_item_menu_cs" />
+    </LinearLayout>
+</LinearLayout>

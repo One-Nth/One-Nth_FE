@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="20dp">
+
+    <!-- 상단 바 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:src="@drawable/ep_arrow_up_bold"
+            android:contentDescription="뒤로가기"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            style="@style/PretendardSubtitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="설정"
+            android:layout_marginStart="30dp"
+            android:textColor="@color/main_black" />
+    </LinearLayout>
+
+    <!-- 설정 항목 리스트 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="40dp">
+
+        <!-- 각 항목을 하나씩 수직으로 배치 -->
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSubtitle1"
+            android:id="@+id/accountSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="계정 설정"
+            android:textColor="@color/main_black"
+            android:textSize="16sp"
+            android:paddingVertical="12dp" />
+
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSubtitle1"
+            android:id="@+id/notificationSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="알림 설정"
+            android:textColor="@color/main_black"
+            android:textSize="16sp"
+            android:paddingVertical="12dp" />
+
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSubtitle1"
+            android:id="@+id/blockedUsers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="차단된 사용자 관리"
+            android:textColor="@color/main_black"
+            android:textSize="16sp"
+            android:paddingVertical="12dp" />
+
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSubtitle1"
+            android:id="@+id/chatSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="채팅 설정"
+            android:textColor="@color/main_black"
+            android:textSize="16sp"
+            android:paddingVertical="12dp" />
+
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSubtitle1"
+            android:id="@+id/localSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="우리 동네 설정"
+            android:textColor="@color/main_black"
+            android:textSize="16sp"
+            android:paddingVertical="12dp" />
+
+    </LinearLayout>
+</LinearLayout>
