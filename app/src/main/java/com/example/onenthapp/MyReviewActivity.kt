@@ -2,6 +2,7 @@ package com.example.onenthapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,11 @@ class MyReviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_review)
+
+        val backButton = findViewById<ImageView>(R.id.backButton)
+        backButton.setOnClickListener {
+            finish() // 현재 Activity 종료 → 이전 Fragment 화면으로 돌아감
+        }
 
         // ✅ RecyclerView 연결
         val recyclerView = findViewById<RecyclerView>(R.id.reviewRecyclerView)

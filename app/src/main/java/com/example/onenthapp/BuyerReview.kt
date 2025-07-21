@@ -10,6 +10,11 @@ class BuyerReview : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buyer_review)
 
+        val backButton = findViewById<ImageView>(R.id.backButton)
+        backButton.setOnClickListener {
+            finish() // 현재 Activity 종료 → 이전 Fragment 화면으로 돌아감
+        }
+
         val name = intent.getStringExtra("name")
         val rating = intent.getIntExtra("rating", 5)
         val text = intent.getStringExtra("text")
