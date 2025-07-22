@@ -45,4 +45,11 @@
 
     <!-- N원 아꼈어요 -->
     <color name="N_saved_gray">#767676</color>
+
+    <!-- 알림 -->
+    <color name="notification_text">#818181</color>
+    <color name="notification_time">#B1B1B1</color>
+    <color name="notification_indicator_background">#E4E4E4</color>
+    <color name="notification_already_read">#FFDADA</color>
+
 </resources>
