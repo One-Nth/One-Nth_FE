@@ -94,12 +94,150 @@
             android:layout_marginBottom="15dp"
             android:background="#CCCCCC" />
 
-        <!-- 메뉴 항목 include -->
-        <include layout="@layout/mypage_item_menu_scrap" />
-        <include layout="@layout/mypage_item_menu_like" />
-        <include layout="@layout/mypage_item_menu_written" />
-        <include layout="@layout/mypage_item_menu_review" />
-        <include layout="@layout/mypage_item_menu_policy" />
-        <include layout="@layout/mypage_item_menu_cs" />
+
+        <!-- 스크랩한 글 -->
+        <LinearLayout
+            android:id="@+id/menuScrap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/stash_save_ribbon"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="스크랩 아이콘" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="스크랩한 글"
+                style="@style/PretendardSubtitle1"
+                android:textColor="@color/main_black"/>
+        </LinearLayout>
+
+        <!-- 공감한 글 -->
+        <LinearLayout
+            android:id="@+id/menuLike"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/solar_heart_linear"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="공감 아이콘" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="공감한 글"
+                style="@style/PretendardSubtitle1"
+                android:textColor="@color/main_black"/>
+        </LinearLayout>
+
+        <!-- 내가 쓴 글 -->
+        <LinearLayout
+            android:id="@+id/menuWritten"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/icon_park_outline_write"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="내가 쓴 글 아이콘" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내가 쓴 글"
+                style="@style/PretendardSubtitle1"
+                android:textColor="@color/main_black"/>
+        </LinearLayout>
+
+        <!-- 나의 거래 내역 및 후기 -->
+        <LinearLayout
+            android:id="@+id/menuReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/mdi_paper_outline"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="후기 아이콘" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="나의 거래 내역 및 후기"
+                style="@style/PretendardSubtitle1"
+                android:textColor="@color/main_black"/>
+        </LinearLayout>
+
+        <!-- 약관 및 정책 -->
+        <LinearLayout
+            android:id="@+id/menuPolicy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/material_symbols_info_outline"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="약관 아이콘" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="약관 및 정책"
+                style="@style/PretendardSubtitle1"
+                android:textColor="@color/main_black"/>
+        </LinearLayout>
+
+        <!-- 고객센터 -->
+        <LinearLayout
+            android:id="@+id/menuCs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/material_symbols_how_to_reg_outline"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="고객센터 아이콘" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="고객센터"
+                style="@style/PretendardSubtitle1"
+                android:textColor="@color/main_black"/>
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
