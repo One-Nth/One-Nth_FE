@@ -107,4 +107,13 @@
         <item name="android:letterSpacing">-0.017</item>
         <item name="android:textAlignment">center</item>
     </style>
+
+    <!-- 검색창 힌트 스타일 -->
+    <style name="SearchHint" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+        <item name="android:textColor">@color/text_search</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
 </resources>

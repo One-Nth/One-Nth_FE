@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.OneNthApp" parent="Theme.AppCompat.Light.NoActionBar" />
+<!--    <style name="Theme.OneNthApp" parent="Theme.AppCompat.Light.NoActionBar" />-->
+    <!-- res/values/themes.xml -->
+    <style name="Theme_OneNthApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- 전역 팝업 메뉴 스타일 -->
+        <item name="popupMenuStyle">@style/MyPopupMenu</item>
+    </style>
+
+    <style name="MyPopupMenu" parent="Widget.MaterialComponents.PopupMenu">
+        <!-- 배경, 텍스트 컬러 등 커스터마이징 -->
+        <item name="android:popupBackground">@color/main_white</item>
+        <item name="android:textColor">@color/main_green</item>
+        <item name="android:itemBackground">@drawable/popup_item_selector</item>
+    </style>
+
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 눌렸을 때 연초록 배경 -->
+    <item android:state_pressed="true" android:drawable="@color/main_green_3" />
+    <!-- 그 외 투명 -->
+    <item android:drawable="@android:color/transparent" />
+</selector>
