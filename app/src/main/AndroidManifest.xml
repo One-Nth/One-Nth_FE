@@ -32,6 +32,7 @@
         <activity android:name=".EditMyReviewActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".AlertSettingsActivity" />
+        <activity android:name=".AccountSettingsActivity" />
     </application>
 
 </manifest>

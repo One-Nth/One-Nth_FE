@@ -25,6 +25,11 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val accountSettings = findViewById<TextView>(R.id.accountSettings)
+        accountSettings.setOnClickListener {
+            val intent = Intent(this, AccountSettingsActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }
-
