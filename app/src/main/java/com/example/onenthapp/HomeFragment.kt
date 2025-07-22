@@ -96,24 +96,3 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
 }
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val fm = childFragmentManager
-        var mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                fm.beginTransaction().add(R.id.map, it).commit()
-            }
-
-        mapFragment.getMapAsync(this)
-    }
-
-    @UiThread
-    override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap
-        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRANSIT, true)
-    }
-}
