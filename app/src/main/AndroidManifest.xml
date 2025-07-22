@@ -33,6 +33,7 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".AlertSettingsActivity" />
         <activity android:name=".AccountSettingsActivity" />
+        <activity android:name=".BlockedUsersActivity" />
     </application>
 
 </manifest>

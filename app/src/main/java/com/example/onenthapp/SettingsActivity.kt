@@ -31,5 +31,11 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val blockedUsersSettings = findViewById<TextView>(R.id.blockedUsers)
+        blockedUsersSettings.setOnClickListener {
+            val intent = Intent(this, BlockedUsersActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }
