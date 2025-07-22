@@ -1,119 +1,96 @@
 package com.example.onenthapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.UiThread
-import androidx.fragment.app.Fragment
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.PopupMenu
-import com.google.android.material.appbar.MaterialToolbar
+import androidx.annotation.UiThread
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.appcompat.view.menu.MenuPopupHelper
-
+import androidx.fragment.app.Fragment
+import com.example.onenthapp.databinding.FragmentHomeBinding
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
+
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+
     private var naverMap: NaverMap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
-        return view    }
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     @SuppressLint("RestrictedApi", "DiscouragedPrivateApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 1. 지도 Fragment 설정
         val fm = childFragmentManager
-        var mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
+        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
             ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.map, it).commit()
             }
+        mapFragment.getMapAsync(this)
 
-        mapFragment.getMapAsync(this) // this는 OnMapReadyCallback을 구현한 HomeFragment 자신
-
-//// 1) Toolbar menu inflate
-//        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar_home)
-//        toolbar.inflateMenu(R.menu.menu_home)
-//        toolbar.setOnMenuItemClickListener { item ->
-//            if (item.itemId == R.id.action_notifications) {
-//                // TODO: 알림 화면으로 이동
-//            }
-//            true
-//        }
-
-        // 2) 드롭다운 PopupMenu
-        val arrow = view.findViewById<ImageView>(R.id.iv_arrow)
-        val titleContainer = view.findViewById<LinearLayout>(R.id.ll_title_container)
+        // 2. 드롭다운 메뉴 설정
         val popup = PopupMenu(
             ContextThemeWrapper(requireContext(), R.style.Theme_OneNthApp),
-            arrow,
+            binding.ivArrow,
             Gravity.END
         ).apply {
             menuInflater.inflate(R.menu.menu_title_dropdown, menu)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.menu_n_1 -> {
-                        // “N분의1” 선택 처리
+                        // "N분의1" 선택 처리
                         true
                     }
                     R.id.menu_tip_n_1 -> {
-                        // “꿀팁 N분의1” 선택 처리
+                        // "꿀팁 N분의1" 선택 처리
                         true
                     }
                     else -> false
                 }
             }
             setOnDismissListener {
-                // 팝업 닫힐 때 화살표 복귀
-                arrow.animate().rotation(0f).start()
+                binding.ivArrow.animate().rotation(0f).start()
             }
         }
 
-        // 4) 클릭하면 화살표 회전 + 팝업 보여주기
-        arrow.setOnClickListener {
-            arrow.animate().rotation(180f).start()
+        // 3. 화살표 클릭 시 팝업 열기
+        binding.ivArrow.setOnClickListener {
+            binding.ivArrow.animate().rotation(180f).start()
             popup.show()
         }
-    }
 
-    @UiThread
-    override fun onMapReady(naverMap: NaverMap) {
-        // 네이버 지도 객체를 받고 필요한 설정
-        this.naverMap = naverMap
-        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRANSIT, true)
-        // 다른 지도 관련 로직 추가 (예: 마커 추가, 카메라 이동 등)
-    }
-
-}
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val fm = childFragmentManager
-        var mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                fm.beginTransaction().add(R.id.map, it).commit()
-            }
-
-        mapFragment.getMapAsync(this)
+        // 4. 알림 버튼 클릭 시 AlarmActivity로 이동
+        binding.btNotification.setOnClickListener {
+            val intent = Intent(requireContext(), AlarmActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     @UiThread
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRANSIT, true)
+        // 지도 설정 추가 가능
     }
 }
