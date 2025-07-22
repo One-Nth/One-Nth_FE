@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_alarm"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF">
 
     <!-- 상단 바 -->
     <RelativeLayout
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/btn_left"
@@ -19,8 +23,7 @@
             android:layout_height="24.75dp"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_left"
-            android:layout_marginTop="26.75dp"
-            android:layout_marginLeft="8.12dp"
+            android:layout_marginStart="8dp"
             android:contentDescription="뒤로가기" />
 
         <TextView
@@ -28,228 +31,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="알림"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/main_green"
             android:layout_centerInParent="true" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="33dp"
-        android:orientation="horizontal">
+    <!-- 탭 -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:tabIndicatorColor="@color/main_green"
+        app:tabIndicatorHeight="2dp"
+        app:tabSelectedTextColor="@color/main_green"
+        app:tabTextColor="@color/text_btn_ok"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/tab_notification_onenth"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_height="19dp"
-            android:text="N분의 1"
-            android:textSize="15dp"
-            android:textStyle="bold"
-            android:textColor="@color/main_green" />
-
-        <TextView
-            android:id="@+id/tab_notification_onenth_tip"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_height="19dp"
-            android:textSize="15dp"
-            android:text="꿀팁 N분의 1"
-            android:textColor="@color/text_btn_ok" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/tab_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:layout_marginLeft="40dp"
-        android:orientation="horizontal"
-        android:background="@color/notification_indicator_background">
-
-        <!-- N분의 1 탭 밑줄 -->
-        <View
-            android:id="@+id/indicator_onenth"
-            android:layout_width="114dp"
-            android:layout_height="match_parent"
-            android:background="@color/main_green" />
-
-        <!-- 남은 공간 채우기 -->
-        <View
-            android:id="@+id/indicator_onenth_tip"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/notification_indicator_background" />
-    </LinearLayout>
-
-
-
-    <ScrollView
-        android:layout_width="match_parent"
+    <!-- 뷰페이저 -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#FFE0E0">
-
-        <LinearLayout
-            android:id="@+id/notification_list"
-            android:layout_width="393dp"
-            android:layout_height="100dp"
-            android:orientation="vertical">
-
-            <!-- 🔔 알림 1 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="19dp"
-                android:layout_marginTop="25dp">
-
-                <TextView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@drawable/circle_white"
-                    android:gravity="center"
-                    android:text="N"
-                    android:textColor="@color/main_green"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:layout_marginTop="9dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingStart="12dp">
-
-                    <ImageView
-                        android:src="@drawable/notification_ic_1"
-                        android:layout_width="76dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:text="어쩌고 저쩌고 여기 너무 맛있다"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/notification_text"
-                        android:textSize="14dp"
-                        android:layout_marginTop="2dp"/>
-
-                    <TextView
-                        android:text="2초 전"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/notification_time"
-                        android:textSize="13dp"
-                        android:layout_marginTop="9dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- 🔔 알림 2 (복사) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="19dp"
-                android:layout_marginTop="25dp">
-
-                <TextView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@drawable/circle_white"
-                    android:gravity="center"
-                    android:text="N"
-                    android:textColor="@color/main_green"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:layout_marginTop="9dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingStart="12dp">
-
-                    <ImageView
-                        android:src="@drawable/notification_ic_2"
-                        android:layout_width="89dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:text="어쩌고 저쩌고 여기 너무 맛있다"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/notification_text"
-                        android:textSize="14dp"
-                        android:layout_marginTop="2dp"/>
-
-                    <TextView
-                        android:text="1분 전"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/notification_time"
-                        android:textSize="13dp"
-                        android:layout_marginTop="9dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- 🔔 알림 3 (복사) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="19dp"
-                android:layout_marginTop="25dp">
-
-                <TextView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@drawable/circle_white"
-                    android:gravity="center"
-                    android:text="N"
-                    android:textColor="@color/main_green"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:layout_marginTop="9dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingStart="12dp">
-
-                    <ImageView
-                        android:src="@drawable/notification_ic_1"
-                        android:layout_width="76dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:text="같이 사요! 여기도 괜찮아요~"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/notification_text"
-                        android:textSize="14dp"
-                        android:layout_marginTop="2dp"/>
-
-                    <TextView
-                        android:text="5분 전"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/notification_time"
-                        android:textSize="13dp"
-                        android:layout_marginTop="9dp" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-
-    </ScrollView>
-</LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/tabLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
