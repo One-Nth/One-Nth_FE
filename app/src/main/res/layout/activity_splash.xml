@@ -29,36 +29,82 @@
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/group_44" />
 
-
-    <!-- 회원가입 -->
-    <TextView
-        android:id="@+id/signUpText"
-        android:layout_width="52dp"
-        android:layout_height="20dp"
-        android:text="회원가입"
-        android:textSize="14sp"
-        android:textColor="@color/splash_gray"
-        android:layout_marginStart="132dp"
-        android:layout_marginTop="525dp"
-        android:clickable="true"
-        android:focusable="true"
+    <ImageView
+        android:id="@+id/EmailLoginImage"
+        android:layout_width="198dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="484dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/frame_427318946" />
 
-    <!-- 로그인 -->
-    <TextView
-        android:id="@+id/loginText"
-        android:layout_width="39dp"
-        android:layout_height="20dp"
-        android:text="로그인"
-        android:textSize="14sp"
-        android:textColor="@color/splash_gray"
-        android:layout_marginStart="217dp"
-        android:layout_marginTop="525dp"
-        android:clickable="true"
-        android:focusable="true"
+    <ImageView
+        android:id="@+id/KakaoImage"
+        android:layout_width="198dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="530dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/frame_427318926" />
+
+    <!-- 구분선: or -->
+    <View
+        android:id="@+id/leftLine"
+        android:layout_width="120dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="602dp"
+        android:background="@color/text_btn_ok"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/PretendardSubtitle4"
+        android:id="@+id/orText"
+        android:layout_width="15dp"
+        android:layout_height="20dp"
+        android:text="or"
+        android:layout_marginTop="591dp"
+        android:layout_marginStart="191dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/rightLine"
+        android:layout_width="120dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="602dp"
+        android:layout_marginStart="213dp"
+        android:background="@color/text_btn_ok"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 회원가입 버튼 -->
+    <ImageView
+        android:id="@+id/signUpButton"
+        android:layout_width="198dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="631dp"
+        android:src="@drawable/frame_427318948"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 계정 찾기 텍스트 -->
+    <TextView
+        style="@style/PretendardSubtitle4"
+        android:id="@+id/findAccountText"
+        android:layout_width="56dp"
+        android:layout_height="20dp"
+        android:text="계정 찾기"
+        android:textColor="@color/splash_gray"
+        android:layout_marginTop="732dp"
+        android:layout_marginStart="172dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

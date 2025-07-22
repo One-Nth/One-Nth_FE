@@ -14,13 +14,15 @@ import android.widget.PopupMenu
 import com.google.android.material.appbar.MaterialToolbar
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.view.menu.MenuPopupHelper
+
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
     private var naverMap: NaverMap? = null
-     override fun onCreateView(
+
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -93,4 +95,25 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // 다른 지도 관련 로직 추가 (예: 마커 추가, 카메라 이동 등)
     }
 
+}
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val fm = childFragmentManager
+        var mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                fm.beginTransaction().add(R.id.map, it).commit()
+            }
+
+        mapFragment.getMapAsync(this)
+    }
+
+    @UiThread
+    override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
+        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRANSIT, true)
+    }
 }

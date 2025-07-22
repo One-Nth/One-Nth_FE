@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="347dp"
+    android:layout_height="202dp"
+    android:background="@drawable/share_popup_background"
+    android:padding="20dp">
+
+    <!-- 닫기 (X) 버튼 -->
+    <TextView
+        style="@style/PretendardBody6"
+        android:id="@+id/closeButton"
+        android:layout_width="12dp"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:text="X"
+        android:background="@android:color/transparent"
+        android:textColor="@color/main_black"
+        android:contentDescription="닫기" />
+
+    <!-- 제목 텍스트 -->
+    <TextView
+        style="@style/PretendardSemibold2"
+        android:id="@+id/shareTitle"
+        android:layout_width="228dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/closeButton"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="15dp"
+        android:text="해당 글을 공유하시겠습니까?"
+        android:textColor="@color/main_black"/>
+
+    <!-- 링크 + 복사 버튼 감싸는 박스 -->
+    <LinearLayout
+        android:id="@+id/linkContainer"
+        android:layout_width="302dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/shareTitle"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="70dp"
+        android:orientation="horizontal"
+        android:background="@drawable/nwon_link_border"
+        android:layout_marginStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:gravity="center_vertical">
+
+        <!-- 링크 입력창 -->
+        <EditText
+            style="@style/PretendardBody5"
+            android:id="@+id/shareLinkEditText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:hint="링크~~~~~~~"
+            android:textAlignment="viewStart"
+            android:background="@android:color/transparent"
+            android:textColor="#000000"
+            android:padding="0dp" />
+
+        <!-- 복사 버튼 -->
+        <ImageButton
+            android:id="@+id/copyButton"
+            android:src="@drawable/nwon_copy_button"
+            android:layout_width="43dp"
+            android:layout_height="27dp"
+            android:background="@android:color/transparent"
+            android:layout_marginStart="30dp"
+            android:paddingHorizontal="12dp"/>
+    </LinearLayout>
+
+</RelativeLayout>
+

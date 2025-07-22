@@ -24,17 +24,16 @@
             android:contentDescription="뒤로가기"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginStart="7dp"
+            android:layout_marginStart="0dp"
             android:layout_marginTop="0dp" />
 
         <TextView
+            style="@style/PretendardSubtitle2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="로그인"
-            android:textSize="16sp"
-            android:textStyle="bold"
             android:textColor="@color/main_black"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="0dp" />
     </LinearLayout>
 
@@ -42,53 +41,61 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#CCCCCC"
+        android:background="@color/image_placeholder"
         android:layout_marginBottom="15dp" />
 
     <!-- 이메일 입력 영역 -->
     <TextView
+        style="@style/PretendardSemibold3"
         android:layout_width="39dp"
         android:layout_height="20dp"
         android:text="이메일"
-        android:textSize="14sp"
-        android:textStyle="bold"
         android:textColor="@color/main_black"
+        android:layout_marginTop="31dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="10dp"/>
 
     <EditText
+        style="@style/PretendardBody5"
         android:id="@+id/emailEditText"
-        android:layout_width="match_parent"
+        android:layout_width="330dp"
         android:layout_height="40dp"
         android:hint="ex) abcd1234@example.com"
-        android:textSize="13sp"
+        android:textColor="@color/light_gray"
         android:background="@drawable/edittext_border"
         android:padding="10dp"
+        android:paddingStart="-100dp"
         android:inputType="textEmailAddress"
+        android:gravity="start|top"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="30dp" />
+
     <!-- 비밀번호 입력 영역 -->
     <TextView
+        style="@style/PretendardSemibold3"
         android:layout_width="52dp"
         android:layout_height="20dp"
         android:text="비밀번호"
-        android:textSize="14sp"
-        android:textStyle="bold"
         android:textColor="@color/main_black"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="10dp"/>
 
     <EditText
+        style="@style/PretendardBody5"
         android:id="@+id/passwordEditText"
-        android:layout_width="match_parent"
+        android:layout_width="330dp"
         android:layout_height="40dp"
         android:hint="비밀번호를 입력해주세요."
-        android:textSize="13sp"
+        android:textColor="@color/light_gray"
         android:background="@drawable/edittext_border"
         android:padding="10dp"
+        android:paddingStart="-140dp"
         android:inputType="textPassword"
+        android:gravity="start|top"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="15dp"/>
+
 
     <!-- 계정 찾기 로그인 버튼-->
     <LinearLayout
@@ -96,7 +103,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="90dp"
         android:layout_marginBottom="20dp">
 
         <!-- 첫 번째 이미지 버튼 -->
@@ -119,23 +126,5 @@
             android:background="@null"
             android:contentDescription="버튼2" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
-        android:layout_marginTop="15dp"/>
-
-    <ImageButton
-        android:id="@+id/singleImageButton"
-        android:layout_width="326dp"
-        android:layout_height="49dp"
-        android:src="@drawable/frame_427318926"
-        android:background="@null"
-        android:contentDescription="하단 단일 버튼"
-        android:scaleType="centerInside"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="40dp" />
-
 </LinearLayout>
 
