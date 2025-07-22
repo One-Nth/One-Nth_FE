@@ -37,6 +37,7 @@
         app:layout_anchor="@id/bottomNavigationView"
         app:layout_anchorGravity="top|center_horizontal"
         android:src="@drawable/ic_navigation_plus"
+        app:tint="@null"
         app:elevation="10dp"
         app:useCompatPadding="false" />
 
