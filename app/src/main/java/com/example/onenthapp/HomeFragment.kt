@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         return view    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<View>(R.id.notificationIcon).setOnClickListener {
+            val intent = Intent(requireContext(), AlarmActivity::class.java)
+            startActivity(intent)
+        }
 
         val fm = childFragmentManager
         var mapFragment = fm.findFragmentById(R.id.map) as MapFragment?

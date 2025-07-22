@@ -25,16 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".MyReviewActivity"
-            android:exported="false" />
+        <activity android:name=".AlarmActivity" android:exported="false" />
+        <activity android:name=".MyReviewActivity" android:exported="false" />
         <activity android:name=".BuyerReview" />
         <activity android:name=".EditMyReviewActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".AlertSettingsActivity" />
-
-
     </application>
 
 </manifest>
