@@ -63,7 +63,7 @@
 
     <!-- 2) 검색창 -->
     <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
+        android:layout_width="362dp"
         android:layout_height="35dp"
         android:layout_marginStart="19dp"
         android:layout_marginEnd="19dp"
@@ -77,11 +77,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:background="@color/search_gray"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:background="@color/search_gray">
+            android:paddingEnd="16dp">
 
             <ImageView
                 android:layout_width="24dp"
@@ -96,44 +96,55 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="@string/searchbar_guide"
-                android:textColorHint="@color/text_search"
-                android:textColor="@color/main_black"
                 android:gravity="center_vertical"
+                android:hint="@string/searchbar_guide"
+                android:textColor="@color/main_black"
                 android:textColorHighlight="@color/main_green_3"
-                android:textSize="14sp"/>
+                android:textColorHint="@color/text_search"
+                android:textSize="14sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <!-- 3) TabLayout -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout_home"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/main_white"
         app:tabIndicatorFullWidth="false"
         app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/main_green"
+        app:tabIndicatorColor="@color/main_green"
+        app:tabTextAppearance="@style/TextAppearance.OneNthApp.Tab"
+        android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/search_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- 4) ViewPager2 -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager_home"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout_home"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_buy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="같이 사요"/>
 
-    <!-- 5) MapFragment -->
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="함께 나눠요"/>
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <!-- 4) 지도(전체를 차지하되, 위 컨텐츠 아래) -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.naver.maps.map.MapFragment"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/viewPager_home"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout_home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        style=""/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
