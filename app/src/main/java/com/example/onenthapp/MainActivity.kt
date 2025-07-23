@@ -39,13 +39,15 @@ class MainActivity : AppCompatActivity() {
 
         // FAB 클릭시 상품 등록 화면으로 이동
         binding.fabAdd.setOnClickListener {
-            Log.d("MainActivity", "FAB clicked!")
             navController.navigate(R.id.plusFragment)
         }
         navController.addOnDestinationChangedListener { _, dest, _ ->
             val hideOn = dest.id == R.id.plusFragment
-            binding.bottomNavigationView.visibility = if (hideOn) View.GONE else View.VISIBLE
-            binding.fabAdd.visibility            = if (hideOn) View.GONE else View.VISIBLE
+            val hideOn2 = dest.id == R.id.statsFragment
+            val hideOn3 = dest.id == R.id.chatFragment
+            val hideOn4 = dest.id == R.id.mypageFragment
+            binding.bottomNavigationView.visibility = if (hideOn || hideOn2 || hideOn3 || hideOn4) View.GONE else View.VISIBLE
+            binding.fabAdd.visibility = if (hideOn || hideOn2 || hideOn3 || hideOn4) View.GONE else View.VISIBLE
         }
 
     }

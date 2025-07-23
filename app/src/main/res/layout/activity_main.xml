@@ -24,7 +24,7 @@
         app:itemIconTint="@drawable/bottom_nav_color_selector"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu"
-        android:elevation="5dp"
+        android:elevation="10dp"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -37,7 +37,7 @@
         app:layout_anchorGravity="top|center_horizontal"
         android:src="@drawable/ic_navigation_plus"
         app:tint="@null"
-        app:elevation="10dp"
+        app:elevation="3dp"
         app:useCompatPadding="false" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
