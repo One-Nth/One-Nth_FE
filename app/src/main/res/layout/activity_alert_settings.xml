@@ -60,15 +60,18 @@
         android:layout_marginEnd="0dp" />
 
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/alertSwitch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="71dp"
+        android:layout_height="36dp"
         android:checked="true"
+        android:layout_marginEnd="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/alertText1"
         app:layout_constraintBottom_toBottomOf="@id/alertText1"
-        android:layout_marginEnd="30dp"/>
+        app:thumbTint="@color/main_white"
+        app:trackTint="@color/switch_track_color"/>
+
 
     <!-- 거래 후기 알림 설정 -->
     <TextView
@@ -87,15 +90,17 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="0dp" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/alertSwitch2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="71dp"
+        android:layout_height="36dp"
         android:checked="true"
+        android:layout_marginEnd="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/alertText2"
         app:layout_constraintBottom_toBottomOf="@id/alertText2"
-        android:layout_marginEnd="30dp"/>
+        app:thumbTint="@color/main_white"
+        app:trackTint="@color/switch_track_color"/>
 
 
     <TextView
