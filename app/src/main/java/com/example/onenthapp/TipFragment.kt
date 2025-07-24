@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -9,17 +10,13 @@ import android.widget.PopupMenu
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.onenthapp.databinding.FragmentTipBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 
 class TipFragment : Fragment() {
     private var _binding: FragmentTipBinding? = null
     private val binding get() = _binding!!
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
-    private var sheetInitialized = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,50 +81,30 @@ class TipFragment : Fragment() {
         binding.searchBarEt.setOnEditorActionListener { et, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 performSearch(et.text.toString())
-                if (!sheetInitialized) {
-                    initBottomSheet()
-                    sheetInitialized = true
-                }
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                 true
             } else false
         }
     }
 
     private fun performSearch(query: String) {
-        // 바텀시트에 검색어 표시
-        binding.tvSearchKeyword.text = query
+        val currentTabPosition = binding.tabLayoutTips.selectedTabPosition
+
+        // 게시판 구분
+        val boardType = when (currentTabPosition) {
+            0 -> "discount"   // 할인 정보
+            1 -> "life_tip"   // 생활꿀팁
+            2 -> "cafe"       // 우리동네 맛집/카페
+            else -> "unknown"
+        }
+
+        val intent = Intent(requireContext(), LifeTipsSearchActivity::class.java).apply {
+            putExtra("query", query)
+            putExtra("boardType", boardType)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        startActivity(intent)
     }
 
 
 
-
-    private fun initBottomSheet() {
-        val sheet = binding.bottomSheet
-        sheet.visibility = View.VISIBLE
-        bottomSheetBehavior = BottomSheetBehavior.from(sheet).apply {
-            isHideable = false
-            skipCollapsed = false
-            state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                val isExpanded = newState == BottomSheetBehavior.STATE_EXPANDED
-                binding.minimalContainer.visibility = if (isExpanded) View.GONE else View.VISIBLE
-                binding.expandedContainer.visibility = if (isExpanded) View.VISIBLE else View.GONE
-                binding.scrollBar.visibility = if (isExpanded) View.GONE else View.VISIBLE
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
-
-        binding.rvSearchResults.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-        }
-
-        binding.toolbarSearch.setNavigationOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-    }
 }

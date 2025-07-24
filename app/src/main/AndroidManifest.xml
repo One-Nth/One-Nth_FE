@@ -35,7 +35,8 @@
         <activity android:name=".AccountSettingsActivity" />
         <activity android:name=".BlockedUsersActivity" />
         <activity android:name=".PolicyActivity" />
-
+        <activity android:name=".LifeTipsSearchActivity" />
+        <activity android:name=".LifeTipsDetailActivity" />
     </application>
 
 </manifest>
