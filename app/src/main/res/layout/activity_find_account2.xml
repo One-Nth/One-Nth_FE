@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="20dp">
+
+    <!-- 상단 바 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="7dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:src="@drawable/ep_arrow_up_bold"
+            android:contentDescription="뒤로가기"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            style="@style/PretendardSubtitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="계정 찾기"
+            android:textColor="@color/main_black"
+            android:layout_marginStart="30dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/image_placeholder"
+        android:layout_marginBottom="30dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="80dp"
+        android:layout_gravity="center_horizontal">
+
+        <!-- 안내 텍스트 -->
+        <TextView
+            style="@style/PretendardSemibold3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OOO님의 비밀번호는 다음과 같아요"
+            android:textColor="@color/main_black"
+            android:layout_marginBottom="20dp" />
+
+        <!-- 비밀번호 박스 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_48"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_gravity="start">
+
+            <TextView
+                style="@style/PretendardSemibold3"
+                android:id="@+id/tvPasswordResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="abc123"
+                android:textColor="@color/main_green" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- 로그인 버튼 -->
+    <ImageButton
+        android:id="@+id/btnLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_findaccount_login"
+        android:layout_marginTop="50dp"
+        android:background="@null"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>
