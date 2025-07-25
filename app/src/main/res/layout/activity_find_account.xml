@@ -61,13 +61,14 @@
         <EditText
             style="@style/PretendardBody5"
             android:id="@+id/nameEditText"
-            android:layout_width="330dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="ex) 홍길동"
             android:textColor="@color/light_gray"
             android:background="@drawable/edittext_border"
-            android:paddingEnd="90dp"
-            android:paddingStart="-150dp"
+            android:paddingEnd="220dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="0dp"
             android:inputType="textEmailAddress"/>
 
     </RelativeLayout>
@@ -92,13 +93,13 @@
         <EditText
             style="@style/PretendardBody5"
             android:id="@+id/emailEditText"
-            android:layout_width="330dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="ex) abc1234@example.com"
             android:textColor="@color/light_gray"
             android:background="@drawable/edittext_border2"
-            android:paddingEnd="90dp"
-            android:paddingStart="-30dp"
+            android:paddingEnd="220dp"
+            android:gravity="start|center_vertical"
             android:inputType="textEmailAddress"/>
 
         <ImageButton
@@ -111,5 +112,60 @@
             android:layout_marginEnd="15dp"/>
     </RelativeLayout>
 
+    <!-- 인증번호 -->
+    <TextView
+        style="@style/PretendardSemibold3"
+        android:layout_width="52dp"
+        android:layout_height="20dp"
+        android:text="인증번호"
+        android:textColor="@color/main_black"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"/>
+    <!--        android:visibility="gone">-->
 
+    <RelativeLayout
+        android:id="@+id/layoutVerification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp">
+<!--        android:visibility="gone">-->
+
+        <EditText
+            style="@style/PretendardBody5"
+            android:id="@+id/verificationCodeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="인증번호 입력"
+            android:textColor="@color/light_gray"
+            android:background="@drawable/edittext_border"
+            android:paddingEnd="220dp"
+            android:gravity="start|center_vertical"
+            android:inputType="number" />
+
+        <TextView
+            style="@style/PretendardBody5"
+            android:id="@+id/timerTextView"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/verificationCodeEditText"
+            android:layout_alignBottom="@id/verificationCodeEditText"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:text="00:00"
+            android:textColor="@color/light_gray" />
+
+
+        <!-- 인증번호 상태 메시지 -->
+        <TextView
+            style="@style/PretendardSubtitle6"
+            android:id="@+id/tvVerificationMessage"
+            android:text="인증 완료되었습니다."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="40dp" />
+
+    </RelativeLayout>
 </LinearLayout>
