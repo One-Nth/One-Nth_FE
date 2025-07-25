@@ -32,4 +32,11 @@
         tools:layout="@layout/fragment_plus"
         />
 
+    <fragment
+        android:id="@+id/tipFragment"
+        android:name="com.example.onenthapp.TipFragment"
+        android:label="꿀팁 N분의 1"
+        tools:layout="@layout/fragment_tip" />
+
+
 </navigation>

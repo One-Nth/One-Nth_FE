@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_life_tips_search"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/main_white"
+    tools:context=".LifeTipsSearchActivity">
+
+    <!-- 툴바 -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_search_result"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/main_white"
+        android:elevation="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/main_white">
+
+            <!-- 뒤로가기 -->
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ep_arrow_up_bold"
+                android:contentDescription="뒤로가기"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- 검색어 -->
+            <TextView
+                android:id="@+id/tvSearchKeyword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="모기약"
+                android:textColor="@color/main_green"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- 알림 아이콘용 공간 -->
+    <LinearLayout
+        android:id="@+id/layout_notification_area"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingEnd="30dp"
+        android:gravity="end|center_vertical"
+        android:background="@color/main_white">
+
+        <ImageView
+            android:id="@+id/iv_notification"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_alarmbell"
+            android:contentDescription="알림" />
+    </LinearLayout>
+
+
+    <!-- 검색 결과 리스트 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_search_results"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="10dp"
+        android:clipToPadding="false"
+        android:background="@color/main_white"
+        android:layout_marginTop="30dp"/>
+</LinearLayout>

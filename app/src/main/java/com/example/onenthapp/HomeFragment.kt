@@ -17,10 +17,13 @@ import androidx.core.view.isVisible
 import com.example.onenthapp.databinding.FragmentHomeBinding
 import com.example.onenthapp.databinding.ItemSearchResultBinding
 import com.example.onenthapp.model.SearchResult
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import androidx.navigation.fragment.findNavController
+
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentHomeBinding? = null
@@ -71,6 +74,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
                     R.id.menu_tip_n_1 -> {
                         // “꿀팁 N분의1” 선택 처리
+                        parentFragmentManager.beginTransaction()
+                        findNavController().navigate(R.id.tipFragment)
                         true
                     }
 
