@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- res/layout/fragment_search_results.xml -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/search_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/main_white"
+            android:contentInsetStart="8dp"
+            android:contentInsetEnd="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <!-- 뒤로가기 -->
+                <ImageButton
+                    android:id="@+id/btn_back_expanded"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_arrow_left" />
+
+                <!-- 검색 입력창 -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/search_expanded"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="11dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_search_bar"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:padding="8dp"
+                    app:boxBackgroundMode="filled"
+                    android:textColorHint="@color/main_black"
+                    app:endIconDrawable="@drawable/ic_clear"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/main_black"
+                    >
+<!--                    <com.google.android.material.textfield.TextInputEditText-->
+<!--                        android:id="@+id/et_search_expanded"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:background="@null"-->
+<!--                        android:focusable="false"-->
+<!--                        android:focusableInTouchMode="false"-->
+<!--                        android:cursorVisible="true"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:imeOptions="actionSearch"-->
+<!--                        android:inputType="text"/>-->
+<!--                    <EditText-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:background="@color/transparent"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:textColor="@color/main_black"-->
+<!--                        android:textColorHighlight="@color/main_green_3" />-->
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 닫기 -->
+                <TextView
+                    android:id="@+id/btn_close_expanded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="26dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="닫기"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <!--  TabLayout -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout_home"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/main_white"
+            app:tabIndicatorFullWidth="false"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/main_green"
+            app:tabIndicatorColor="@color/main_green"
+            app:tabTextAppearance="@style/TextAppearance.OneNthApp.Tab"
+            app:layout_constraintTop_toBottomOf="@id/search_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="같이 사요"/>
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="함께 나눠요"/>
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <!-- ② 전체 결과 리스트 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search_results"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

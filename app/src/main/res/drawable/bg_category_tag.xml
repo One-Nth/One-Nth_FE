@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/bg_category_tag.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 배경 색상 -->
+    <solid android:color="@color/search_gray" />
+    <!-- 모서리 둥글게 -->
+    <corners android:radius="50dp" />
+    <!-- 내부 여백 (TextView padding 과 중복되지 않도록 조정) -->
+    <padding
+        android:left="10dp"
+        android:top="10dp"
+        android:right="4dp"
+        android:bottom="2dp" />
+</shape>
