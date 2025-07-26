@@ -4,7 +4,7 @@
     android:fillViewport="true"
     android:background="#FFFFFF">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
@@ -49,23 +49,40 @@
 
 
         <!-- 이번달 거래 내역 -->
-        <TextView
-            android:id="@+id/transactionTitle"
-            style="@style/PretendardSemibold2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="이번달 거래 내역"
-            android:clickable="true"
-            android:textColor="@color/main_black"
-            android:textStyle="bold" />
+            android:paddingStart="20dp"
+            android:paddingEnd="170dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <!-- 텍스트 -->
+            <TextView
+                android:id="@+id/transactionTitle"
+                style="@style/PretendardSemibold2"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="내 거래내역 및 후기"
+                android:textColor="@color/main_black"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold" />
+
+            <!-- 꺾쇠 아이콘 -->
+            <ImageView
+                android:id="@+id/ivArrow"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:src="@drawable/ep_arrow_up"
+                android:contentDescription="화살표" />
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="34dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -90,7 +107,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="20dp"
-                    android:text="같이 사요"
+                    android:text="N분의 1 거래"
                     android:textColor="@color/main_green" />
 
                 <!-- 100 -->
@@ -100,7 +117,7 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="48dp"
-                    android:text="100"
+                    android:text="100건"
                     android:textColor="@color/main_black" />
 
                 <!-- 20,000회 거래 + 화살표 묶음 -->
@@ -119,12 +136,6 @@
                         android:text="20,000회 거래"
                         android:textColor="@color/N_saved_gray" />
 
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="20dp"
-                        android:contentDescription="화살표 아이콘"
-                        android:src="@drawable/ep_arrow_up" />
                 </LinearLayout>
 
             </FrameLayout>
@@ -151,7 +162,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="20dp"
-                    android:text="함께 나눠요"
+                    android:text="리뷰"
                     android:textColor="@color/main_green" />
 
                 <!-- 50 -->
@@ -161,32 +172,19 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="48dp"
-                    android:text="50"
+                    android:text="50건"
                     android:textColor="#000000" />
 
-                <!-- 75,300회 거래 -->
-                <LinearLayout
+
+                <TextView
+                    style="@style/PretendardBody1"
                     android:layout_width="wrap_content"
-                    android:layout_height="20dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
-                    android:layout_marginTop="88dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="78dp"
+                    android:text="★★★★★"
+                    android:textColor="@color/star_yellow" />
 
-                    <TextView
-                        style="@style/PretendardBody1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="75,300회 거래"
-                        android:textColor="@color/N_saved_gray" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="20dp"
-                        android:contentDescription="화살표 아이콘"
-                        android:src="@drawable/ep_arrow_up" />
-                </LinearLayout>
             </FrameLayout>
 
         </LinearLayout>

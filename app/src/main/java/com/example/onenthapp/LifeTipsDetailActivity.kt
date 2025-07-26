@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import CommentAdapter
 import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -12,17 +13,20 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
+import org.w3c.dom.Comment
 
 class LifeTipsDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLifeDetailsBinding
+    private lateinit var commentAdapter: CommentAdapter   // ✅ 댓글 어댑터 추가
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLifeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 전달받은 데이터 받아오기
+        // 전달받은 데이터
         val title = intent.getStringExtra("title")
         val content = intent.getStringExtra("content")
         val timeAgo = intent.getStringExtra("timeAgo")
@@ -30,23 +34,28 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         val likeCount = intent.getIntExtra("likeCount", 0)
         val viewCount = intent.getIntExtra("viewCount", 0)
 
-        // 텍스트뷰에 설정
-//        binding.tvTitle.text = title
-//        binding.tvContent.text = content
-//        binding.tvTime.text = timeAgo
-//        binding.tvComment.text = "댓글 $commentCount"
-//        binding.tvLike.text = "좋아요 $likeCount"
-//        binding.tvViews.text = "조회수 $viewCount"
+        // RecyclerView 설정
+        setupRecyclerView()
 
         // 뒤로가기 버튼
-        binding.ivBack.setOnClickListener {
-            finish()
-        }
+        binding.ivBack.setOnClickListener { finish() }
 
         // 공유 버튼
-        binding.ivShare.setOnClickListener {
-            showSharePopup()
-        }
+        binding.ivShare.setOnClickListener { showSharePopup() }
+    }
+
+    private fun setupRecyclerView() {
+        // 더미 댓글 데이터
+        val comments = listOf(
+            Comment("닉네임1", "댓글 내용 1", 2),
+            Comment("닉네임2", "댓글 내용 2", 5),
+            Comment("닉네임3", "댓글 내용 3", 1)
+        )
+
+        // 어댑터 연결
+        commentAdapter = CommentAdapter(comments)
+        binding.rvComments.layoutManager = LinearLayoutManager(this)
+        binding.rvComments.adapter = commentAdapter
     }
 
     private fun showSharePopup() {
@@ -60,10 +69,8 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         val linkEditText = view.findViewById<EditText>(R.id.shareLinkEditText)
         val copyButton = view.findViewById<ImageButton>(R.id.copyButton)
 
-        // 샘플 링크 설정
-        linkEditText.setText("https://yourapp.com/post/123") // 실제 URL로 교체 가능
+        linkEditText.setText("https://yourapp.com/post/123")
 
-        // 복사 버튼 클릭 처리
         copyButton.setOnClickListener {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("링크 복사", linkEditText.text.toString())
@@ -71,19 +78,12 @@ class LifeTipsDetailActivity : AppCompatActivity() {
             Toast.makeText(this, "링크가 복사되었습니다.", Toast.LENGTH_SHORT).show()
         }
 
-        // 닫기 버튼 처리
-        closeButton.setOnClickListener {
-            dialog.dismiss()
-        }
+        closeButton.setOnClickListener { dialog.dismiss() }
 
-        // 팝업 크기 조정 (화면 너비 90%)
         val widthInPx = (347 * resources.displayMetrics.density).toInt()
         val heightInPx = (202 * resources.displayMetrics.density).toInt()
         dialog.window?.setLayout(widthInPx, heightInPx)
-
-        // 배경 투명화 (둥근 테두리 유지)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
         dialog.show()
     }
 }

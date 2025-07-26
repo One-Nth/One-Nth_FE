@@ -32,9 +32,9 @@
                 style="@style/PretendardSubtitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="구매자 거래 후기"
+                android:text="거래 후기"
                 android:textColor="@color/main_black"
-                android:layout_marginStart="30dp" />
+                android:layout_marginStart="110dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -89,8 +89,8 @@
             <!-- 별점 -->
             <TextView
                 android:id="@+id/starRatingDetail"
-                android:layout_width="124dp"
-                android:layout_height="wrap_content"
+                android:layout_width="178dp"
+                android:layout_height="30dp"
                 android:text="★★★★★"
                 android:textColor="#FFC107"
                 android:textSize="20sp"

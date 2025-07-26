@@ -19,53 +19,48 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/main_white">
+            android:layout_height="match_parent">
 
-            <!-- 뒤로가기 -->
+            <!-- 뒤로가기 버튼 -->
             <ImageView
                 android:id="@+id/ivBack"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ep_arrow_up_bold"
+                android:layout_width="31dp"
+                android:layout_height="31dp"
+                android:src="@drawable/humbleicons_arrow_up"
                 android:contentDescription="뒤로가기"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="0dp" />
 
             <!-- 검색어 -->
             <TextView
+                style="@style/PretendardSubtitle2"
                 android:id="@+id/tvSearchKeyword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="모기약"
-                android:textColor="@color/main_green"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="@color/main_black"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/ivBack"
+                android:layout_marginStart="20dp"/>
+
+            <!-- 알림 아이콘 -->
+            <ImageView
+                android:id="@+id/iv_notification"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_alarmbell"
+                android:contentDescription="알림"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="16dp" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- 알림 아이콘용 공간 -->
-    <LinearLayout
-        android:id="@+id/layout_notification_area"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingEnd="30dp"
-        android:gravity="end|center_vertical"
-        android:background="@color/main_white">
-
-        <ImageView
-            android:id="@+id/iv_notification"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_alarmbell"
-            android:contentDescription="알림" />
-    </LinearLayout>
 
 
     <!-- 검색 결과 리스트 -->
