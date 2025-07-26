@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    android:elevation="2dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="12dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 제목 -->
+        <TextView
+            style="@style/PretendardH3"
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="곰팡이 제거제"
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivBookmark" />
+
+        <!-- 북마크 아이콘 -->
+        <ImageView
+            android:id="@+id/ivBookmark"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/material_symbols_bookmark_rounded"
+            app:layout_constraintTop_toTopOf="@id/tvTitle"
+            app:layout_constraintEnd_toStartOf="@id/tvTime"
+            android:layout_marginEnd="8dp" />
+
+        <!-- 시간 -->
+        <TextView
+            style="@style/PretendardSubtitle4"
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3분전"
+            android:textColor="@color/light_gray"
+            app:layout_constraintTop_toTopOf="@id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- 내용 -->
+        <TextView
+            style="@style/PretendardSubtitle4"
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            android:id="@+id/tvContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="000 곰팡이 제거제 어떤가요"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/main_black"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- 댓글/좋아요/조회수 row -->
+        <LinearLayout
+            android:id="@+id/layoutBottomRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/tvContent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <!-- 댓글 -->
+            <ImageView
+                android:id="@+id/iconComment"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_board_comment" />
+
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:id="@+id/tvComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="2"
+                android:textColor="@color/main_black" />
+
+            <!-- 좋아요 -->
+            <ImageView
+                android:id="@+id/iconLike"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_board_like" />
+
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:id="@+id/tvLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="1"
+                android:textColor="@color/main_black" />
+
+            <!-- 조회수 -->
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:id="@+id/tvViews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="조회수 24"
+                android:textColor="@color/light_gray" />
+        </LinearLayout>
+
+        <!-- 하단 선 -->
+        <View
+            android:id="@+id/bottomDivider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/back_gray"
+            app:layout_constraintTop_toBottomOf="@id/layoutBottomRow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
