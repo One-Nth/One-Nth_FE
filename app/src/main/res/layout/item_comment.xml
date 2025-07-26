@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <!-- 닉네임 + 프로필 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="20dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/ivProfile"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/group_172"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tvCommentNickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="닉네임"
+            android:textStyle="bold"
+            android:textColor="@color/main_black" />
+    </LinearLayout>
+
+    <!-- 댓글 내용 -->
+    <TextView
+        android:id="@+id/tvCommentContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="댓글 내용"
+        android:textColor="@color/main_black"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp" />
+
+    <!-- 좋아요 / 답글 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/Like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/solar_heart_linear"
+            android:layout_marginTop="3dp"/>
+
+        <TextView
+            android:id="@+id/tvLike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="좋아요 2"
+            android:textColor="@color/light_gray"
+            android:textSize="12sp"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:id="@+id/Chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/mynaui_chat"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="3dp"/>
+
+        <TextView
+            android:id="@+id/tvReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="답글쓰기"
+            android:textColor="@color/light_gray"
+            android:textSize="12sp"
+            android:layout_marginStart="5dp" />
+    </LinearLayout>
+
+
+    <!-- 구분선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="22dp"
+        android:background="#EBEBEB" />
+
+</LinearLayout>
+
+
