@@ -11,31 +11,19 @@
         android:padding="20dp">
 
         <!-- 상단 바 -->
-        <LinearLayout
+        <?xml version="1.0" encoding="utf-8"?>
+        <com.google.android.material.appbar.MaterialToolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingTop="16dp"
-            android:paddingBottom="20dp">
-
-            <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                android:src="@drawable/ep_arrow_up_bold"
-                android:contentDescription="뒤로가기"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <TextView
-                style="@style/PretendardSubtitle2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="거래 후기"
-                android:textColor="@color/main_black"
-                android:layout_marginStart="110dp" />
-        </LinearLayout>
+            android:background="@color/main_white"
+            android:elevation="4dp"
+            app:navigationIcon="@drawable/humbleicons_arrow_up"
+            app:title="거래 후기"
+            app:titleTextColor="@color/main_black"
+            app:titleTextAppearance="@style/PretendardSubtitle2" />
 
         <LinearLayout
             android:layout_width="match_parent"
