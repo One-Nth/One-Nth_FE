@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 <!--    <style name="Theme.OneNthApp" parent="Theme.AppCompat.Light.NoActionBar" />-->
     <!-- res/values/themes.xml -->
     <style name="Theme_OneNthApp" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -12,6 +13,22 @@
         <item name="android:popupBackground">@color/main_white</item>
         <item name="android:textColor">@color/main_green</item>
         <item name="android:itemBackground">@drawable/popup_item_selector</item>
+    </style>
+       <!-- 기존 스타일들을 여기에 포함하거나 아래에 새 스타일 추가 -->
+
+       <style name="Widget.App.Button.OutlinedButton.Toggle"
+           parent="Widget.MaterialComponents.Button.OutlinedButton">
+           <item name="android:textColor">@color/toggle_button_colors</item>
+           <item name="backgroundTint">@color/toggle_button_background_colors</item>
+           <item name="strokeColor">@color/toggle_button_stroke_colors</item>
+           <item name="android:fontFamily">@font/pretendard_regular</item>
+       </style>
+    <style name="Widget.App.CustomChoiceChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+        <item name="android:textColor">@color/custom_chip_text_color</item>
     </style>
 
 </resources>
