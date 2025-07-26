@@ -1,0 +1,37 @@
+<LinearLayout
+    android:id="@+id/layout_app_bar"
+    android:layout_width="match_parent"
+    android:layout_height="68dp"
+    android:gravity="center_vertical"
+    android:background="@color/main_white"
+    android:paddingHorizontal="12dp"
+    android:elevation="4dp"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="31dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/ic_arrow_left"
+        />
+    <TextView
+        android:id="@+id/r03sxy0spq2vh"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:fontFamily="@font/pretendard_medium"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="상품등록"
+        />
+    <TextView
+        android:id="@+id/rg8i8i5mbtmn"
+        android:textColor="#B4B4B4"
+        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="임시저장"
+        />
+</LinearLayout>

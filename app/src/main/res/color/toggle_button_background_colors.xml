@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/main_green_4" android:state_checked="true" android:state_enabled="true"/>
+    <item android:color="#F0F0F0" android:state_checked="false" android:state_enabled="true"/>
+    <!-- 버튼이 비활성화된 상태 -->
+    <item android:color="@color/main_white" android:alpha="0.12"/>
+
+</selector>
