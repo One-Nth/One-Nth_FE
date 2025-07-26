@@ -1,0 +1,406 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/product_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/main_white"
+            android:orientation="vertical">
+            <!-- HEADER: 이미지 슬라이더 + 오버레이 아이콘 -->
+            <FrameLayout
+                android:id="@+id/fl_header"
+                android:layout_width="match_parent"
+                android:layout_height="371dp">
+
+                <!-- ViewPager2 (이미지 슬라이더) -->
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewpager_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:id="@+id/layout_header_icons"
+                    android:layout_width="match_parent"
+                    android:layout_height="85dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
+                    <ImageButton
+                        android:id="@+id/btn_back"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_left" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                    <ImageButton
+                        android:id="@+id/btn_bookmark"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_bookmark_off" />
+                    <ImageButton
+                        android:id="@+id/btn_share"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_share_gray" />
+                </LinearLayout>
+
+                <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+                    android:id="@+id/dots_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="26dp"
+                    app:dotsColor="@color/dark_gray"
+                    app:dotsSize="10dp"
+                    app:dotsSpacing="6dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:selectedDotColor="@color/main_white" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_product_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/r36h8q2u0dqd"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="22dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/pretendard_bold"
+                        android:text="두루마리 휴지"
+                        android:textColor="@color/main_black"
+                        android:textSize="23sp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_category"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pretendard_medium"
+                        android:text="생활용품"
+                        android:textColor="@color/main_white"
+                        android:textSize="13sp"
+                        app:chipBackgroundColor="@color/main_green_2" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_trade_type"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/pretendard_medium"
+                        android:text="직거래"
+                        android:textColor="@color/main_white"
+                        android:textSize="13sp"
+                        app:chipBackgroundColor="@color/main_black" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/group_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="22dp"
+                    android:background="@color/border_upperbar"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:id="@+id/layout_seller_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/seller_profile"
+                        android:layout_width="54dp"
+                        android:layout_height="54dp"
+                        android:layout_marginEnd="11dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ph_profile_image" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_seller_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="3dp"
+                            android:fontFamily="@font/pretendard_semibold"
+                            android:text="abcd123"
+                            android:textColor="@color/main_black"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/tv_verification"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pretendard_semibold"
+                            android:text="본인 인증 완료"
+                            android:textColor="@color/text_cost"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/profile_arrow"
+                        android:layout_width="27dp"
+                        android:layout_height="26dp"
+                        android:layout_marginStart="160dp"
+                        android:src="@drawable/ic_right_bold" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/group_divider_mid"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@color/border_upperbar"
+                    android:orientation="vertical" />
+
+                <TextView
+                    android:id="@+id/tv_product_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="상품 정보"
+                    android:textColor="@color/main_black"
+                    android:textSize="20sp" />
+
+                <LinearLayout
+                    android:id="@+id/r9y06uv0brb8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="3dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="상품명"
+                        android:textColor="@color/main_black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="114dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="잘풀리는집 두루마리 휴지"
+                        android:textColor="@color/main_green"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="3dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="구매 링크"
+                        android:textColor="@color/main_black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_product_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="114dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="https://fjsofjdsfh ..."
+                        android:textColor="@color/main_green"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="3dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="소비 기한"
+                        android:textColor="@color/main_black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_product_due"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="114dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="X"
+                        android:textColor="@color/main_green"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="3dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="보관 방법"
+                        android:textColor="@color/main_black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_product_store"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="114dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="X"
+                        android:textColor="@color/main_green"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/group_divider_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@color/border_upperbar"
+                    android:orientation="vertical" />
+
+                <TextView
+                    android:id="@+id/tv_product_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="거래 장소"
+                    android:textColor="@color/main_black"
+                    android:textSize="20sp" />
+
+                <LinearLayout
+                    android:id="@+id/layout_location_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginBottom="27dp"
+                    android:background="@color/search_gray"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layout_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/main_white"
+        android:baselineAligned="false"
+        android:elevation="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="20dp"
+        android:paddingStart="60dp"
+        android:paddingEnd="24dp">
+
+        <LinearLayout
+            android:id="@+id/layout_price_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:fontFamily="@font/pretendard_semibold"
+                android:text="2000원"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="원가 : "
+                    android:textColor="@color/text_search"
+                    android:textSize="15sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_origin_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="20개 0000원"
+                    android:textColor="@color/text_search"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="98dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="86dp"
+            android:id="@+id/btn_chat"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="채팅하기"
+            android:textColor="@color/main_white"
+            android:textSize="17sp"
+            android:backgroundTint="@color/main_green"
+            android:paddingHorizontal="8dp"
+            app:cornerRadius="5dp"
+            />
+    </LinearLayout>
+
+</LinearLayout>

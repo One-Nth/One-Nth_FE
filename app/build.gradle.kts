@@ -68,6 +68,7 @@ dependencies {
     implementation("com.naver.maps:map-sdk:3.22.0")
     testImplementation(libs.junit)
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
