@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
@@ -42,12 +43,16 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.plusFragment)
         }
         navController.addOnDestinationChangedListener { _, dest, _ ->
-            val hideOn = dest.id == R.id.plusFragment
-            val hideOn2 = dest.id == R.id.statsFragment
-            val hideOn3 = dest.id == R.id.chatFragment
-            val hideOn4 = dest.id == R.id.mypageFragment
-            binding.bottomNavigationView.visibility = if (hideOn || hideOn2 || hideOn3 || hideOn4) View.GONE else View.VISIBLE
-            binding.fabAdd.visibility = if (hideOn || hideOn2 || hideOn3 || hideOn4) View.GONE else View.VISIBLE
+            val hideOn = setOf(
+                R.id.productDetailFragment,
+                R.id.plusFragment,
+                R.id.statsFragment,
+                R.id.chatFragment,
+                R.id.mypageFragment
+            ).contains(dest.id)
+
+            binding.bottomNavigationView.isVisible = !hideOn
+            binding.fabAdd.isVisible = !hideOn
         }
 
     }

@@ -110,6 +110,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 true
             } else false
         }
+        
 //        // 탭 레이아웃 - 마커 교체
 //        binding.tabLayoutHome.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 //            override fun onTabSelected(tab: TabLayout.Tab) {
@@ -184,6 +185,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun onItemClicked(item: SearchResult){
+        val action = HomeFragmentDirections.actionHomeToProductdetail()
+        findNavController().navigate(action)
+    }
     private fun dummySearchData(query: String): List<SearchResult> {
         return listOf(
 //            SearchResult(id = "1", title = "$query 상품 A", price = 1000, image = android.R.drawable.btn_plus),

@@ -8,7 +8,20 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.onenthapp.HomeFragment"
-        android:label="홈" />
+        android:label="홈">
+        <action
+            android:id="@+id/action_home_to_productdetail"
+            app:destination="@id/productDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.example.onenthapp.SearchResultFragment"
+        android:label="검색 결과"
+        tools:layout="@layout/fragment_search_result">
+    <action
+        android:id="@+id/action_searchResultFragment_to_productDetailFragment"
+        app:destination="@id/productDetailFragment" />
+</fragment>
 
     <fragment
         android:id="@+id/chatFragment"
@@ -29,8 +42,7 @@
         android:id="@+id/plusFragment"
         android:name="com.example.onenthapp.PlusFragment"
         android:visible="false"
-        tools:layout="@layout/fragment_plus"
-        />
+        tools:layout="@layout/fragment_plus" />
 
     <fragment
         android:id="@+id/tipFragment"
@@ -39,4 +51,14 @@
         tools:layout="@layout/fragment_tip" />
 
 
+    <fragment
+        android:id="@+id/productDetailFragment"
+        android:name="com.example.onenthapp.ProductDetailFragment"
+        android:label="상품 상세"
+        tools:layout="@layout/fragment_product_detail">
+<!--        상품 ID를 전달받을 인수 (필요에 따라 타입 변경)-->
+<!--        <argument-->
+<!--            android:name="productId"-->
+<!--            app:argType="string" />-->
+    </fragment>
 </navigation>
