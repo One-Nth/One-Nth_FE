@@ -97,43 +97,55 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="수량 및 가격"
-                android:textColor="@color/main_black"
+                android:text="상품을 어디서 거래하시나요? "
+                android:textColor="#000000"
                 android:textSize="20sp" />
-            <!-- 3. 수량 및 가격 입력 -->
-            <EditText
-                android:id="@+id/et_product_num"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="11dp"
-                android:layout_marginEnd="30dp"
-                android:background="@drawable/edittext_rounded_corner_rectangle"
-                android:fontFamily="@font/pretendard_regular"
-                android:gravity="center_vertical"
-                android:hint="판매 수량"
-                android:inputType="text"
-                android:paddingStart="20dp"
-                android:singleLine="true"
-                android:textColor="@color/main_black"
-                android:textColorHint="@color/text_search"
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="상품을 거래할 방법을 선택해주세요."
+                android:textColor="@color/text_descript"
                 android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/et_product_cost"
+            <LinearLayout
+                android:id="@+id/ll_way_buttons"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="11dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
                 android:layout_marginEnd="30dp"
-                android:background="@drawable/edittext_rounded_corner_rectangle"
-                android:fontFamily="@font/pretendard_regular"
-                android:gravity="center_vertical"
-                android:hint="판매 가격"
-                android:inputType="text"
-                android:paddingStart="20dp"
-                android:singleLine="true"
-                android:textColor="@color/main_black"
-                android:textColorHint="@color/text_search"
-                android:textSize="15sp" />
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_way_1"
+                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8.5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:checked="false"
+                    android:text="온라인 구매"
+                    app:backgroundTint="@color/toggle_button_background_colors"
+                    app:strokeColor="@color/toggle_button_stroke_colors" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_way_2"
+                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8.5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:checked="false"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="오프라인 구매"
+                    app:backgroundTint="@color/toggle_button_background_colors"
+                    app:strokeColor="@color/toggle_button_stroke_colors" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -254,6 +266,41 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
                 android:fontFamily="@font/pretendard_bold"
+                android:text="상품 구매 링크 혹은 구매처를 입력해주세요"
+                android:textColor="@color/main_black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="상품 구매 URL이나 구매 장소를 입력해주세요."
+                android:textColor="@color/text_descript"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_product_url"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/edittext_rounded_corner_rectangle"
+                android:fontFamily="@font/pretendard_regular"
+                android:gravity="center_vertical"
+                android:hint="URL을 입력해주세요."
+                android:inputType="text"
+                android:paddingStart="20dp"
+                android:singleLine="true"
+                android:textColor="@color/main_black"
+                android:textColorHint="@color/text_search"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_bold"
                 android:text="상품의 소비 기한을 입력해 주세요."
                 android:textColor="@color/main_black"
                 android:textSize="20sp" />
@@ -289,7 +336,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="잠깐! 거래 가능한 상품이 맞나요?"
+                android:text="상품의 원가를 입력해 주세요."
                 android:textColor="@color/main_black"
                 android:textSize="20sp" />
 
@@ -298,124 +345,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:fontFamily="@font/pretendard_regular"
-                android:text="개봉 상품, 직접 재배한 농수산물 등은 판매할 수 없어요."
-                android:textColor="@color/text_descript"
-                android:textSize="15sp" />
-
-            <LinearLayout
-                android:id="@+id/ll_confirmation_buttons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="30dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_confirm_yes"
-                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginEnd="8.5dp"
-                    android:layout_weight="1"
-                    android:checkable="true"
-                    android:checked="false"
-                    android:text="네 확인했어요"
-                    app:backgroundTint="@color/toggle_button_background_colors"
-                    app:strokeColor="@color/toggle_button_stroke_colors" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_confirm_no_cancel"
-                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="8.5dp"
-                    android:layout_weight="1"
-                    android:checkable="true"
-                    android:checked="false"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:text="상품 등록을 취소할게요"
-                    app:backgroundTint="@color/toggle_button_background_colors"
-                    app:strokeColor="@color/toggle_button_stroke_colors" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="상품을 어디서 거래하시나요? "
-                android:textColor="#000000"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:text="상품을 거래할 방법을 선택해주세요."
-                android:textColor="@color/text_descript"
-                android:textSize="15sp" />
-
-            <LinearLayout
-                android:id="@+id/ll_way_buttons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="30dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_way_1"
-                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginEnd="8.5dp"
-                    android:layout_weight="1"
-                    android:checkable="true"
-                    android:checked="false"
-                    android:text="만나서 거래해요"
-                    app:backgroundTint="@color/toggle_button_background_colors"
-                    app:strokeColor="@color/toggle_button_stroke_colors" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_way_2"
-                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="8.5dp"
-                    android:layout_weight="1"
-                    android:checkable="true"
-                    android:checked="false"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:text="택배로 거래해요"
-                    app:backgroundTint="@color/toggle_button_background_colors"
-                    app:strokeColor="@color/toggle_button_stroke_colors" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="거래 희망 장소"
-                android:textColor="@color/main_black"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:fontFamily="@font/pretendard_regular"
-                android:text="거래를 희망하는 장소를 입력해주세요."
+                android:text="원 제외 숫자만 기입해주세요"
                 android:textColor="@color/text_descript"
                 android:textSize="15sp" />
 
 
             <EditText
-                android:id="@+id/et_product_place"
+                android:id="@+id/et_product_origincost"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="11dp"
@@ -423,7 +359,7 @@
                 android:background="@drawable/edittext_rounded_corner_rectangle"
                 android:fontFamily="@font/pretendard_regular"
                 android:gravity="center_vertical"
-                android:hint="위치 입력"
+                android:hint="ex) 25000"
                 android:inputType="text"
                 android:paddingStart="20dp"
                 android:singleLine="true"
@@ -431,34 +367,11 @@
                 android:textColorHint="@color/text_search"
                 android:textSize="15sp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="8dp"
-                    android:layout_height="11dp"
-                    android:layout_marginStart="9dp"
-                    android:layout_marginEnd="3dp"
-                    android:src="@drawable/ic_gps_blue" />
-
-                <TextView
-                    android:id="@+id/btn_set_myplace"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="우리동네로 설정"
-                    android:textColor="@color/gps_blue"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_product_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="70dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="28dp"
                 android:backgroundTint="@color/main_green"

@@ -18,8 +18,6 @@
        <style name="Widget.App.Button.OutlinedButton.Toggle"
            parent="Widget.MaterialComponents.Button.OutlinedButton">
            <item name="android:textColor">@color/toggle_button_colors</item>
-           <item name="backgroundTint">@color/toggle_button_background_colors</item>
-           <item name="strokeColor">@color/toggle_button_stroke_colors</item>
            <item name="android:fontFamily">@font/pretendard_regular</item>
        </style>
     <style name="Widget.App.CustomChoiceChip" parent="Widget.MaterialComponents.Chip.Choice">
