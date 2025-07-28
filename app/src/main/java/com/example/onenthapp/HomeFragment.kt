@@ -14,11 +14,13 @@ import androidx.fragment.app.Fragment
 import android.widget.PopupMenu
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import com.example.onenthapp.databinding.FragmentHomeBinding
 import com.example.onenthapp.databinding.ItemSearchResultBinding
 import com.example.onenthapp.model.SearchResult
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.tabs.TabLayout
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -32,6 +34,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var naverMap: NaverMap? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
     private var lastResults: List<SearchResult> = emptyList()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,17 +114,23 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             } else false
         }
         
-//        // 탭 레이아웃 - 마커 교체
-//        binding.tabLayoutHome.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-//            override fun onTabSelected(tab: TabLayout.Tab) {
-//                when (tab.position) {
-//                    0 -> showMarkers(markerListForBuy)
-//                    1 -> showMarkers(markerListForShare)
-//                }
-//            }
-//            override fun onTabUnselected(tab: TabLayout.Tab) {}
-//            override fun onTabReselected(tab: TabLayout.Tab) {}
-//        })
+        // 탭 레이아웃 - 마커 교체
+        binding.tabLayoutHome.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                when (tab.position) {
+                    0 -> {
+                        //showMarkers(markerListForBuy)
+                        sharedViewModel.setCurrentHomeTab(HomeTabType.BUY)
+                    }
+                    1 -> {
+                        //showMarkers(markerListForShare)
+                        sharedViewModel.setCurrentHomeTab(HomeTabType.SHARE)
+                    }
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
     }
 
     @UiThread

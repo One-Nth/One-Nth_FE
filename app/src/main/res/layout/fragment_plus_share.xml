@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="상품 정보를 등록해 주세요."
+                android:text="상품 정보를 등록해 주세요"
                 android:textColor="@color/main_green"
                 android:textSize="25sp" />
 
@@ -254,7 +254,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="상품의 소비 기한을 입력해 주세요."
+                android:text="상품의 소비 기한을 입력해 주세요"
                 android:textColor="@color/main_black"
                 android:textSize="20sp" />
 
@@ -298,7 +298,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:fontFamily="@font/pretendard_regular"
-                android:text="개봉 상품, 직접 재배한 농수산물 등은 판매할 수 없어요."
+                android:text="개봉 상품, 직접 재배한 농수산물 등은 판매할 수 없어요ㄴ"
                 android:textColor="@color/text_descript"
                 android:textSize="15sp" />
 

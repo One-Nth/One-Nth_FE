@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="상품 정보를 등록해 주세요."
+                android:text="상품 정보를 등록해 주세요"
                 android:textColor="@color/main_green"
                 android:textSize="25sp" />
 
@@ -97,15 +97,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="상품을 어디서 거래하시나요? "
-                android:textColor="#000000"
+                android:text="상품을 어디서 구매하시나요? "
+                android:textColor="@color/main_black"
                 android:textSize="20sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="상품을 거래할 방법을 선택해주세요."
+                android:text="상품을 구매한 장소를 선택해주세요"
                 android:textColor="@color/text_descript"
                 android:textSize="15sp" />
 
@@ -275,7 +275,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:fontFamily="@font/pretendard_regular"
-                android:text="상품 구매 URL이나 구매 장소를 입력해주세요."
+                android:text="상품 구매 URL이나 구매 장소를 입력해주세요"
                 android:textColor="@color/text_descript"
                 android:textSize="15sp" />
 
@@ -288,7 +288,7 @@
                 android:background="@drawable/edittext_rounded_corner_rectangle"
                 android:fontFamily="@font/pretendard_regular"
                 android:gravity="center_vertical"
-                android:hint="URL을 입력해주세요."
+                android:hint="URL을 입력해주세요"
                 android:inputType="text"
                 android:paddingStart="20dp"
                 android:singleLine="true"
@@ -301,7 +301,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="상품의 소비 기한을 입력해 주세요."
+                android:text="상품의 소비 기한을 입력해 주세요"
                 android:textColor="@color/main_black"
                 android:textSize="20sp" />
 
@@ -336,7 +336,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="상품의 원가를 입력해 주세요."
+                android:text="상품의 원가를 입력해 주세요"
                 android:textColor="@color/main_black"
                 android:textSize="20sp" />
 

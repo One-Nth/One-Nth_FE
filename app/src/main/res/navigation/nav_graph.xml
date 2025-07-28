@@ -39,10 +39,16 @@
         android:label="프로필" />
 
     <fragment
-        android:id="@+id/plusFragment"
-        android:name="com.example.onenthapp.PlusFragment"
-        android:visible="false"
-        tools:layout="@layout/fragment_plus" />
+        android:id="@+id/plusBuyFragment"
+        android:name="com.example.onenthapp.PlusBuyFragment"
+        android:label="같이 사요 상품 등록"
+        tools:layout="@layout/fragment_plus_buy" />
+    <fragment
+        android:id="@+id/plusShareFragment"
+        android:name="com.example.onenthapp.PlusShareFragment"
+        android:label="함께 나눠요 상품 등록"
+        tools:layout="@layout/fragment_plus_share" />
+
 
     <fragment
         android:id="@+id/tipFragment"
