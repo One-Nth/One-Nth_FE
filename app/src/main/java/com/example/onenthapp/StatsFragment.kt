@@ -21,8 +21,13 @@ class StatsFragment : Fragment() {
         val view = inflater.inflate(R.layout.activity_nwon_saved, container, false)
 
 
-        val transactionTitle = view.findViewById<TextView>(R.id.transactionTitle)
-        transactionTitle.setOnClickListener {
+//        val transactionTitle = view.findViewById<TextView>(R.id.transactionTitle)
+//        transactionTitle.setOnClickListener {
+//            val intent = Intent(requireContext(), MyReviewActivity::class.java)
+//            startActivity(intent)
+//        }
+        val transactionLayout = view.findViewById<LinearLayout>(R.id.transactionLayout)
+        transactionLayout.setOnClickListener {
             val intent = Intent(requireContext(), MyReviewActivity::class.java)
             startActivity(intent)
         }

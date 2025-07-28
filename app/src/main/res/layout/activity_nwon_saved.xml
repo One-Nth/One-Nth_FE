@@ -35,6 +35,7 @@
 
         <!-- 이번달 거래 내역 -->
         <LinearLayout
+            android:id="@+id/transactionLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
