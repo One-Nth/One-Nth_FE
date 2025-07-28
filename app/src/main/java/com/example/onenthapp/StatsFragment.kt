@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.MaterialToolbar
 
 class StatsFragment : Fragment() {
 
@@ -20,8 +21,13 @@ class StatsFragment : Fragment() {
         val view = inflater.inflate(R.layout.activity_nwon_saved, container, false)
 
 
-        val transactionTitle = view.findViewById<TextView>(R.id.transactionTitle)
-        transactionTitle.setOnClickListener {
+//        val transactionTitle = view.findViewById<TextView>(R.id.transactionTitle)
+//        transactionTitle.setOnClickListener {
+//            val intent = Intent(requireContext(), MyReviewActivity::class.java)
+//            startActivity(intent)
+//        }
+        val transactionLayout = view.findViewById<LinearLayout>(R.id.transactionLayout)
+        transactionLayout.setOnClickListener {
             val intent = Intent(requireContext(), MyReviewActivity::class.java)
             startActivity(intent)
         }
@@ -32,9 +38,9 @@ class StatsFragment : Fragment() {
             showShareDialog()
         }
 
-        val backButton = view.findViewById<View>(R.id.backButton)
-        backButton.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()  // 🔙 이전 프래그먼트로 이동
+        val topAppBar = view.findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar.setNavigationOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
 

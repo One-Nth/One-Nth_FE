@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 상단 바 -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_white"
+            android:elevation="4dp"
+            app:navigationIcon="@drawable/humbleicons_arrow_up"
+            app:title="거래 후기 쓰기"
+            app:titleTextColor="@color/main_black"
+            app:titleTextAppearance="@style/PretendardSubtitle2" />
+
+        <!-- 거래 완료 박스 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <!-- 거래 완료 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="4dp">
+
+                <CheckBox
+                    android:id="@+id/cbEmailAgreement"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:buttonTint="@color/main_green"
+                    android:checked="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="거래 완료"
+                    android:textColor="@color/main_green"
+                    style="@style/PretendardH2" />
+            </LinearLayout>
+
+            <!-- 상품 카드 -->
+            <LinearLayout
+                android:layout_width="336dp"
+                android:layout_height="124dp"
+                android:orientation="horizontal"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/rectangle_49"
+                android:padding="0dp">
+
+            <!-- 썸네일 -->
+            <ImageView
+                android:layout_width="119dp"
+                android:layout_height="124dp"
+                android:src="@drawable/rectangle_51"
+                android:contentDescription="상품 이미지" />
+
+            <!-- 상품 정보 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="두루마리 휴지"
+                    android:textColor="@color/main_black"
+                    style="@style/PretendardSubtitle4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0000원"
+                    android:textColor="@color/main_black"
+                    style="@style/PretendardSubtitle4" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+        <!-- 구분선 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/btn_ok" />
+
+
+        <TextView
+            style="@style/PretendardSubtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:text="000님과의 거래에 만족하셨나요?"
+            android:textColor="@color/main_black" />
+
+        <!-- 별점 -->
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:rating="0"
+            android:layout_marginStart="30dp"
+            style="?android:attr/ratingBarStyleSmall" />
+
+
+
+        <!-- 사진 추가 + 후기 입력 -->
+        <TextView
+            style="@style/PretendardSubtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:text="소중한 후기를 더 자세히 적어주세요."
+            android:textColor="@color/main_black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="16dp"
+            android:layout_marginStart="30dp">
+
+            <!-- 사진 추가 버튼 -->
+            <ImageView
+                android:layout_width="57dp"
+                android:layout_height="57dp"
+                android:src="@drawable/group_150"
+                android:layout_marginStart="20dp"
+                android:contentDescription="사진 추가" />
+
+            <!-- 후기 입력칸 -->
+            <EditText
+                style="@style/PretendardBody4"
+                android:layout_width="335dp"
+                android:layout_height="124dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="20dp"
+                android:hint="남겨주신 후기는 더 나은 거래 환경을 만드는 데 도움이 돼요. (선택사항)"
+                android:background="@color/main_gray"
+                android:padding="8dp"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:textColor="#9D9D9D" />
+
+        </LinearLayout>
+
+
+
+        <!-- 작성 완료 버튼 -->
+        <ImageButton
+            android:id="@+id/btnSubmit"
+            android:src="@drawable/frame_427318932"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="50dp"
+            android:layout_width="335dp"
+            android:layout_height="45dp"
+            android:backgroundTint="@color/main_green" />
+    </LinearLayout>
+</ScrollView>

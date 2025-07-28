@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 
 class MyReviewActivity : AppCompatActivity() {
 
@@ -14,9 +15,9 @@ class MyReviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_review)
 
-        val backButton = findViewById<ImageView>(R.id.backButton)
-        backButton.setOnClickListener {
-            finish() // 현재 Activity 종료 → 이전 Fragment 화면으로 돌아감
+        val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        toolbar.setNavigationOnClickListener {
+            finish() // 현재 Activity 종료 → 이전 화면으로 돌아감
         }
 
         // ✅ RecyclerView 연결

@@ -86,6 +86,13 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="PretendardSemibold4">
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:letterSpacing">-0.017</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <!-- 그 외 추가 -->
     <style name="PretendardH5">
         <item name="android:fontFamily">@font/pretendard_bold</item>
