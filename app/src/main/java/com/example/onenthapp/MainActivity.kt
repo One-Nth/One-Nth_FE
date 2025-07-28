@@ -3,7 +3,9 @@ package com.example.onenthapp
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
@@ -11,6 +13,7 @@ import com.example.onenthapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val sharedViewModel: SharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,15 +42,24 @@ class MainActivity : AppCompatActivity() {
 
         // FAB 클릭시 상품 등록 화면으로 이동
         binding.fabAdd.setOnClickListener {
-            navController.navigate(R.id.plusFragment)
+            val dest = when (sharedViewModel.currentHomeTab.value) {
+                HomeTabType.BUY -> R.id.plusBuyFragment
+                else               -> R.id.plusShareFragment
+            }
+            navController.navigate(dest)
         }
         navController.addOnDestinationChangedListener { _, dest, _ ->
-            val hideOn = dest.id == R.id.plusFragment
-            val hideOn2 = dest.id == R.id.statsFragment
-            val hideOn3 = dest.id == R.id.chatFragment
-            val hideOn4 = dest.id == R.id.mypageFragment
-            binding.bottomNavigationView.visibility = if (hideOn || hideOn2 || hideOn3 || hideOn4) View.GONE else View.VISIBLE
-            binding.fabAdd.visibility = if (hideOn || hideOn2 || hideOn3 || hideOn4) View.GONE else View.VISIBLE
+            val hideOn = setOf(
+                R.id.productDetailFragment,
+                R.id.plusBuyFragment,
+                R.id.plusShareFragment,
+                R.id.statsFragment,
+                R.id.chatFragment,
+                R.id.mypageFragment
+            ).contains(dest.id)
+
+            binding.bottomNavigationView.isVisible = !hideOn
+            binding.fabAdd.isVisible = !hideOn
         }
 
     }
