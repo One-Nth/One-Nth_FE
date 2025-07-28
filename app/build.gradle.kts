@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
+    id("androidx.navigation.safeargs.kotlin")
 }
 val properties = Properties().apply {
     load(rootProject.file("local.properties").inputStream())
@@ -47,6 +48,7 @@ android {
         compose = true
         viewBinding=true
         buildConfig = true
+        //safeArgs = true
     }
     dataBinding {
         enable = true
@@ -66,8 +68,10 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation("com.naver.maps:map-sdk:3.22.0")
+    implementation(libs.androidx.coordinatorlayout)
     testImplementation(libs.junit)
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

@@ -1,0 +1,472 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/include_toolbar"
+        layout="@layout/layout_toolbar_upload"
+        android:layout_width="match_parent"
+        android:layout_height="68dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:layout_weight="1"
+        android:background="@color/main_white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="상품 정보를 등록해 주세요"
+                android:textColor="@color/main_green"
+                android:textSize="25sp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ph_image_upload_container"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="34dp"
+                android:background="@drawable/ph_image_upload">
+
+                <ImageView
+                    android:id="@+id/ic_plus"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:src="@drawable/ic_upload_plusbtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_image_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="0/7"
+                    android:textColor="@color/notification_time"
+                    android:textSize="13sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ic_plus" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/rczvall21vwt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="27dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="상품명"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+            <!-- 2. 상품명 입력 -->
+
+            <EditText
+                android:id="@+id/et_product_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/edittext_rounded_corner_rectangle"
+                android:fontFamily="@font/pretendard_regular"
+                android:gravity="center_vertical"
+                android:hint="ex) 두루마리 휴지"
+                android:inputType="text"
+                android:paddingStart="20dp"
+                android:singleLine="true"
+                android:textColor="@color/main_black"
+                android:textColorHint="@color/text_search"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="수량 및 가격"
+                android:textColor="@color/main_black"
+                android:textSize="20sp" />
+            <!-- 3. 수량 및 가격 입력 -->
+            <EditText
+                android:id="@+id/et_product_num"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/edittext_rounded_corner_rectangle"
+                android:fontFamily="@font/pretendard_regular"
+                android:gravity="center_vertical"
+                android:hint="판매 수량"
+                android:inputType="text"
+                android:paddingStart="20dp"
+                android:singleLine="true"
+                android:textColor="@color/main_black"
+                android:textColorHint="@color/text_search"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_product_cost"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/edittext_rounded_corner_rectangle"
+                android:fontFamily="@font/pretendard_regular"
+                android:gravity="center_vertical"
+                android:hint="판매 가격"
+                android:inputType="text"
+                android:paddingStart="20dp"
+                android:singleLine="true"
+                android:textColor="@color/main_black"
+                android:textColorHint="@color/text_search"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="카테고리"
+                android:textColor="@color/main_black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="상품이 어떤 특성을 가지고 있는지 선택해주세요"
+                android:textColor="@color/text_descript"
+                android:textSize="15sp" />
+            <!-- 4. 카테고리 선택: layout_category_chip.xml -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_category_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                app:chipSpacingHorizontal="18dp"
+                app:chipSpacingVertical="12dp"
+                app:singleSelection="true"
+                tools:ignore="ExtraText">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_electronics"
+                    style="@style/Widget.App.CustomChoiceChip"
+                    android:text="🤖 전자제품"
+                    app:chipBackgroundColor="@color/custom_chip_background_color"
+                    app:chipCornerRadius="10dp"
+                    app:chipMinHeight="40dp"
+                    app:chipStrokeColor="@color/custom_chip_stroke_color"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_food"
+                    style="@style/Widget.App.CustomChoiceChip"
+                    android:text="🛒 식품"
+                    app:chipBackgroundColor="@color/custom_chip_background_color"
+                    app:chipCornerRadius="10dp"
+                    app:chipMinHeight="40dp"
+                    app:chipStrokeColor="@color/custom_chip_stroke_color"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_lifestyle"
+                    style="@style/Widget.App.CustomChoiceChip"
+                    android:text="🧸 생활용품"
+                    app:chipBackgroundColor="@color/custom_chip_background_color"
+                    app:chipCornerRadius="10dp"
+                    app:chipMinHeight="40dp"
+                    app:chipStrokeColor="@color/custom_chip_stroke_color"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_clothing"
+                    style="@style/Widget.App.CustomChoiceChip"
+                    android:text="👕 의류"
+                    app:chipBackgroundColor="@color/custom_chip_background_color"
+                    app:chipCornerRadius="10dp"
+                    app:chipMinHeight="40dp"
+                    app:chipStrokeColor="@color/custom_chip_stroke_color"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_misc"
+                    style="@style/Widget.App.CustomChoiceChip"
+                    android:text="🎁 잡화"
+                    app:chipBackgroundColor="@color/custom_chip_background_color"
+                    app:chipCornerRadius="10dp"
+                    app:chipMinHeight="40dp"
+                    app:chipStrokeColor="@color/custom_chip_stroke_color"
+                    app:chipStrokeWidth="1dp" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="태그"
+                android:textColor="@color/main_black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="상품에 더 자세한 설명을 붙여주세요"
+                android:textColor="@color/text_descript"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_product_tag"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/edittext_rounded_corner_rectangle"
+                android:fontFamily="@font/pretendard_regular"
+                android:gravity="center_vertical"
+                android:hint="#태그, 5개까지 입력 가능"
+                android:inputType="text"
+                android:paddingStart="20dp"
+                android:singleLine="true"
+                android:textColor="@color/main_black"
+                android:textColorHint="@color/text_search"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="상품의 소비 기한을 입력해 주세요"
+                android:textColor="@color/main_black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="년도.월.일로  기입해주세요 (ex. 25.01.01)"
+                android:textColor="@color/text_descript"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_product_due"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/edittext_rounded_corner_rectangle"
+                android:fontFamily="@font/pretendard_regular"
+                android:gravity="center_vertical"
+                android:hint="ex) 2025.01.01"
+                android:inputType="text"
+                android:paddingStart="20dp"
+                android:singleLine="true"
+                android:textColor="@color/main_black"
+                android:textColorHint="@color/text_search"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="잠깐! 거래 가능한 상품이 맞나요?"
+                android:textColor="@color/main_black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="개봉 상품, 직접 재배한 농수산물 등은 판매할 수 없어요ㄴ"
+                android:textColor="@color/text_descript"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:id="@+id/ll_confirmation_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="30dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm_yes"
+                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8.5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:checked="false"
+                    android:text="네 확인했어요"
+                    app:backgroundTint="@color/toggle_button_background_colors"
+                    app:strokeColor="@color/toggle_button_stroke_colors" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm_no_cancel"
+                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8.5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:checked="false"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="상품 등록을 취소할게요"
+                    app:backgroundTint="@color/toggle_button_background_colors"
+                    app:strokeColor="@color/toggle_button_stroke_colors" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="상품을 어디서 거래하시나요? "
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="상품을 거래할 방법을 선택해주세요."
+                android:textColor="@color/text_descript"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:id="@+id/ll_way_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="30dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_way_1"
+                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="8.5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:checked="false"
+                    android:text="만나서 거래해요"
+                    app:backgroundTint="@color/toggle_button_background_colors"
+                    app:strokeColor="@color/toggle_button_stroke_colors" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_way_2"
+                    style="@style/Widget.App.Button.OutlinedButton.Toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8.5dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:checked="false"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="택배로 거래해요"
+                    app:backgroundTint="@color/toggle_button_background_colors"
+                    app:strokeColor="@color/toggle_button_stroke_colors" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="거래 희망 장소"
+                android:textColor="@color/main_black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="거래를 희망하는 장소를 입력해주세요."
+                android:textColor="@color/text_descript"
+                android:textSize="15sp" />
+
+
+            <EditText
+                android:id="@+id/et_product_place"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/edittext_rounded_corner_rectangle"
+                android:fontFamily="@font/pretendard_regular"
+                android:gravity="center_vertical"
+                android:hint="위치 입력"
+                android:inputType="text"
+                android:paddingStart="20dp"
+                android:singleLine="true"
+                android:textColor="@color/main_black"
+                android:textColorHint="@color/text_search"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="11dp"
+                    android:layout_marginStart="9dp"
+                    android:layout_marginEnd="3dp"
+                    android:src="@drawable/ic_gps_blue" />
+
+                <TextView
+                    android:id="@+id/btn_set_myplace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="우리동네로 설정"
+                    android:textColor="@color/gps_blue"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_product_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="28dp"
+                android:backgroundTint="@color/main_green"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="등록하기"
+                android:textColor="@color/main_white"
+                android:textSize="15sp"
+                app:cornerRadius="10dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
