@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.MaterialToolbar
 
 class StatsFragment : Fragment() {
 
@@ -32,9 +33,9 @@ class StatsFragment : Fragment() {
             showShareDialog()
         }
 
-        val backButton = view.findViewById<View>(R.id.backButton)
-        backButton.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()  // 🔙 이전 프래그먼트로 이동
+        val topAppBar = view.findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar.setNavigationOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
 
