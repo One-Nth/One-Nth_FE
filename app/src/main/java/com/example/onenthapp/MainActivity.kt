@@ -51,6 +51,8 @@ class MainActivity : AppCompatActivity() {
         }
         navController.addOnDestinationChangedListener { _, dest, _ ->
             val hideOn = setOf(
+                R.id.action_search_to_productdetail,
+                R.id.action_home_to_productdetail,
                 R.id.productDetailFragment,
                 R.id.plusBuyFragment,
                 R.id.plusShareFragment,

@@ -21,6 +21,7 @@ import com.example.onenthapp.model.SearchResult
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import androidx.navigation.fragment.findNavController
+import com.example.onenthapp.model.SearchType
 import com.kakao.vectormap.KakaoMap;
 import com.kakao.vectormap.KakaoMapReadyCallback;
 import com.kakao.vectormap.MapLifeCycleCallback;
@@ -30,7 +31,6 @@ import com.kakao.vectormap.MapView;
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private var sheetInitialized = false
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
     private var kakaoMapView: MapView? = null // Kakao MapView 객체
     private var kakaoMapInstance: KakaoMap? = null // KakaoMap 객체
@@ -63,7 +63,15 @@ class HomeFragment : Fragment() {
     @SuppressLint("RestrictedApi", "DiscouragedPrivateApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        kakaoMapView = binding.map // ViewBinding 사용 시
+        kakaoMapView = binding.map
+        initBottomSheet()
+        // 진입 시: 결과가 있으면 mid, 없으면 숨김
+        if (lastResults.isNotEmpty()) {
+            initBottomSheet()
+            binding.bottomSheet.visibility = View.VISIBLE
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            //sheetInitialized = true
+        } else binding.bottomSheet.visibility = View.GONE
 
         // MapView 시작
         kakaoMapView?.start(object : MapLifeCycleCallback() {
@@ -141,12 +149,8 @@ class HomeFragment : Fragment() {
                 imm.hideSoftInputFromWindow(et.windowToken, 0)
                 et.clearFocus()
                 performSearch(et.text.toString())
-                // 처음 검색할 때만 BottomSheet 보이기 + Behavior 초기화
-                if (!sheetInitialized) {
-                    initBottomSheet()
-                    sheetInitialized = true
-                }
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                //binding.bottomSheet.visibility = View.VISIBLE
+                //bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                 true
             } else false
         }
@@ -173,6 +177,12 @@ class HomeFragment : Fragment() {
         super.onResume()
         kakaoMapView?.resume() // MapView 의 resume 호출
         Log.d("KakaoMap", "onResume called, map resumed")
+        // HomeFragment가 다시 활성화될 때 현재 TabLayout의 선택된 탭을 기준으로 ViewModel을 동기화
+        val selectedTabPosition = binding.tabLayoutHome.selectedTabPosition
+        when (selectedTabPosition) {
+            0 -> sharedViewModel.setCurrentHomeTab(HomeTabType.BUY)
+            1 -> sharedViewModel.setCurrentHomeTab(HomeTabType.SHARE)
+        }
     }
 
     override fun onPause() {
@@ -193,13 +203,18 @@ class HomeFragment : Fragment() {
 //            }
             previewBinding.bind(it)
         }
+        previewBinding.root.setOnClickListener { onItemClicked(results.first()) }
 
         // 지도 마커 갱신
         // showMarkers(results)
         // 검색 결과 리스트 갱신
         // searchAdapter.submitList(results)
         // BottomSheet 펼치기
-        // bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        if(results.isNotEmpty()) {
+            binding.bottomSheet.visibility = View.VISIBLE
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        } else
+            binding.bottomSheet.visibility = View.GONE
     }
 
     fun collapseSheet() {
@@ -217,17 +232,34 @@ class HomeFragment : Fragment() {
     }
     private fun dummySearchData(query: String): List<SearchResult> {
         return listOf(
+            SearchResult(id = "1", title = "$query 상품 A", price = 1000, "개", category = "생활용품", type = SearchType.BUY, imageUrls = listOf(android.R.drawable.btn_plus, android.R.drawable.btn_plus, android.R.drawable.btn_plus)),
+            SearchResult(id = "2", title = "$query 상품 B", price = 2000, "개", category = "생활용품", type = SearchType.BUY, imageUrls = listOf(android.R.drawable.btn_plus, android.R.drawable.btn_plus)),
+            SearchResult(id = "3", title = "$query 상품 C", price = 3000, "개", category = "생활용품", type = SearchType.BUY, imageUrls = listOf(android.R.drawable.btn_plus, android.R.drawable.btn_plus))
 //            SearchResult(id = "1", title = "$query 상품 A", price = 1000, image = android.R.drawable.btn_plus),
 //            SearchResult(id = "2", title = "$query 상품 B", price = 2000, image = null),
 //            SearchResult(id = "3", title = "$query 상품 C", price = 3000, image = android.R.drawable.btn_plus)
         )
     }
-
+    // 바텀시트 리스트 아이템 클릭 처리
+    fun onSearchItemSelected(result: SearchResult) {
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            // 완전 확장 상태 → 상세로 이동
+            val action = HomeFragmentDirections
+                .actionHomeToProductdetail()
+            //productId = result.id 나중에 상품 id 추가
+            findNavController().navigate(action)
+        } else {
+            // mid 상태 → preview
+            showMidPreview(result)
+        }
+    }
     fun showMidPreview(item: SearchResult) {
         // ① preview_card(include된 item_search_result.xml) 바인딩
         val previewBinding = binding.previewCard
         previewBinding.bind(item)
-
+        previewBinding.root.setOnClickListener {
+            onSearchItemSelected(item)
+        }
         // ② bottom sheet을 half Expanded 로
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
@@ -235,7 +267,7 @@ class HomeFragment : Fragment() {
     private fun initBottomSheet() {
         val sheet = binding.bottomSheet
         // 뷰 보이기
-        sheet.visibility = View.VISIBLE
+//        sheet.visibility = View.VISIBLE
         // BottomSheet 초기화
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
             isHideable = false
