@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.onenthapp.databinding.FragmentPlusShareBinding
 import androidx.navigation.fragment.findNavController
@@ -22,6 +23,25 @@ class PlusShareFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnProductSubmit.setOnClickListener {
+            // 1) 폼 값 읽기
+            val name = binding.etProductName.text.toString()
+            val price = binding.etProductCost.text.toString()
+//            // 만약 이미지 피커를 구현하셨다면, URI 를 String 으로 꺼내세요.
+//            val imageUri = binding.ivPreviewImage.drawable.let {
+//                // 예시: 실제 URI 를 String 으로 저장해두셨다면 여기에 꺼내서 넣어주세요.
+//                ""
+//            }
+            val imageUri = "imageUri"
+
+            // 2) Bundle 에 담아서 navigate
+            val bundle = bundleOf(
+                "productName" to name,
+                "productPrice" to price,
+                "productImageUri" to imageUri
+            )
+            findNavController().navigate(R.id.action_global_complete, bundle)
+        }
         binding.includeToolbar.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
