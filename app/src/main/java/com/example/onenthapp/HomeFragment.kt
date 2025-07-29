@@ -3,13 +3,13 @@ package com.example.onenthapp
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import android.widget.PopupMenu
 import androidx.appcompat.view.ContextThemeWrapper
@@ -18,21 +18,23 @@ import androidx.fragment.app.activityViewModels
 import com.example.onenthapp.databinding.FragmentHomeBinding
 import com.example.onenthapp.databinding.ItemSearchResultBinding
 import com.example.onenthapp.model.SearchResult
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
-import com.naver.maps.map.MapFragment
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.OnMapReadyCallback
 import androidx.navigation.fragment.findNavController
+import com.kakao.vectormap.KakaoMap;
+import com.kakao.vectormap.KakaoMapReadyCallback;
+import com.kakao.vectormap.MapLifeCycleCallback;
+import com.kakao.vectormap.MapView;
 
 
-class HomeFragment : Fragment(), OnMapReadyCallback {
+class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var sheetInitialized = false
-    private var naverMap: NaverMap? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
+    private var kakaoMapView: MapView? = null // Kakao MapView 객체
+    private var kakaoMapInstance: KakaoMap? = null // KakaoMap 객체
+
     private var lastResults: List<SearchResult> = emptyList()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -41,13 +43,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // 1) 지도 초기화
-        val fm = childFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                fm.beginTransaction().add(R.id.map, it).commit()
-            }
-        mapFragment.getMapAsync(this)
+//        // 1) 지도 초기화
+//        val fm = childFragmentManager
+//        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
+//            ?: MapFragment.newInstance().also {
+//                fm.beginTransaction().add(R.id.map, it).commit()
+//            }
+//        mapFragment.getMapAsync(this)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -61,6 +63,41 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     @SuppressLint("RestrictedApi", "DiscouragedPrivateApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        kakaoMapView = binding.map // ViewBinding 사용 시
+
+        // MapView 시작
+        kakaoMapView?.start(object : MapLifeCycleCallback() {
+            override fun onMapDestroy() {
+                // 지도 API 가 정상적으로 종료될 때 호출됨
+                Log.d("KakaoMap", "onMapDestroy")
+                // 필요한 경우 리소스 정리
+            }
+
+            override fun onMapError(error: Exception) {
+                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
+                Log.e("KakaoMap", "onMapError: ${error.message}", error)
+            }
+        }, object : KakaoMapReadyCallback() {
+            override fun onMapReady(kakaoMap: KakaoMap) {
+                // 인증 후 API 가 정상적으로 실행될 때 호출됨
+                Log.d("KakaoMap", "onMapReady")
+                kakaoMapInstance = kakaoMap
+                // 여기에 지도 준비 완료 후 초기 설정 (예: 카메라 위치, 마커 표시 등)
+                // 예: val cameraUpdate = CameraUpdateFactory.newLatLng(LatLng.from(37.5665, 126.9780))
+                // kakaoMap.moveCamera(cameraUpdate)
+            }
+
+            override fun getPosition(): com.kakao.vectormap.LatLng {
+                // TODO("Not yet implemented")
+                return com.kakao.vectormap.LatLng.from(37.5665, 126.9780) // 초기 위치 (예: 서울 시청)
+            }
+
+            override fun getZoomLevel(): Int {
+                // TODO("Not yet implemented")
+                return 15 // 초기 줌 레벨
+            }
+        })
+
         // 드롭다운 PopupMenu
         val popup = PopupMenu(
             ContextThemeWrapper(requireContext(), R.style.Theme_OneNthApp),
@@ -132,37 +169,17 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
     }
-
-    @UiThread
-    override fun onMapReady(naverMap: NaverMap) {
-        // 네이버 지도 객체를 받고 필요한 설정
-        this.naverMap = naverMap
-        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRANSIT, true)
-        //showMarkers(emptyList())
+    override fun onResume() {
+        super.onResume()
+        kakaoMapView?.resume() // MapView 의 resume 호출
+        Log.d("KakaoMap", "onResume called, map resumed")
     }
 
-//    private fun showMarkers(data: List<T>) {
-//        naverMap?.let { map ->
-//            map.clear()
-//            list.forEach { loc ->
-//                Marker().apply {
-//                    position = loc.toLatLng()
-//                    captionText = loc.title
-//                    this.map = map
-//                }
-//            }
-//        }
-//        naverMap?.apply {
-//            clear()
-//            data.forEach { loc ->
-//                Marker().apply {
-//                    position = loc.toLatLng()
-//                    captionText = loc.title
-//                    map = this@apply
-//                }
-//            }
-//        }
-//    }
+    override fun onPause() {
+        super.onPause()
+        kakaoMapView?.pause() // MapView 의 pause 호출
+        Log.d("KakaoMap", "onPause called, map paused")
+    }
 
     private fun performSearch(query: String) {
         // TODO: 실제 API 연동 대신 더미 데이터 생성

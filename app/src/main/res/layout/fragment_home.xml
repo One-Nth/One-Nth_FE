@@ -142,9 +142,8 @@
         </com.google.android.material.tabs.TabLayout>
 
         <!-- 4) 지도(전체를 차지하되, 위 컨텐츠 아래) -->
-        <androidx.fragment.app.FragmentContainerView
+        <com.kakao.vectormap.MapView
             android:id="@+id/map"
-            android:name="com.naver.maps.map.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/tabLayout_home"
