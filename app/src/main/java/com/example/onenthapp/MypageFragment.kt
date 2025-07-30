@@ -30,6 +30,26 @@ class MypageFragment : Fragment() {
             startActivity(intent)
         }
 
+        // ✅ 스크랩한 글 클릭 시 이동
+        val scrapButton = view.findViewById<LinearLayout>(R.id.menuScrap)
+        scrapButton.setOnClickListener {
+            val intent = Intent(requireContext(), ScrapActivity::class.java)
+            startActivity(intent)
+        }
+
+        // ✅ 공감한 글 클릭 시 이동
+        val likePostButton = view.findViewById<LinearLayout>(R.id.menuLike)
+        likePostButton.setOnClickListener {
+            val intent = Intent(requireContext(), LikePostActivity::class.java)
+            startActivity(intent)
+        }
+
+        // ✅ 내가 쓴 글 클릭 시 이동
+        val writtenButton = view.findViewById<LinearLayout>(R.id.menuWritten)
+        writtenButton.setOnClickListener {
+            val intent = Intent(requireContext(), MyPostActivity::class.java)
+            startActivity(intent)
+        }
 
         return view
     }

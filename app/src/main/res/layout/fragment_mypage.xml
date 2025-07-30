@@ -191,6 +191,30 @@
                 android:textColor="@color/main_black"/>
         </LinearLayout>
 
+        <!-- 내가 쓴 후기 수정하기 -->
+        <LinearLayout
+            android:id="@+id/menuEditReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/mdi_paper_outline"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="후기 아이콘" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내가 쓴 후기 수정하기"
+                style="@style/PretendardSubtitle1"
+                android:textColor="@color/main_black"/>
+        </LinearLayout>
+
         <!-- 약관 및 정책 -->
         <LinearLayout
             android:id="@+id/menuPolicy"
