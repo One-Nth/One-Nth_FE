@@ -90,6 +90,18 @@
             android:layout_marginEnd="5dp"/>
     </RelativeLayout>
 
+    <!-- ✅ 이메일 에러 메시지 추가 -->
+    <TextView
+        android:id="@+id/tvEmailError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/emailContainer"
+        app:layout_constraintStart_toStartOf="@id/emailLabel" />
+
     <!-- 인증번호 -->
     <TextView
         android:id="@+id/verifyLabel"
@@ -137,6 +149,19 @@
             android:textSize="13sp"/>
     </RelativeLayout>
 
+    <!-- ✅ 인증 코드 결과 메시지 -->
+    <TextView
+        android:id="@+id/tvCodeResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/verifyContainer"
+        app:layout_constraintStart_toStartOf="@id/verifyLabel" />
+
+
     <!-- 비밀번호 -->
     <TextView
         android:id="@+id/passwordLabel"
@@ -165,6 +190,15 @@
         app:layout_constraintTop_toBottomOf="@id/passwordLabel"
         app:layout_constraintStart_toStartOf="@id/emailLabel"/>
 
+    <TextView
+        android:id="@+id/tvPasswordError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/error_text"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/passwordEditText"
+        app:layout_constraintStart_toStartOf="@id/passwordLabel" />
     <!-- 비밀번호 확인 -->
     <TextView
         android:id="@+id/passwordConfirmLabel"
@@ -193,6 +227,16 @@
         app:layout_constraintTop_toBottomOf="@id/passwordConfirmLabel"
         app:layout_constraintStart_toStartOf="@id/emailLabel"/>
 
+    <TextView
+        android:id="@+id/tvPasswordConfirmError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/error_text"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/passwordConfirmEditText"
+        app:layout_constraintStart_toStartOf="@id/passwordConfirmLabel" />
+
     <!-- 다음 버튼 -->
     <ImageButton
         android:id="@+id/nextButton"
@@ -207,5 +251,4 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
 
