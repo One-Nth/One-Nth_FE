@@ -42,6 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="회원가입"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:textColor="@color/splash_gray" />
 
         <TextView
@@ -50,12 +52,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="로그인"
+            android:clickable="true"
             android:textColor="@color/splash_gray"
             android:layout_marginStart="17dp"/>
     </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 

@@ -52,4 +52,6 @@
     <color name="notification_indicator_background">#E4E4E4</color>
     <color name="notification_already_read">#FFDADA</color>
 
+    <!-- 회원가입 -->
+    <color name="error_text">#FF0000</color>
 </resources>
