@@ -1,4 +1,3 @@
-import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -24,8 +23,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders["naverMapClientId"] = properties.getProperty("naverMapClientId")
-
+        buildConfigField("String", "APP_KEY", "\"${properties.getProperty("APP_KEY", "")}\"")
+        ndk {
+            abiFilters.add("arm64-v8a")
+            abiFilters.add("armeabi-v7a")
+            abiFilters.add("armeabi-v8a")
+//            abiFilters.add("x86")
+//            abiFilters.add("x86_64")
+        }
     }
 
     buildTypes {
@@ -67,7 +72,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation("com.naver.maps:map-sdk:3.22.0")
+    implementation("com.kakao.maps.open:android:2.12.8")
     implementation(libs.androidx.coordinatorlayout)
     testImplementation(libs.junit)
     implementation("com.github.bumptech.glide:glide:4.16.0")

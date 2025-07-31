@@ -13,7 +13,7 @@ data class SearchResult(
     val price: Int,
     val unit: String = "개",
     val category: String,
-    val imageUrls: List<String>,       // 최대 3장만 표시
+    val imageUrls: List<Int>,       // 최대 3장만 표시
     val isBookmarked: Boolean = false,
     val type: SearchType               // BUY 또는 SHARE
 ) : Parcelable

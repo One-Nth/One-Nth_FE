@@ -8,7 +8,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.onenthapp.databinding.FragmentSearchResultBinding
-import com.example.onenthapp.databinding.ItemSearchResultBinding
 import com.example.onenthapp.model.SearchResult
 import com.example.onenthapp.model.SearchType
 import com.google.android.material.tabs.TabLayout
@@ -31,14 +30,14 @@ class SearchResultFragment : Fragment(R.layout.fragment_search_result) {
 
         // RecyclerView 세팅
         adapter = SearchAdapter { result ->
-            (parentFragment as? HomeFragment)?.showMidPreview(result)
+            (parentFragment as? HomeFragment)?.onSearchItemSelected(result)
         }
         binding.rvSearchResults.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = this@SearchResultFragment.adapter
         }
         // 2) 번들에서 전달된 전체 리스트 추출
-        val fullList = arguments
+        fullList = arguments
             ?.getParcelableArrayList<SearchResult>("results")
             .orEmpty()
             .takeIf { it.isNotEmpty() }

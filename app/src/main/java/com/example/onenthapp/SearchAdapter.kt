@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onenthapp.databinding.ItemSearchResultBinding
 import com.example.onenthapp.model.SearchResult
-import com.bumptech.glide.Glide
 
 class SearchAdapter(private val onItemClick: (SearchResult) -> Unit)
     : ListAdapter<SearchResult, SearchAdapter.VH>(SearchResultDiffCallback()) {
