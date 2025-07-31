@@ -43,7 +43,6 @@ class PlusShareFragment : Fragment() {
         binding.btnProductSubmit.setOnClickListener {
             // 1) 폼 값 읽기
             val title = binding.etProductName.text.toString()
-            //val price = binding.etProductOrigincost.text.toString()
             val quantity = binding.etProductNum.text.toString().toIntOrNull() ?: 1
             val priceStr = binding.etProductCost.text.toString().trim()
             val price = priceStr.toIntOrNull() ?: run {
@@ -71,9 +70,9 @@ class PlusShareFragment : Fragment() {
 
             // 3) 이미지 파트 (실제 업로드 미구현 상태라 dummy 이미지 하나 강제)
             val realUris: List<Uri> = emptyList() // TODO: 실제 Uri 리스트
-            val parts = if (realUris.isNotEmpty()) {
+            val parts = if (realUris.isEmpty()) {
                 realUris.mapIndexed { i, uri ->
-                    val tmp = File(requireContext().cacheDir, "img_$i.jpg")
+                    val tmp = File(requireContext().cacheDir, "img_tissue_$i.jpg")
                     // TODO: uri → tmp 파일 복사
                     val rb = tmp.readBytes().toRequestBody("image/*".toMediaType())
                     MultipartBody.Part.createFormData("imageFiles", tmp.name, rb)
@@ -84,7 +83,7 @@ class PlusShareFragment : Fragment() {
                 val bos = ByteArrayOutputStream().apply {
                     bmp.compress(Bitmap.CompressFormat.JPEG, 80, this)
                 }
-                val dummy = File(requireContext().cacheDir, "mock_image.jpg")
+                val dummy = File(requireContext().cacheDir, "image_tissue_1.jpg")
                     .apply { writeBytes(bos.toByteArray()) }
                 val rb = dummy.readBytes().toRequestBody("image/jpeg".toMediaType())
                 listOf(MultipartBody.Part.createFormData("imageFiles", dummy.name, rb))
@@ -123,11 +122,12 @@ class PlusShareFragment : Fragment() {
             binding.includeToolbar.btnBack.setOnClickListener {
                 findNavController().popBackStack()
             }
-            setupToggleButtons()
+            setupToggleButton1()
+            setupToggleButton2()
 
         }
     }
-    private fun setupToggleButtons() {
+    private fun setupToggleButton1() {
         binding.btnConfirmYes.setOnClickListener {
             binding.btnConfirmYes.isChecked = true
             binding.btnConfirmNoCancel.isChecked = false
@@ -136,6 +136,8 @@ class PlusShareFragment : Fragment() {
             binding.btnConfirmNoCancel.isChecked = true
             binding.btnConfirmYes.isChecked = false
         }
+    }
+    private fun setupToggleButton2() {
         binding.btnWay1.setOnClickListener {
             binding.btnWay1.isChecked = true
             binding.btnWay2.isChecked = false

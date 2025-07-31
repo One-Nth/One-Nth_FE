@@ -8,6 +8,8 @@ import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
 import com.example.onenthapp.util.TokenManager
+import com.example.onenthapp.data.MessageApi
+import com.example.onenthapp.data.MyRegionApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
@@ -43,7 +45,6 @@ object RetrofitInstance {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
     val authApi: AuthApi by lazy {
         retrofit.create(AuthApi::class.java)
     }
@@ -54,6 +55,8 @@ object RetrofitInstance {
 
     val messageApi: MessageApi by lazy {
         retrofit.create(MessageApi::class.java)
+    val myRegionApi: MyRegionApi by lazy {
+        retrofit.create(MyRegionApi::class.java)
     }
     
     val usersetApi: UserSetApi by lazy {

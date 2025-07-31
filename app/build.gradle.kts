@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation("com.kakao.maps.open:android:2.12.8")
     implementation(libs.androidx.coordinatorlayout)
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
     testImplementation(libs.junit)
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.tbuonomo:dotsindicator:5.1.0")

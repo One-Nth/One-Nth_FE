@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
