@@ -1,4 +1,5 @@
 package com.example.onenthapp
+
 import android.content.Intent
 import android.Manifest
 import android.content.pm.PackageManager
@@ -32,6 +33,11 @@ class MainActivity : AppCompatActivity() {
 
             when (item.itemId) {
                 R.id.plusFragment -> {
+                    false
+                }
+
+                R.id.chatFragment -> {
+                    startActivity(Intent(this, ChatActivity::class.java))
                     false
                 }
 
@@ -84,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         if (permission == PackageManager.PERMISSION_DENIED || permission2 == PackageManager.PERMISSION_DENIED || permission3 == PackageManager.PERMISSION_DENIED) {
             // 권한 체크(READ_PHONE_STATE의 requestCode를 1000으로 세팅
             requestPermissions(
-                arrayOf<String?>(
+                arrayOf(
                     Manifest.permission.INTERNET,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -95,9 +101,10 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<String?>,
+        permissions: Array<String>,
         grandResults: IntArray
     ) {
         // READ_PHONE_STATE의 권한 체크 결과
@@ -111,11 +118,10 @@ class MainActivity : AppCompatActivity() {
                     break
                 }
             }
-            // 권한 체크에 동의를 하지 않으면  종료
-            if (check_result == false) {
+            // 권한 체크에 동의를 하지 않으면 종료
+            if (!check_result) {
                 finish()
             }
         }
     }
 }
-

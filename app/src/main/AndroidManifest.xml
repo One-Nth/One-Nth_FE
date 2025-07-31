@@ -20,20 +20,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme_OneNthApp"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme_OneNthApp">
 
-            <!--          <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
         </activity>
+
         <activity android:name=".AlarmActivity" android:exported="false" />
         <activity android:name=".MyReviewActivity" android:exported="false" />
         <activity android:name=".BuyerReview" />
+        <activity android:name=".ChatActivity" />
         <activity android:name=".EditMyReviewActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".AlertSettingsActivity" />
@@ -42,21 +46,11 @@
         <activity android:name=".PolicyActivity" />
         <activity android:name=".LifeTipsSearchActivity" />
         <activity android:name=".LifeTipsDetailActivity" />
+        <activity android:name=".ChatCheckActivity" />
 
         <activity
-            android:name=".SplashActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".AccountSettingsActivity" />
-        <activity android:name=".BlockedUsersActivity" />
-        <activity android:name=".PolicyActivity" />
-        <activity android:name=".LifeTipsSearchActivity" />
-        <activity android:name=".LifeTipsDetailActivity" />
+            android:name=".ChatRoomActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".SplashActivity"
@@ -68,13 +62,8 @@
         </activity>
 
         <activity android:name=".SignupActivity" android:exported="false" />
-
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-
+        <activity android:name=".LoginActivity" android:exported="false" />
         <activity android:name=".SignupActivity2" android:exported="false" />
 
     </application>
-
 </manifest>

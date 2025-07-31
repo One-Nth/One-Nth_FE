@@ -14,6 +14,7 @@
             app:destination="@id/productDetailFragment" />
     </fragment>
     <fragment
+<<<<<<< HEAD
         android:id="@+id/searchResultFragment"
         android:name="com.example.onenthapp.SearchResultFragment"
         android:label="검색 결과"
@@ -24,6 +25,8 @@
 </fragment>
 
     <fragment
+=======
+>>>>>>> d013562 ([Feat] 채팅, 알림, 거래 확정 UI 구현)
         android:id="@+id/statsFragment"
         android:name="com.example.onenthapp.StatsFragment"
         android:label="통계" />
