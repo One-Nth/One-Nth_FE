@@ -1,4 +1,3 @@
-import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -6,9 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
-}
-val properties = Properties().apply {
-    load(rootProject.file("local.properties").inputStream())
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -23,8 +20,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders["naverMapClientId"] = properties.getProperty("naverMapClientId")
-
+        buildConfigField("String", "APP_KEY", "\"${properties.getProperty("APP_KEY", "")}\"")
+        ndk {
+            abiFilters.add("arm64-v8a")
+            abiFilters.add("armeabi-v7a")
+            abiFilters.add("armeabi-v8a")
+//            abiFilters.add("x86")
+//            abiFilters.add("x86_64")
+        }
     }
 
     buildTypes {
@@ -47,6 +50,7 @@ android {
         compose = true
         viewBinding=true
         buildConfig = true
+        //safeArgs = true
     }
     dataBinding {
         enable = true
@@ -65,8 +69,15 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation("com.naver.maps:map-sdk:3.22.0")
+    implementation("com.kakao.maps.open:android:2.12.8")
     testImplementation(libs.junit)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

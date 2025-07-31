@@ -8,7 +8,20 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.onenthapp.HomeFragment"
-        android:label="홈" />
+        android:label="홈">
+        <action
+            android:id="@+id/action_home_to_productdetail"
+            app:destination="@id/productDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.example.onenthapp.SearchResultFragment"
+        android:label="검색 결과"
+        tools:layout="@layout/fragment_search_result">
+    <action
+        android:id="@+id/action_search_to_productdetail"
+        app:destination="@id/productDetailFragment" />
+</fragment>
 
     <fragment
         android:id="@+id/statsFragment"
@@ -21,10 +34,46 @@
         android:label="프로필" />
 
     <fragment
-        android:id="@+id/plusFragment"
-        android:name="com.example.onenthapp.PlusFragment"
-        android:visible="false"
-        tools:layout="@layout/fragment_plus"
-        />
+        android:id="@+id/plusBuyFragment"
+        android:name="com.example.onenthapp.PlusBuyFragment"
+        android:label="같이 사요 상품 등록"
+        tools:layout="@layout/fragment_plus_buy" />
+    <fragment
+        android:id="@+id/plusShareFragment"
+        android:name="com.example.onenthapp.PlusShareFragment"
+        android:label="함께 나눠요 상품 등록"
+        tools:layout="@layout/fragment_plus_share" />
+    <action
+        android:id="@+id/action_global_complete"
+        app:destination="@id/plusCompleteFragment">
+        <argument
+            android:name="productName"
+            app:argType="string" />
+        <argument
+            android:name="productPrice"
+            app:argType="string" />
+    </action>
+    <fragment
+        android:id="@+id/plusCompleteFragment"
+        android:name="com.example.onenthapp.PlusCompleteFragment"
+        android:label="상품 등록 완료"
+        tools:layout="@layout/fragment_plus_complete" />
 
+    <fragment
+        android:id="@+id/tipFragment"
+        android:name="com.example.onenthapp.TipFragment"
+        android:label="꿀팁 N분의 1"
+        tools:layout="@layout/fragment_tip" />
+
+
+    <fragment
+        android:id="@+id/productDetailFragment"
+        android:name="com.example.onenthapp.ProductDetailFragment"
+        android:label="상품 상세"
+        tools:layout="@layout/fragment_product_detail">
+<!--        상품 ID를 전달받을 인수 (필요에 따라 타입 변경)-->
+<!--        <argument-->
+<!--            android:name="productId"-->
+<!--            app:argType="string" />-->
+    </fragment>
 </navigation>
