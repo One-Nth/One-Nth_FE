@@ -13,20 +13,18 @@
             android:id="@+id/action_home_to_productdetail"
             app:destination="@id/productDetailFragment" />
     </fragment>
+
     <fragment
-<<<<<<< HEAD
         android:id="@+id/searchResultFragment"
         android:name="com.example.onenthapp.SearchResultFragment"
         android:label="검색 결과"
         tools:layout="@layout/fragment_search_result">
-    <action
-        android:id="@+id/action_search_to_productdetail"
-        app:destination="@id/productDetailFragment" />
-</fragment>
+        <action
+            android:id="@+id/action_search_to_productdetail"
+            app:destination="@id/productDetailFragment" />
+    </fragment>
 
     <fragment
-=======
->>>>>>> d013562 ([Feat] 채팅, 알림, 거래 확정 UI 구현)
         android:id="@+id/statsFragment"
         android:name="com.example.onenthapp.StatsFragment"
         android:label="통계" />
@@ -41,11 +39,13 @@
         android:name="com.example.onenthapp.PlusBuyFragment"
         android:label="같이 사요 상품 등록"
         tools:layout="@layout/fragment_plus_buy" />
+
     <fragment
         android:id="@+id/plusShareFragment"
         android:name="com.example.onenthapp.PlusShareFragment"
         android:label="함께 나눠요 상품 등록"
         tools:layout="@layout/fragment_plus_share" />
+
     <action
         android:id="@+id/action_global_complete"
         app:destination="@id/plusCompleteFragment">
@@ -56,6 +56,7 @@
             android:name="productPrice"
             app:argType="string" />
     </action>
+
     <fragment
         android:id="@+id/plusCompleteFragment"
         android:name="com.example.onenthapp.PlusCompleteFragment"
@@ -68,15 +69,15 @@
         android:label="꿀팁 N분의 1"
         tools:layout="@layout/fragment_tip" />
 
-
     <fragment
         android:id="@+id/productDetailFragment"
         android:name="com.example.onenthapp.ProductDetailFragment"
         android:label="상품 상세"
-        tools:layout="@layout/fragment_product_detail">
-<!--        상품 ID를 전달받을 인수 (필요에 따라 타입 변경)-->
-<!--        <argument-->
-<!--            android:name="productId"-->
-<!--            app:argType="string" />-->
-    </fragment>
+        tools:layout="@layout/fragment_product_detail" />
+    <!-- 추후 argument 필요시 이 부분 사용 -->
+    <!--
+    <argument
+        android:name="productId"
+        app:argType="string" />
+    -->
 </navigation>

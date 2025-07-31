@@ -26,6 +26,12 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="PretendardH5">
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!-- Subtitles -->
     <style name="PretendardSubtitle1">
         <item name="android:fontFamily">@font/pretendard_medium</item>
@@ -168,4 +174,9 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="TextAppearance.OneNthApp.Tab" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#333333</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+    </style>
 </resources>
