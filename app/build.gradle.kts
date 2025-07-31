@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.android.application)
@@ -6,6 +7,17 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
     id("androidx.navigation.safeargs.kotlin")
+}
+
+// properties 객체 생성 및 파일에서 읽기
+val properties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(FileInputStream(localPropertiesFile))
+    } else {
+        // 혹은 gradle.properties에서 읽고 싶으면 다음 코드를 사용
+        // load(FileInputStream(rootProject.file("gradle.properties")))
+    }
 }
 
 android {
@@ -20,13 +32,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "APP_KEY", "\"${properties.getProperty("APP_KEY", "")}\"")
+
+        // 안전하게 APP_KEY 읽기 (없으면 빈 문자열)
+        val appKey = properties.getProperty("APP_KEY", "")
+        buildConfigField("String", "APP_KEY", "\"$appKey\"")
+
         ndk {
             abiFilters.add("arm64-v8a")
             abiFilters.add("armeabi-v7a")
             abiFilters.add("armeabi-v8a")
-//            abiFilters.add("x86")
-//            abiFilters.add("x86_64")
+            // abiFilters.add("x86")
+            // abiFilters.add("x86_64")
         }
     }
 
@@ -48,9 +64,8 @@ android {
     }
     buildFeatures {
         compose = true
-        viewBinding=true
+        viewBinding = true
         buildConfig = true
-        //safeArgs = true
     }
     dataBinding {
         enable = true
