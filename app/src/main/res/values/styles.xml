@@ -61,9 +61,6 @@
     </style>
 
 
-
-
-
     <!-- SemiBold -->
     <style name="PretendardSemibold1">
         <item name="android:fontFamily">@font/pretendard_semibold</item>
@@ -130,7 +127,6 @@
     </style>
 
 
-
     <style name="PretendardBody5">
         <item name="android:fontFamily">@font/pretendard_regular</item>
         <item name="android:textSize">15sp</item>
@@ -144,4 +140,55 @@
         <item name="android:letterSpacing">-0.017</item>
         <item name="android:textAlignment">center</item>
     </style>
+
+    <!-- chat bottom -->
+
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="BottomSheetTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheet_NoDim_HalfHeight" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item> <!-- ✅ dim 제거 -->
+        <item name="bottomSheetStyle">@style/TransparentBottomSheetStyle</item>
+    </style>
+
+    <style name="TransparentBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item> <!-- ✅ 배경 투명 -->
+    </style>
+
+    <style name="PretendardSubtitle5">
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">-0.017</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="PretendardH6">
+    <item name="android:fontFamily">@font/pretendard_bold</item>
+    <item name="android:textSize">30sp</item>
+    <item name="android:letterSpacing">-0.017</item>
+    <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="PretendardSemibold4">
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:letterSpacing">-0.017</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="PretendardBody8">
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">-0.017</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+
 </resources>

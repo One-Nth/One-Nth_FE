@@ -29,9 +29,17 @@
         <activity android:name=".AlarmActivity" android:exported="false" />
         <activity android:name=".MyReviewActivity" android:exported="false" />
         <activity android:name=".BuyerReview" />
+        <activity android:name=".ChatActivity" />
         <activity android:name=".EditMyReviewActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".AlertSettingsActivity" />
+        <activity android:name=".ChatCheckActivity" />
+
+        <activity
+            android:name=".ChatRoomActivity"
+            android:windowSoftInputMode="adjustResize"/>
+
+
     </application>
 
 </manifest>

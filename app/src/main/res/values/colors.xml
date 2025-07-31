@@ -51,5 +51,6 @@
     <color name="notification_time">#B1B1B1</color>
     <color name="notification_indicator_background">#E4E4E4</color>
     <color name="notification_already_read">#FFDADA</color>
+    <color name="unselected">#f0f0f0</color>
 
 </resources>

@@ -1,0 +1,254 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="791dp"
+    android:background="@color/main_white">
+
+    <!-- 툴바 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chat_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13.64dp"
+            android:layout_marginTop="18.29dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_left"
+            android:contentDescription="뒤로가기"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            style="@style/PretendardSubtitle2"
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="닉네임"
+            android:textColor="@color/main_black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_left"
+            app:layout_constraintTop_toTopOf="@id/btn_left"
+            app:layout_constraintStart_toEndOf="@id/btn_left"
+            app:layout_constraintHorizontal_bias="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 수정하기 버튼 -->
+    <Button
+        style="@style/PretendardBody5"
+        android:id="@+id/editButton"
+        android:layout_width="92dp"
+        android:layout_height="40dp"
+        android:text="수정하기"
+        android:backgroundTint="@color/main_green"
+        android:textSize="15sp"
+        android:textColor="@color/main_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="71dp"
+        android:layout_marginEnd="10dp"/>
+
+    <!-- 거래 확정 텍스트 -->
+    <TextView
+        style="@style/PretendardH6"
+        android:id="@+id/checktitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="거래를 확정했어요"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/main_green"
+        app:layout_constraintTop_toBottomOf="@+id/editButton"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="39dp" />
+
+    <ImageView
+        app:layout_constraintStart_toEndOf="@id/checktitle"
+        app:layout_constraintBottom_toBottomOf="@id/checktitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/lets_icons_check_fill"/>
+
+    <!-- 거래 날짜 라벨 -->
+    <TextView
+        style="@style/PretendardSemibold4"
+        android:id="@+id/dealDateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="거래 날짜"
+        android:textSize="18sp"
+        android:textColor="@color/main_green"
+        app:layout_constraintTop_toBottomOf="@id/checktitle"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="20dp"/>
+
+    <!-- 거래 날짜 입력 -->
+    <com.google.android.material.textfield.TextInputEditText
+        style="@style/PretendardBody8"
+        android:id="@+id/dealDateInput"
+        android:layout_width="311dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#f4f4f4"
+        android:paddingStart="12dp"
+        android:text="25/05/28"
+        android:textColor="@color/main_black"
+        app:layout_constraintTop_toBottomOf="@id/dealDateLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- 상품 금액 라벨 -->
+    <TextView
+        style="@style/PretendardSemibold4"
+        android:id="@+id/priceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="상품 금액"
+        android:textSize="18sp"
+        android:textColor="@color/main_green"
+        app:layout_constraintTop_toBottomOf="@id/dealDateInput"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="20dp"/>
+
+    <!-- 상품 금액 입력 -->
+    <com.google.android.material.textfield.TextInputEditText
+        style="@style/PretendardBody8"
+        android:id="@+id/priceInput"
+        android:layout_width="311dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#f4f4f4"
+        android:paddingStart="12dp"
+        android:text="2000"
+        android:textColor="@color/main_black"
+        app:layout_constraintTop_toBottomOf="@id/priceLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- 거래 방식 선택 텍스트 -->
+    <TextView
+        style="@style/PretendardSemibold2"
+        android:id="@+id/wayLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="거래 방식을 선택해주세요"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/main_black"
+        app:layout_constraintTop_toBottomOf="@id/priceInput"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="26dp" />
+
+    <!-- 만나서 거래할래요 버튼 -->
+    <Button
+        style="@style/PretendardSemibold3"
+        android:id="@+id/inpersonButton"
+        android:layout_width="156dp"
+        android:layout_height="60dp"
+        android:text="만나서 거래할래요"
+        android:textColor="#419461"
+        android:backgroundTint="#EDF9F2"
+        app:layout_constraintTop_toBottomOf="@id/wayLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="26dp"/>
+
+    <!-- 택배로 거래할래요 버튼 -->
+    <Button
+        style="@style/PretendardSemibold3"
+        android:id="@+id/deliveryButton"
+        android:layout_width="156dp"
+        android:layout_height="60dp"
+        android:text="택배로 거래할래요"
+        android:textColor="#b1b1b1"
+        android:backgroundTint="#F0F0F0"
+        app:layout_constraintTop_toBottomOf="@id/wayLabel"
+        app:layout_constraintStart_toEndOf="@id/inpersonButton"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"/>
+
+    <!-- 거래 완료 버튼 -->
+    <Button
+        android:id="@+id/completeButton"
+        style="@style/PretendardSemibold3"
+        android:layout_width="150dp"
+        android:layout_height="34dp"
+        android:text="거래 완료"
+        android:textSize="15dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/main_green"
+        app:layout_constraintTop_toBottomOf="@id/deliveryButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
+
+    <!-- 하단 안내 박스 -->
+    <LinearLayout
+        android:id="@+id/bottomBox"
+        android:orientation="vertical"
+        android:layout_width="347dp"
+        android:layout_height="153dp"
+        android:background="#EDF9F2"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/completeButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="26dp">
+
+        <TextView
+            style="@style/PretendardH3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N분의 1을 더 알차게 이용할래요!"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/main_green"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:weightSum="2"> <!-- 버튼 2개니까 2로 설정 -->
+
+            <Button
+                style="@style/PretendardBody5"
+                android:id="@+id/reviewButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:backgroundTint="@color/main_white"
+                android:text="후기 남길래요"
+                android:textColor="@color/main_green" />
+
+            <Button
+                android:id="@+id/reportButton"
+                style="@style/PretendardBody5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:backgroundTint="#F0F0F0"
+                android:text="N월 절약 리포트 보기"
+                android:textColor="#b1b1b1" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

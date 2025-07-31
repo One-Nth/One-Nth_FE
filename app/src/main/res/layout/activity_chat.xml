@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- 툴바 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chat_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_left"
+            android:layout_width="12.92dp"
+            android:layout_height="22.45dp"
+            android:layout_marginLeft="13.64dp"
+            android:layout_marginTop="18.29dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_left"
+            android:contentDescription="뒤로가기"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            style="@style/PretendardSubtitle2"
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="채팅"
+            android:textColor="@color/main_black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_left"
+            app:layout_constraintTop_toTopOf="@id/btn_left"
+            app:layout_constraintStart_toEndOf="@id/btn_left"
+            app:layout_constraintHorizontal_bias="0.5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ✅ 버튼 그룹 -->
+    <LinearLayout
+        android:id="@+id/chat_tab_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/chat_background"
+        app:layout_constraintTop_toBottomOf="@id/chat_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            style="@style/PretendardSubtitle4"
+            android:id="@+id/btn_onenth"
+            android:layout_width="89dp"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:layout_marginTop="39dp"
+            android:layout_marginLeft="24dp"
+            android:text="N분의 1"
+            android:textSize="15sp"
+            android:textColor="@color/main_white"
+            android:background="@drawable/tab_button_selected" />
+
+        <TextView
+            style="@style/PretendardSubtitle4"
+            android:id="@+id/btn_tip"
+            android:layout_width="119dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:layout_marginTop="39dp"
+            android:text="꿀팁 N분의 1"
+            android:textSize="15sp"
+            android:textColor="@color/main_black"
+            android:background="@drawable/tab_button_unselected" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:background="@color/chat_background"
+        app:layout_constraintTop_toBottomOf="@id/chat_tab_buttons"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/space_background"/>
+
+    <!-- ✅ ViewPager -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="28dp"
+        android:background="@color/chat_background"
+        android:backgroundTint="@color/chat_background"
+        app:layout_constraintTop_toBottomOf="@id/chat_tab_buttons"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

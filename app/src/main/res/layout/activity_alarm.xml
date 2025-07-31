@@ -12,6 +12,7 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="65dp"
+        android:padding="5.17dp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,22 +20,25 @@
 
         <ImageView
             android:id="@+id/btn_left"
-            android:layout_width="24.75dp"
-            android:layout_height="24.75dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_left"
-            android:layout_marginStart="8dp"
+            android:src="@drawable/humbleicons_arrow_up"
+            android:layout_marginTop="7.75dp"
+
             android:contentDescription="뒤로가기" />
 
         <TextView
+            style="@style/PretendardSubtitle2"
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="알림"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/main_green"
-            android:layout_centerInParent="true" />
+            android:textColor="@color/main_black"
+            android:layout_marginStart="50dp"
+           android:layout_marginTop="10dp"/>
     </RelativeLayout>
 
     <!-- 탭 -->

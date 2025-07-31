@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <!-- 받은 메시지 -->
+    <LinearLayout
+        android:id="@+id/leftChatLayout"
+        android:layout_width="343dp"
+        android:layout_height="63dp"
+        android:orientation="horizontal">
+
+        <!-- 프로필 이미지 (회색 원으로 대체) -->
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_gray" />
+
+        <!-- 말풍선 -->
+        <TextView
+            android:id="@+id/leftMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chat_bubble"
+            android:padding="10dp"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <!-- 보낸 메시지 -->
+    <LinearLayout
+        android:id="@+id/rightChatLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- 말풍선 -->
+        <TextView
+            android:id="@+id/rightMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chat_bubble_received"
+            android:padding="10dp"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+</LinearLayout>

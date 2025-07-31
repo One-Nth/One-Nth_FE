@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    android:paddingBottom="32dp"
+    android:layout_width="match_parent"
+    android:layout_height="415dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="415dp"
+        android:orientation="horizontal"
+        android:weightSum="5"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="8dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/chatMenuAlarm"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:src="@drawable/chat_menu_alarm" />
+
+            <TextView
+                style="@style/PretendardSubtitle5"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="알림끄기"
+                android:textSize="13dp"
+                android:layout_marginTop="7dp"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chatMenuCheck"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:src="@drawable/chat_menu_check" />
+
+            <TextView
+                style="@style/PretendardSubtitle5"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="거래 확정/수정"
+                android:textSize="13dp"
+                android:layout_marginTop="7dp"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chatMenuBlock"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:src="@drawable/chat_menu_block" />
+
+            <TextView
+                style="@style/PretendardSubtitle5"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="차단하기"
+                android:textSize="13dp"
+                android:layout_marginTop="7dp"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chatMenuDeclare"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:src="@drawable/chat_menu_declare" />
+
+            <TextView
+                style="@style/PretendardSubtitle5"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="신고하기"
+                android:textSize="13dp"
+                android:layout_marginTop="7dp"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chatMenuExit"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:src="@drawable/chat_menu_exit" />
+
+            <TextView
+                style="@style/PretendardSubtitle5"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="채팅방 나가기"
+                android:textSize="13dp"
+                android:layout_marginTop="7dp"
+                android:textColor="@android:color/black"  />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

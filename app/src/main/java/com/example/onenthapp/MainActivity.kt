@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -27,6 +28,11 @@ class MainActivity : AppCompatActivity() {
 
             when (item.itemId) {
                 R.id.plusFragment -> {
+                    false
+                }
+
+                R.id.chatFragment -> {
+                    startActivity(Intent(this, ChatActivity::class.java))
                     false
                 }
 

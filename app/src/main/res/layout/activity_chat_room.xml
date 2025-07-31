@@ -1,0 +1,79 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 상단 바 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chatTopToolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <include layout="@layout/chat_top_toolbar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 채팅 내용 리스트 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="44dp"
+        android:backgroundTint="#FFFF0000"
+        app:layout_constraintTop_toBottomOf="@id/chatTopToolbar"
+        app:layout_constraintBottom_toTopOf="@id/inputLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone" />
+
+    <!-- 입력창 -->
+    <LinearLayout
+        android:id="@+id/inputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <ImageButton
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/tabler_photo"
+            android:background="@null"
+            android:layout_marginTop="4dp"
+            android:contentDescription="사진 전송"/>
+
+        <EditText
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle_41"
+            android:layout_marginStart="11dp"/>
+
+        <ImageButton
+            android:layout_width="13dp"
+            android:layout_height="14.16dp"
+            android:src="@drawable/vector"
+            android:background="@null"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="13.84dp"
+            android:layout_marginEnd="24dp"
+            android:contentDescription="메시지 전송" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
