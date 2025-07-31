@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/main_green" android:state_checked="true"/> <!-- ON 상태 배경 -->
+    <item android:color="#DADADA"/> <!-- OFF 상태 배경 -->
+</selector>

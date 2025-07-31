@@ -53,4 +53,6 @@
     <color name="notification_already_read">#FFDADA</color>
     <color name="unselected">#f0f0f0</color>
 
+    <!-- 회원가입 -->
+    <color name="error_text">#FF0000</color>
 </resources>

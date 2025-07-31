@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="popup_menu_width">158dp</dimen>
+    <dimen name="bottom_sheet_peek_height">130dp</dimen>
+    <dimen name="bottom_sheet_half_height">341dp</dimen>
 </resources>

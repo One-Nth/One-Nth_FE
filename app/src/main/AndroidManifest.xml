@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- 위치 정보 사용 권한 (선택 사항, 필요에 따라 추가) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- ✅ 인터넷 권한 추가 -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:usesCleartextTraffic="true"
+        android:name=".GlobalApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/ic_main_logo"
+        android:label="N분의 1"
+        android:roundIcon="@drawable/ic_main_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme_OneNthApp"
         tools:targetApi="31">
-        <meta-data
-            android:name="com.naver.maps.map.NCP_KEY_ID"
-            android:value="${naverMapClientId}" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme_OneNthApp">
 
-          <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--          <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
         </activity>
         <activity android:name=".AlarmActivity" android:exported="false" />
         <activity android:name=".MyReviewActivity" android:exported="false" />
@@ -39,6 +44,28 @@
             android:name=".ChatRoomActivity"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity android:name=".AccountSettingsActivity" />
+        <activity android:name=".BlockedUsersActivity" />
+        <activity android:name=".PolicyActivity" />
+        <activity android:name=".LifeTipsSearchActivity" />
+        <activity android:name=".LifeTipsDetailActivity" />
+
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".SignupActivity" android:exported="false" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+
+        <activity android:name=".SignupActivity2" android:exported="false" />
 
     </application>
 

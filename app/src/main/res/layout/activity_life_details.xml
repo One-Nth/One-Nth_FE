@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_white"
+    tools:context=".LifeTipsSearchActivity">
+
+    <!-- 툴바 -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_search_result"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@color/main_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/humbleicons_arrow_up"
+            android:contentDescription="뒤로가기" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_gravity="end|center_vertical"
+            android:paddingEnd="16dp">
+
+            <ImageView
+                android:id="@+id/iv_notification"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/alarm_off"
+                android:layout_marginEnd="16dp" />
+
+            <ImageView
+                android:id="@+id/ivShare"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_share_gray"
+                android:layout_marginEnd="16dp" />
+
+            <ImageView
+                android:id="@+id/ivBookmark"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_bookmark_on" />
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- 게시글(고정 영역) -->
+    <LinearLayout
+        android:id="@+id/postContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_search_result"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 작성자 정보 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/avatar"
+                android:layout_marginEnd="8dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/PretendardSubtitle4"
+                    android:layout_width="48dp"
+                    android:layout_height="25dp"
+                    android:text="닉네임"
+                    android:textColor="@color/main_black" />
+
+                <TextView
+                    style="@style/PretendardSubtitle4"
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:text="00동 · 3분전"
+                    android:textColor="@color/light_gray" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 제목 -->
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardSubtitle1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="20dp"
+            android:text="OOO모기약 어떤가요?"
+            android:textColor="@color/main_black" />
+
+        <!-- 내용 -->
+        <TextView
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            style="@style/PretendardBody5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="20dp"
+            android:text="사진 첨부합니다 써보신 분들 후기 알려주세요~"
+            android:textColor="@color/light_gray" />
+
+        <!-- 첨부 이미지 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="155dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/rectangle_tips" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle_tips" />
+        </LinearLayout>
+
+        <!-- 아이콘 영역 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_board_comment" />
+
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:textColor="@color/main_black"
+                android:layout_marginStart="4dp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_board_like" />
+
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textColor="@color/main_black"
+                android:layout_marginStart="4dp" />
+
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="조회수 24"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/light_gray" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 구분선 -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:background="@color/main_gray"
+        app:layout_constraintTop_toBottomOf="@id/postContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 댓글 개수 -->
+    <TextView
+        style="@style/PretendardBody4"
+        android:id="@+id/tvCommentCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light_gray"
+        android:text="댓글 2"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 댓글 RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvComments"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tvCommentCount"
+        app:layout_constraintBottom_toTopOf="@id/commentInputContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 댓글 입력창 -->
+    <LinearLayout
+        android:id="@+id/commentInputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/main_white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/tabler_photo" />
+
+        <EditText
+            android:id="@+id/etComment"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/comment_input_border"
+            android:hint="댓글을 작성하세요."
+            android:paddingHorizontal="13dp"
+            android:textColor="@color/main_black"
+            android:textColorHint="#888888"
+            android:gravity="center_vertical|start"
+            android:inputType="text" />
+
+        <ImageView
+            android:id="@+id/btnSendComment"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/vector"
+            android:contentDescription="댓글 전송" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
