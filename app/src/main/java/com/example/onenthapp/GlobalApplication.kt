@@ -5,8 +5,13 @@ import android.app.Application
 import com.kakao.vectormap.KakaoMapSdk
 
 class GlobalApplication : Application() {
+    companion object {
+        lateinit var instance : GlobalApplication
+
+    }
     override fun onCreate() {
         super.onCreate()
+        instance = this
 
         // Kakao SDK 초기화
         val kakaoNativeAppKey = BuildConfig.APP_KEY

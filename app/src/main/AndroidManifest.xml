@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET" />
     <!-- 위치 정보 사용 권한 (선택 사항, 필요에 따라 추가) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -17,7 +16,6 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/ic_main_logo"
         android:label="N분의 1"
-        android:usesCleartextTraffic="true"
         android:roundIcon="@drawable/ic_main_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme_OneNthApp"

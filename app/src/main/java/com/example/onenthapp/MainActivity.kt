@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.plusShareFragment,
                 R.id.statsFragment,
                 R.id.chatFragment,
-                R.id.mypageFragment
             ).contains(dest.id)
 
             binding.bottomNavigationView.isVisible = !hideOn
