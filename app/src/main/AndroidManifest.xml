@@ -68,5 +68,6 @@
         <activity android:name=".ScrapActivity"/>
         <activity android:name=".LikePostActivity" />
         <activity android:name=".MyPostActivity" />
+        <activity android:name=".LoginActivity2" />
     </application>
 </manifest>
