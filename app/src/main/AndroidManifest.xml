@@ -65,5 +65,9 @@
         <activity android:name=".LoginActivity" android:exported="false" />
         <activity android:name=".SignupActivity2" android:exported="false" />
 
+        <activity android:name=".ScrapActivity"/>
+        <activity android:name=".LikePostActivity" />
+        <activity android:name=".MyPostActivity" />
+        <activity android:name=".LoginActivity2" />
     </application>
 </manifest>
