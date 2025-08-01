@@ -1,6 +1,7 @@
 package com.example.onenthapp
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -62,6 +63,12 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         kakaoMapView = binding.map
         initBottomSheet()
+
+        binding.btNotification.setOnClickListener {
+            val intent = Intent(requireContext(), AlarmActivity::class.java)
+            startActivity(intent)
+        }
+
         // 진입 시: 결과가 있으면 mid, 없으면 숨김
         if (lastResults.isNotEmpty()) {
             initBottomSheet()
@@ -246,6 +253,7 @@ class HomeFragment : Fragment() {
             showMidPreview(result)
         }
     }
+
     fun showMidPreview(item: SearchResult) {
         // ① preview_card(include된 item_search_result.xml) 바인딩
         val previewBinding = binding.previewCard

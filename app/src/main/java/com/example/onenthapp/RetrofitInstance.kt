@@ -2,6 +2,7 @@ package com.example.onenthapp
 
 import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.PlusApi
+import com.example.onenthapp.data.MessageApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
@@ -39,5 +40,9 @@ object RetrofitInstance {
     }
     val plusApi: PlusApi by lazy {
         retrofit.create(PlusApi::class.java)
+    }
+
+    val messageApi: MessageApi by lazy {
+        retrofit.create(MessageApi::class.java)
     }
 }
