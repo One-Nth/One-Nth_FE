@@ -22,6 +22,8 @@ import java.io.File
 import java.io.ByteArrayOutputStream
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap // bmp.compress를 위해 필요
+import android.text.Editable
+import android.text.TextWatcher
 import okhttp3.MultipartBody // MultipartBody.Part를 위해 필요
 
 class PlusBuyFragment : Fragment() {
@@ -39,26 +41,37 @@ class PlusBuyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToggleButtons()
+        setupValidation()
         binding.btnProductSubmit.setOnClickListener {
             // 1) 폼 값 읽기
             val name = binding.etProductName.text.toString()
-            //val price = binding.etProductOrigincost.text.toString()
             val priceStr = binding.etProductOrigincost.text.toString().trim()
-            val price = priceStr.toIntOrNull() ?: run {
-                Toast.makeText(requireContext(), "가격을 숫자로 입력하세요", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            val price = priceStr.toIntOrNull()
+//            if (name.isEmpty() || price == null) {
+//                // 이름 비었거나 가격 숫자 변환 실패
+//                if (price == null) {
+//                    binding.tvPriceError.text       = "가격을 숫자로 입력하세요."
+//                    binding.tvPriceError.visibility = View.VISIBLE
+//                } else {
+//                    Toast.makeText(requireContext(),
+//                        "상품명을 입력하세요", Toast.LENGTH_SHORT).show()
+//                }
+//                return@setOnClickListener
+//            }
             val url = binding.etProductUrl.text.toString()
-            val location = binding.etProductUrl.text.toString()
+            val location = binding.etProductLocation.text.toString()
+            val expriy = binding.etProductDue.text.toString()
             // 2) 요청 객체 생성
             val req = BuyRequest(
                 name = name,
-                purchaseMethod = if (binding.btnWay1.isChecked) "OFFLINE" else "ONLINE",
+                purchaseMethod = if (binding.btnWay1.isChecked) "ONLINE" else "OFFLINE",
                 itemCategory = "ELECTRONICS",               // 실제 선택값으로 교체
                 purchaseUrl = url,                        // 해당 탭엔 URL 없음
-                purchaseLocation = "서울특별시 송파구 잠실동",                        // 해당 탭엔 Location 없음
-                originPrice = price,
-                tags = listOf("#예시")               // 실제 태그 파싱 로직으로 교체
+                purchaseLocation = location,                        // 해당 탭엔 Location 없음
+                price = price,
+                tags = listOf("#예시"),             // 실제 태그 파싱 로직으로 교체
+                expirationDate = expriy
             )
             // JSON → RequestBody
             val json     = Gson().toJson(req)
@@ -127,20 +140,118 @@ class PlusBuyFragment : Fragment() {
         binding.includeToolbar.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
-        setupToggleButtons()
+    }
+
+    private fun setupValidation() {
+        val watcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                validatePrice()
+                validateLocation()
+                validateExpiry()
+                validateTags()
+                binding.btnProductSubmit.isEnabled = isFormValid()
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        }
+        with(binding) {
+            etProductOrigincost.addTextChangedListener(watcher)  // 가격
+            etProductLocation .addTextChangedListener(watcher)  // 장소
+            etProductDue      .addTextChangedListener(watcher)  // 만료일
+            etProductTag      .addTextChangedListener(watcher)  // 태그
+        }
+
+        // 카테고리(ChipGroup) 선택 시에도 만료일 검증
+        binding.cgCategoryShare.setOnCheckedChangeListener { _, checkedId ->
+            validateExpiry()
+            binding.btnProductSubmit.isEnabled = isFormValid()
+        }
     }
 
     private fun setupToggleButtons() {
+        // online 버튼 클릭시
         binding.btnWay1.setOnClickListener {
+            // 토글 버튼 상태 변경
             binding.btnWay1.isChecked = true
             binding.btnWay2.isChecked = false
+            // location 입력 불가
+            binding.etProductLocation.isEnabled = false
+            binding.etProductLocation.setText("")
+            binding.tvLocationError.text       = "온라인 구매 시 장소를 입력할 수 없습니다."
+            binding.tvLocationError.visibility = View.VISIBLE
         }
+        // offline 클릭시 location 필수
         binding.btnWay2.setOnClickListener {
             binding.btnWay2.isChecked = true
             binding.btnWay1.isChecked = false
+            binding.etProductLocation.isEnabled = true
+            binding.tvLocationError.visibility = View.GONE
+        }
+    }
+    private fun validatePrice() {
+        val str = binding.etProductOrigincost.text.toString().trim()
+        if (str.toIntOrNull() == null) {
+            binding.tvPriceError.text       = "가격을 숫자로 입력하세요"
+            binding.tvPriceError.visibility = View.VISIBLE
+        } else {
+            binding.tvPriceError.visibility = View.GONE
         }
     }
 
+    private fun validateLocation() {
+        if (binding.btnWay2.isChecked) {
+            // OFFLINE 일 때만 필수
+            if (binding.etProductLocation.text.toString().trim().isEmpty()) {
+                binding.tvLocationError.text       = "구매 장소를 입력해주세요"
+                binding.tvLocationError.visibility = View.VISIBLE
+            } else {
+                binding.tvLocationError.visibility = View.GONE
+            }
+        }
+        // ONLINE 은 toggle 버튼에서 이미 보여줬으니 여기선 건너뛰기
+    }
+
+    private fun validateExpiry() {
+        // FOOD 선택 시에만 체크
+        val isFood = binding.chipFood.isChecked
+        val raw    = binding.etProductDue.text.toString().trim()
+        if (isFood) {
+            if (!Regex("""\d{4}-\d{2}-\d{2}""").matches(raw)) {
+                binding.tvExpiryError.text       = "날짜 형식은 YYYY-MM-DD 이어야 합니다"
+                binding.tvExpiryError.visibility = View.VISIBLE
+            } else {
+                binding.tvExpiryError.visibility = View.GONE
+            }
+        } else {
+            // FOOD 외엔 입력 불필요
+            binding.tvExpiryError.text       = "음식 외의 카테고리는 기한을 입력할 수 없습니다"
+            binding.tvExpiryError.visibility = View.VISIBLE
+        }
+    }
+
+    private fun validateTags() {
+        val tag = binding.etProductTag.text.toString().trim()
+        if (tag.isNotEmpty() && !tag.startsWith("#")) {
+            binding.tvTagsError.text       = "태그는 반드시 #으로 시작해야 합니다"
+            binding.tvTagsError.visibility = View.VISIBLE
+        } else {
+            binding.tvTagsError.visibility = View.GONE
+        }
+    }
+
+    private fun isFormValid(): Boolean {
+        // 이름만큼은 무조건 채워야 한다면 추가 가능
+        val priceOk  = binding.etProductOrigincost.text.toString().toIntOrNull() != null
+        val locOk    = if (binding.btnWay2.isChecked)
+            binding.etProductLocation.text.toString().trim().isNotEmpty()
+        else true
+        val tagsOk   = binding.etProductTag.text.toString().let { it.isEmpty() || it.startsWith("#") }
+        val expiryOk = if (binding.chipFood.isChecked)
+            Regex("""\d{4}-\d{2}-\d{2}""")
+                .matches(binding.etProductDue.text.toString().trim())
+        else true
+        return priceOk && locOk && tagsOk && expiryOk
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
