@@ -17,10 +17,10 @@ interface AuthApi {
     ): Response<EmailResponse<String>>
 
     // ✅ 회원가입 API 추가
-    @POST("members/signup")
-    suspend fun signUp(
-        @Body request: SignUpRequest
-    ): Response<SignUpResponse>
+    @POST("/api/members/signup")
+    suspend fun signup(
+        @Body request: SignupRequest
+    ): Response<SignupResponse>
 
     @POST("/api/members/login")
     suspend fun login(

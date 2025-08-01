@@ -82,7 +82,13 @@ class SignupActivity : AppCompatActivity() {
 
             // ✅ 모든 조건 통과 시 다음 화면으로 이동
             val intent = Intent(this, SignupActivity2::class.java)
+            // SignupActivity2로 데이터 전달
+            intent.putExtra("email", edtEmail.text.toString())
+            intent.putExtra("password", edtPassword.text.toString())
+            intent.putExtra("confirmPassword", edtPasswordConfirm.text.toString())
+
             startActivity(intent)
+
         }
 
         // ✅ 이메일 인증 코드 요청

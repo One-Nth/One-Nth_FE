@@ -12,8 +12,7 @@ class AuthRepository {
         api.verifyCode(mapOf("email" to email, "code" to code))
 
     // ✅ 회원가입 호출 함수
-    suspend fun signUp(request: SignUpRequest) =
-        api.signUp(request)
+    suspend fun signup(request: SignupRequest) = api.signup(request)
 
     suspend fun login(email: String, password: String) =
         api.login(LoginRequest(email, password))
