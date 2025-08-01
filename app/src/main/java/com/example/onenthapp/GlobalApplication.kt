@@ -2,6 +2,7 @@ package com.example.onenthapp
 
 
 import android.app.Application
+import com.example.onenthapp.util.TokenManager
 import com.kakao.vectormap.KakaoMapSdk
 
 class GlobalApplication : Application() {
@@ -12,6 +13,9 @@ class GlobalApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        //토큰 초기화
+        TokenManager.init(this)
 
         // Kakao SDK 초기화
         val kakaoNativeAppKey = BuildConfig.APP_KEY

@@ -15,4 +15,6 @@ class AuthRepository {
     suspend fun signUp(request: SignUpRequest) =
         api.signUp(request)
 
+    suspend fun login(email: String, password: String) =
+        api.login(LoginRequest(email, password))
 }
