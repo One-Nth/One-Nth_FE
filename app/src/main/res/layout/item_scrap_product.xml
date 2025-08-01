@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- 태그 -->
+    <TextView
+        android:id="@+id/tvTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="같이 사요"
+        android:background="@drawable/bg_category_tag"
+        android:textColor="@color/main_green"
+        android:layout_marginStart="0dp"
+        android:textSize="12sp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"/>
+
+    <!-- 상품 카드 -->
+    <LinearLayout
+        android:layout_width="347dp"
+        android:layout_height="88dp"
+        android:orientation="horizontal"
+        android:background="@drawable/scrap_border"
+        android:padding="5dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:id="@+id/ivProduct"
+            android:layout_width="79dp"
+            android:layout_height="81dp"
+            android:layout_marginTop="0dp"
+            android:layout_gravity="top"
+            android:src="@drawable/rectangle_11"
+            android:scaleType="centerCrop"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                style="@style/PretendardSemibold3"
+                android:id="@+id/tvProductName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상품명"
+                android:textColor="@color/main_black"/>
+
+            <TextView
+                style="@style/PretendardBody4"
+                android:id="@+id/tvProductInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가격 / 수량 / 원래 가격"
+                android:textColor="@color/N_saved_gray"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 조회수 + 시간 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="6dp">
+
+        <TextView
+            android:id="@+id/tvViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="조회수 24"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="250dp"
+            android:text="3분전"
+            android:textSize="12sp"
+            android:textColor="@color/light_gray"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#E0E0E0" />
+</LinearLayout>
