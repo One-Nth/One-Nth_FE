@@ -194,6 +194,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp"/>
 
+    <!-- 운송장 입력 라벨 -->
+    <TextView
+        android:id="@+id/trackingNumberLabel"
+        style="@style/PretendardSemibold4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="운송장 번호"
+        android:textSize="18sp"
+        android:textColor="@color/main_green"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/deliveryButton"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="20dp" />
+
+    <!-- 운송장 입력 필드 -->
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/trackingNumberInput"
+        style="@style/PretendardBody8"
+        android:layout_width="311dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#f4f4f4"
+        android:paddingStart="12dp"
+        android:hint="운송장 번호를 입력하세요"
+        android:textColor="@color/main_black"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/trackingNumberLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="8dp" />
+
+
     <!-- 하단 안내 박스 -->
     <LinearLayout
         android:id="@+id/bottomBox"
