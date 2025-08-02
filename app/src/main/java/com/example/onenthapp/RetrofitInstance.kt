@@ -2,6 +2,8 @@ package com.example.onenthapp
 
 import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.PlusApi
+import com.example.onenthapp.util.TokenManager
+
 import com.example.onenthapp.data.MessageApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -15,17 +17,19 @@ object RetrofitInstance {
     private val client = OkHttpClient.Builder()
         .addInterceptor{ chain ->
             val orig = chain.request()
+            val token = TokenManager.getToken()  // ✅ 변경됨
             val req  = orig.newBuilder()
-                .addHeader("Authorization", "Bearer ${getToken()}")
+//                .addHeader("Authorization", "Bearer ${getToken()}")
+                .addHeader("Authorization", "Bearer $token")
                 .build()
             chain.proceed(req)
         }
         .addInterceptor(logging)
         .build()
 
-    private fun getToken(): String {
-        return "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzUzOTMxOTA1LCJleHAiOjE3NTM5NDYzMDV9.lHmj0PCmu5B-6vJ5M3NAj1_N2OaZEqxzJoKi2jZqVH0"
-    }
+//    private fun getToken(): String {
+//        return "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzUzOTMxOTA1LCJleHAiOjE3NTM5NDYzMDV9.lHmj0PCmu5B-6vJ5M3NAj1_N2OaZEqxzJoKi2jZqVH0"
+//    }
 
     private val retrofit by lazy {
         Retrofit.Builder()

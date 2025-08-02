@@ -17,8 +17,28 @@ interface AuthApi {
     ): Response<EmailResponse<String>>
 
     // ✅ 회원가입 API 추가
-    @POST("members/signup")
-    suspend fun signUp(
-        @Body request: SignUpRequest
-    ): Response<SignUpResponse>
+    @POST("/api/members/signup")
+    suspend fun signup(
+        @Body request: SignupRequest
+    ): Response<SignupResponse>
+
+    @POST("/api/members/login")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): Response<LoginResponse>
+
+    @POST("/api/email-auth/password/request-code")
+    suspend fun requestPasswordResetCode(
+        @Body body: Map<String, String>
+    ): Response<EmailResponse<String>>
+
+    @POST("/api/email-auth/password/verify-code")
+    suspend fun verifyPasswordResetCode(
+        @Body body: Map<String, String>
+    ): Response<EmailResponse<String>>
+
+    @POST("/api/members/password/reset")
+    suspend fun resetPassword(
+        @Body body: Map<String, String>
+    ): Response<EmailResponse<Any>>
 }

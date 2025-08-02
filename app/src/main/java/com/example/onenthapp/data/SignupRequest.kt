@@ -1,6 +1,6 @@
 package com.example.onenthapp.data
 
-data class SignUpRequest(
+data class SignupRequest(
     val name: String,
     val email: String,
     val password: String,
@@ -10,14 +10,15 @@ data class SignUpRequest(
     val marketingAgree: Boolean
 )
 
-data class SignUpResponse(
+data class SignupResponse(
     val isSuccess: Boolean,
     val code: String,
     val message: String,
-    val result: SignUpResult?
+    val result: SignupResult
 )
 
-data class SignUpResult(
+data class SignupResult(
     val memberId: Int,
     val createdAt: String
 )
+
