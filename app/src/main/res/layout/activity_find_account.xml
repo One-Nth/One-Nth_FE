@@ -272,7 +272,7 @@
         android:id="@+id/nextButton"
         android:layout_width="156dp"
         android:layout_height="60dp"
-        android:src="@drawable/nextbutton"
+        android:src="@drawable/btn_findaccount_login"
         android:background="@null"
         android:contentDescription="다음으로"
         android:layout_marginTop="40dp"
