@@ -26,4 +26,19 @@ interface AuthApi {
     suspend fun login(
         @Body request: LoginRequest
     ): Response<LoginResponse>
+
+    @POST("/api/email-auth/password/request-code")
+    suspend fun requestPasswordResetCode(
+        @Body body: Map<String, String>
+    ): Response<EmailResponse<String>>
+
+    @POST("/api/email-auth/password/verify-code")
+    suspend fun verifyPasswordResetCode(
+        @Body body: Map<String, String>
+    ): Response<EmailResponse<String>>
+
+    @POST("/api/members/password/reset")
+    suspend fun resetPassword(
+        @Body body: Map<String, String>
+    ): Response<EmailResponse<Any>>
 }

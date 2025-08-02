@@ -3,8 +3,10 @@ package com.example.onenthapp
 import LoginViewModel
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +19,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        Log.d("DEBUG", "LoginActivity onCreate 실행됨")
 
         // ✅ ViewModel 초기화
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
@@ -24,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
         val emailEt = findViewById<EditText>(R.id.emailEditText)
         val passwordEt = findViewById<EditText>(R.id.passwordEditText)
         val loginBtn = findViewById<ImageView>(R.id.button2)
+        val findAccountBtn = findViewById<ImageButton>(R.id.button1)
 
         loginBtn.setOnClickListener {
             val email = emailEt.text.toString().trim()
@@ -46,7 +50,15 @@ class LoginActivity : AppCompatActivity() {
             })
 
         }
+
+        // ✅ 계정찾기 버튼 클릭 → FindAccountActivity로 이동
+        findAccountBtn.setOnClickListener {
+            val intent = Intent(this, FindAccountActivity::class.java)
+            startActivity(intent)
+        }
     }
+
+
 }
 
 

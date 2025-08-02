@@ -62,12 +62,13 @@
         </activity>
 
         <activity android:name=".SignupActivity" android:exported="false" />
-        <activity android:name=".LoginActivity" android:exported="false" />
+        <activity android:name=".LoginActivity" android:exported="true" />
         <activity android:name=".SignupActivity2" android:exported="false" />
 
         <activity android:name=".ScrapActivity"/>
         <activity android:name=".LikePostActivity" />
         <activity android:name=".MyPostActivity" />
         <activity android:name=".LoginActivity2" />
+        <activity android:name=".FindAccountActivity" />
     </application>
 </manifest>

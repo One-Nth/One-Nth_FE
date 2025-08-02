@@ -16,4 +16,15 @@ class AuthRepository {
 
     suspend fun login(email: String, password: String) =
         api.login(LoginRequest(email, password))
+
+
+    suspend fun requestPasswordResetCode(name: String, email: String) =
+        api.requestPasswordResetCode(mapOf("name" to name, "email" to email))
+
+    suspend fun verifyPasswordResetCode(email: String, code: String) =
+        api.verifyPasswordResetCode(mapOf("email" to email, "code" to code))
+
+    suspend fun resetPassword(email: String, newPassword: String) =
+        api.resetPassword(mapOf("email" to email, "newPassword" to newPassword))
+
 }
