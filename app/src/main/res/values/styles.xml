@@ -181,4 +181,10 @@
         <item name="android:textColor">#333333</item>
         <item name="android:fontFamily">@font/pretendard_medium</item>
     </style>
+
+    //프로필 규격
+    <style name="CircularShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

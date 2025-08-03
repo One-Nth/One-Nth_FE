@@ -1,6 +1,7 @@
 package com.example.onenthapp
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -8,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -16,16 +18,31 @@ import com.bumptech.glide.Glide
 import com.example.onenthapp.model.MemberViewModel
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.FileOutputStream
 
 
 class AccountSettingsActivity : AppCompatActivity() {
 
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            uploadProfileImage(uri)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_settings)
 
         val nicknameInput = findViewById<EditText>(R.id.nicknameInput)
         val profileImageView = findViewById<ImageView>(R.id.profileImage) // 레이아웃의 프로필 이미지뷰 ID 맞춰야 함
+
+        // 프로필 이미지 클릭 시 갤러리 열기
+        profileImageView.setOnClickListener {
+            pickImage.launch("image/*")
+        }
 
         // ✅ 앱 실행 시 서버에서 프로필(닉네임 + 이미지) 가져오기
         lifecycleScope.launch {
@@ -147,6 +164,41 @@ class AccountSettingsActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun uploadProfileImage(uri: Uri) {
+        lifecycleScope.launch {
+            try {
+                val inputStream = contentResolver.openInputStream(uri)
+                val file = File(cacheDir, "profile_image.jpg")
+                val outputStream = FileOutputStream(file)
+                inputStream?.copyTo(outputStream)
+                inputStream?.close()
+                outputStream.close()
+
+                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
+
+                val response = RetrofitInstance.memberApi.changeProfileImage(body)
+
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    val newUrl = response.body()?.result?.profileImageUrl
+
+                    Toast.makeText(this@AccountSettingsActivity, "프로필 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show()
+
+                    Glide.with(this@AccountSettingsActivity)
+                        .load(newUrl)
+                        .placeholder(R.drawable.avatar)
+                        .circleCrop() // ✅ 원형 크롭
+                        .into(findViewById(R.id.profileImage))
+                } else {
+                    Toast.makeText(this@AccountSettingsActivity, response.body()?.message ?: "변경 실패", Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: Exception) {
+                Toast.makeText(this@AccountSettingsActivity, "오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun showLogoutDialog() {

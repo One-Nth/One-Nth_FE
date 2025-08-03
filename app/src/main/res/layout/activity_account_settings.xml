@@ -42,12 +42,13 @@
         android:layout_marginTop="20dp" />
 
     <!-- 프로필 이미지 자리 -->
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profileImage"
         android:layout_width="87dp"
         android:layout_height="87dp"
         android:src="@drawable/avatar"
         android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircularShapeAppearance"
         app:layout_constraintTop_toBottomOf="@id/separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +65,7 @@
         app:layout_constraintTop_toBottomOf="@id/profileImage"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="44dp" />
 
     <!-- 닉네임 텍스트 -->
     <EditText
@@ -83,7 +84,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnNicknameEdit"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp" />
 
     <ImageButton
@@ -127,7 +128,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnChangePassword"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp" />
 
     <ImageButton
@@ -158,7 +159,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnConfirmPassword"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp" />
 
     <ImageButton

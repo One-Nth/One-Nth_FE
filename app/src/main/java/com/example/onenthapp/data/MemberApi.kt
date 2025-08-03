@@ -13,9 +13,11 @@ import retrofit2.http.PATCH
 import retrofit2.http.Part
 
 interface MemberApi {
+    //✅ 탈퇴하기
     @DELETE("members/withdraw")
     suspend fun withdraw(): Response<CommonResponse<String>>
 
+    //✅ 비밀번호 변경
     @PATCH("user-settings/profile/password")
     suspend fun changePassword(
         @Body body: Map<String, String>
