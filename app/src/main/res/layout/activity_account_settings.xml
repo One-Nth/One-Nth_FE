@@ -111,14 +111,14 @@
 
     <!-- 현재 비밀번호 표시 -->
     <EditText
-        style="@style/PretendardSemibold3"
+        style="@style/PretendardBody5"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
         android:id="@+id/passwordMasked"
         android:layout_width="match_parent"
         android:layout_height="47dp"
         android:background="@drawable/edittext_border2"
-        android:text="********"
+        android:hint="변경할 비밀번호를 입력해주세요"
         android:textColor="@color/main_black"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
@@ -148,7 +148,7 @@
         android:id="@+id/newPasswordInput"
         android:layout_width="match_parent"
         android:layout_height="47dp"
-        android:hint="변경할 비밀번호를 입력해주세요"
+        android:hint="변경할 비밀번호를 다시 입력해주세요"
         android:textColor="@color/main_black"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
