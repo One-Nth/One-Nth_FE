@@ -82,6 +82,45 @@ class AccountSettingsActivity : AppCompatActivity() {
                 }
             }
         }
+
+        val btnNicknameEdit = findViewById<ImageButton>(R.id.btnNicknameEdit)
+        val nicknameInput = findViewById<EditText>(R.id.nicknameInput)
+
+        btnNicknameEdit.setOnClickListener {
+            val newNickname = nicknameInput.text.toString().trim()
+
+            if (newNickname.isEmpty()) {
+                Toast.makeText(this, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            lifecycleScope.launch {
+                try {
+                    val response = RetrofitInstance.memberApi.changeNickname(
+                        mapOf("nickname" to newNickname)
+                    )
+
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        val changedName = response.body()?.result?.nickname ?: newNickname
+                        Toast.makeText(
+                            this@AccountSettingsActivity,
+                            "닉네임이 변경되었습니다: $changedName",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        nicknameInput.setText(changedName) // 변경된 닉네임으로 입력창 업데이트
+                    } else {
+                        Toast.makeText(
+                            this@AccountSettingsActivity,
+                            response.body()?.message ?: "닉네임 변경 실패",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this@AccountSettingsActivity, "오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
     }
 
     private fun showLogoutDialog() {

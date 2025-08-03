@@ -13,4 +13,9 @@ interface MemberApi {
     suspend fun changePassword(
         @Body body: Map<String, String>
     ): Response<CommonResponse<Any>>
+
+    @PATCH("user-settings/profile/nickname")
+    suspend fun changeNickname(
+        @Body body: Map<String, String>
+    ): Response<NicknameResponse>
 }
