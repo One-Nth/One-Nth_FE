@@ -55,6 +55,8 @@ object RetrofitInstance {
 
     val messageApi: MessageApi by lazy {
         retrofit.create(MessageApi::class.java)
+    }
+
     val myRegionApi: MyRegionApi by lazy {
         retrofit.create(MyRegionApi::class.java)
     }

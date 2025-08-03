@@ -46,32 +46,37 @@ class PlusBuyFragment : Fragment() {
         binding.btnProductSubmit.setOnClickListener {
             // 1) 폼 값 읽기
             val name = binding.etProductName.text.toString()
-            val priceStr = binding.etProductOrigincost.text.toString().trim()
+            val priceStr = binding.etProductCost.text.toString().trim()
             val price = priceStr.toIntOrNull()
 //            if (name.isEmpty() || price == null) {
-//                // 이름 비었거나 가격 숫자 변환 실패
-//                if (price == null) {
-//                    binding.tvPriceError.text       = "가격을 숫자로 입력하세요."
-//                    binding.tvPriceError.visibility = View.VISIBLE
-//                } else {
-//                    Toast.makeText(requireContext(),
-//                        "상품명을 입력하세요", Toast.LENGTH_SHORT).show()
+//                if (name.isEmpty()){
+//                    binding.tvNameError.text       = "상품명을 입력해주세요."
+//                    binding.tvNameError.visibility = View.VISIBLE
 //                }
+//                if (price == null) {
+//                    binding.tvPriceError.text       = "가격을 입력해주세요."
+//                    binding.tvPriceError.visibility = View.VISIBLE
+//                }
+//                // 이름, 가격 비었을 때
 //                return@setOnClickListener
 //            }
             val url = binding.etProductUrl.text.toString()
             val location = binding.etProductLocation.text.toString()
-            val expriy = binding.etProductDue.text.toString()
+            val tag = binding.etProductTag.text.toString()
+                .split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+            val expiry = binding.etProductDue.text.toString()
             // 2) 요청 객체 생성
             val req = BuyRequest(
                 name = name,
                 purchaseMethod = if (binding.btnWay1.isChecked) "ONLINE" else "OFFLINE",
                 itemCategory = "ELECTRONICS",               // 실제 선택값으로 교체
-                purchaseUrl = url,                        // 해당 탭엔 URL 없음
+                purchaseUrl = url,
                 purchaseLocation = location,                        // 해당 탭엔 Location 없음
                 price = price,
                 tags = listOf("#예시"),             // 실제 태그 파싱 로직으로 교체
-                expirationDate = expriy
+                expirationDate = expiry
             )
             // JSON → RequestBody
             val json     = Gson().toJson(req)
@@ -92,7 +97,7 @@ class PlusBuyFragment : Fragment() {
                 val bos = ByteArrayOutputStream().apply {
                     bmp.compress(Bitmap.CompressFormat.JPEG, 80, this)
                 }
-                val dummy = File(requireContext().cacheDir, "mock_image.jpg")
+                val dummy = File(requireContext().cacheDir, "image_tissue_2.jpg")
                     .apply { writeBytes(bos.toByteArray()) }
                 val rb = dummy.readBytes().toRequestBody("image/jpeg".toMediaType())
                 listOf(MultipartBody.Part.createFormData("imageFiles", dummy.name, rb))
@@ -101,7 +106,7 @@ class PlusBuyFragment : Fragment() {
             val bundle = bundleOf(
                 "productName" to name,
                 "productPrice" to priceStr,
-                //"productImageUri" to imageUri
+                "productImageUri" to realUris
             )
             // 3) 네트워크 호출
             lifecycleScope.launch {
@@ -154,8 +159,9 @@ class PlusBuyFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
+
         with(binding) {
-            etProductOrigincost.addTextChangedListener(watcher)  // 가격
+            etProductCost     .addTextChangedListener(watcher)  // 가격
             etProductLocation .addTextChangedListener(watcher)  // 장소
             etProductDue      .addTextChangedListener(watcher)  // 만료일
             etProductTag      .addTextChangedListener(watcher)  // 태그
@@ -188,8 +194,9 @@ class PlusBuyFragment : Fragment() {
             binding.tvLocationError.visibility = View.GONE
         }
     }
+    // 입력 후 로직으로 변경
     private fun validatePrice() {
-        val str = binding.etProductOrigincost.text.toString().trim()
+        val str = binding.etProductCost.text.toString().trim()
         if (str.toIntOrNull() == null) {
             binding.tvPriceError.text       = "가격을 숫자로 입력하세요"
             binding.tvPriceError.visibility = View.VISIBLE
@@ -198,6 +205,7 @@ class PlusBuyFragment : Fragment() {
         }
     }
 
+    // 오프라인 null 검사는 제출 시 점검 로직으로 수정
     private fun validateLocation() {
         if (binding.btnWay2.isChecked) {
             // OFFLINE 일 때만 필수
@@ -208,7 +216,6 @@ class PlusBuyFragment : Fragment() {
                 binding.tvLocationError.visibility = View.GONE
             }
         }
-        // ONLINE 은 toggle 버튼에서 이미 보여줬으니 여기선 건너뛰기
     }
 
     private fun validateExpiry() {
@@ -225,6 +232,7 @@ class PlusBuyFragment : Fragment() {
         } else {
             // FOOD 외엔 입력 불필요
             binding.tvExpiryError.text       = "음식 외의 카테고리는 기한을 입력할 수 없습니다"
+            // binding.etProductDue.setText("")
             binding.tvExpiryError.visibility = View.VISIBLE
         }
     }
@@ -241,7 +249,7 @@ class PlusBuyFragment : Fragment() {
 
     private fun isFormValid(): Boolean {
         // 이름만큼은 무조건 채워야 한다면 추가 가능
-        val priceOk  = binding.etProductOrigincost.text.toString().toIntOrNull() != null
+        val priceOk  = binding.etProductCost.text.toString().toIntOrNull() != null
         val locOk    = if (binding.btnWay2.isChecked)
             binding.etProductLocation.text.toString().trim().isNotEmpty()
         else true
