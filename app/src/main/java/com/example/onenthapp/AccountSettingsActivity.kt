@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.onenthapp.model.MemberViewModel
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
@@ -22,6 +23,32 @@ class AccountSettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_settings)
+
+        val nicknameInput = findViewById<EditText>(R.id.nicknameInput)
+        val profileImageView = findViewById<ImageView>(R.id.profileImage) // 레이아웃의 프로필 이미지뷰 ID 맞춰야 함
+
+        // ✅ 앱 실행 시 서버에서 프로필(닉네임 + 이미지) 가져오기
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitInstance.memberApi.getProfile()
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    val profile = response.body()?.result
+                    nicknameInput.setText(profile?.nickname ?: "")
+
+                    // ✅ 프로필 이미지가 있으면 Glide로 표시
+                    if (!profile?.profileImageUrl.isNullOrEmpty()) {
+                        Glide.with(this@AccountSettingsActivity)
+                            .load(profile?.profileImageUrl)
+                            .placeholder(R.drawable.avatar) // 기본 이미지
+                            .into(profileImageView)
+                    } else {
+                        profileImageView.setImageResource(R.drawable.avatar)
+                    }
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@AccountSettingsActivity, "프로필 불러오기 실패", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val backButton = findViewById<ImageView>(R.id.backButton)
         backButton.setOnClickListener { finish() }
@@ -84,7 +111,6 @@ class AccountSettingsActivity : AppCompatActivity() {
         }
 
         val btnNicknameEdit = findViewById<ImageButton>(R.id.btnNicknameEdit)
-        val nicknameInput = findViewById<EditText>(R.id.nicknameInput)
 
         btnNicknameEdit.setOnClickListener {
             val newNickname = nicknameInput.text.toString().trim()
