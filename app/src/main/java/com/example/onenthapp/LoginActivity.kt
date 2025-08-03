@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.onenthapp.util.TokenManager
+import com.example.onenthapp.data.LoginResponse
 
 
 class LoginActivity : AppCompatActivity() {
@@ -39,17 +41,19 @@ class LoginActivity : AppCompatActivity() {
             }
 
             // ✅ ViewModel을 통해 로그인 요청
-            viewModel.login(email, password, onResult = { success: Boolean, message: String? ->
+            viewModel.login(email, password) { success, message, token ->
                 if (success) {
-//                    Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
+                    Log.d("DEBUG", "로그인 성공, 서버에서 받은 토큰: $token")
+                    Log.d("DEBUG", "TokenManager에서 가져온 토큰: ${TokenManager.getToken()}")
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {
                     Toast.makeText(this, message ?: "로그인 실패", Toast.LENGTH_SHORT).show()
                 }
-            })
+            }
 
         }
+
 
         // ✅ 계정찾기 버튼 클릭 → FindAccountActivity로 이동
         findAccountBtn.setOnClickListener {

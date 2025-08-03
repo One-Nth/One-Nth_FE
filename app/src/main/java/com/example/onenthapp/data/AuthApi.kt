@@ -8,13 +8,13 @@ interface AuthApi {
     @POST("email-auth/request-code")
     suspend fun requestCode(
         @Body body: Map<String, String>
-    ): Response<EmailResponse<String>>
+    ): Response<CommonResponse<String>>
 
 
     @POST("email-auth/verify-code")
     suspend fun verifyCode(
         @Body body: Map<String, String>
-    ): Response<EmailResponse<String>>
+    ): Response<CommonResponse<String>>
 
     // ✅ 회원가입 API 추가
     @POST("/api/members/signup")
@@ -30,15 +30,15 @@ interface AuthApi {
     @POST("/api/email-auth/password/request-code")
     suspend fun requestPasswordResetCode(
         @Body body: Map<String, String>
-    ): Response<EmailResponse<String>>
+    ): Response<CommonResponse<String>>
 
     @POST("/api/email-auth/password/verify-code")
     suspend fun verifyPasswordResetCode(
         @Body body: Map<String, String>
-    ): Response<EmailResponse<String>>
+    ): Response<CommonResponse<String>>
 
     @POST("/api/members/password/reset")
     suspend fun resetPassword(
         @Body body: Map<String, String>
-    ): Response<EmailResponse<Any>>
+    ): Response<CommonResponse<Any>>
 }
