@@ -42,12 +42,13 @@
         android:layout_marginTop="20dp" />
 
     <!-- 프로필 이미지 자리 -->
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profileImage"
         android:layout_width="87dp"
         android:layout_height="87dp"
         android:src="@drawable/avatar"
         android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircularShapeAppearance"
         app:layout_constraintTop_toBottomOf="@id/separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +65,7 @@
         app:layout_constraintTop_toBottomOf="@id/profileImage"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="44dp" />
 
     <!-- 닉네임 텍스트 -->
     <EditText
@@ -83,7 +84,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnNicknameEdit"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp" />
 
     <ImageButton
@@ -111,14 +112,14 @@
 
     <!-- 현재 비밀번호 표시 -->
     <EditText
-        style="@style/PretendardSemibold3"
+        style="@style/PretendardBody5"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
         android:id="@+id/passwordMasked"
         android:layout_width="match_parent"
         android:layout_height="47dp"
         android:background="@drawable/edittext_border2"
-        android:text="********"
+        android:hint="변경할 비밀번호를 입력해주세요"
         android:textColor="@color/main_black"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
@@ -127,7 +128,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnChangePassword"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp" />
 
     <ImageButton
@@ -148,7 +149,7 @@
         android:id="@+id/newPasswordInput"
         android:layout_width="match_parent"
         android:layout_height="47dp"
-        android:hint="변경할 비밀번호를 입력해주세요"
+        android:hint="변경할 비밀번호를 다시 입력해주세요"
         android:textColor="@color/main_black"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
@@ -158,7 +159,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnConfirmPassword"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp" />
 
     <ImageButton
