@@ -4,6 +4,7 @@ package com.example.onenthapp
 import android.app.Application
 import com.example.onenthapp.util.TokenManager
 import com.kakao.vectormap.KakaoMapSdk
+import com.kakao.sdk.common.KakaoSdk
 
 class GlobalApplication : Application() {
     companion object {
@@ -24,6 +25,9 @@ class GlobalApplication : Application() {
 
             android.util.Log.e("GlobalApplication", "Kakao Native App Key is not set or is a placeholder!")
         }
+
+        // ✅ 카카오 로그인 SDK 초기화
+        KakaoSdk.init(this, kakaoNativeAppKey)
 
         KakaoMapSdk.init(this, kakaoNativeAppKey)
         android.util.Log.d("GlobalApplication", "KakaoMapSdk initialized with key: $kakaoNativeAppKey")

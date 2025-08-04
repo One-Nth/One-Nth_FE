@@ -70,5 +70,19 @@
         <activity android:name=".MyPostActivity" />
         <activity android:name=".LoginActivity2" />
         <activity android:name=".FindAccountActivity" />
+
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="kakaob915f02e5deddf0811e43b08afbdbe41"
+                    android:host="oauth"/>
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>
