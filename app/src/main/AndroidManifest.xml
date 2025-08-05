@@ -84,7 +84,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".WriteReviewActivity" />
-
+        <activity android:name=".AllMyReviewActivity" />
 
     </application>
 </manifest>

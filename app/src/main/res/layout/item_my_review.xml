@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="31dp"
+    android:layout_marginEnd="31dp"
+    android:background="@drawable/bg_review_item_border"
+    android:padding="16dp">
+
+    <!-- 유저 정보 & 별점 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar" />
+
+        <TextView
+            android:id="@+id/textNickname"
+            style="@style/PretendardBody2"
+            android:layout_width="0dp"
+
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="나"
+            android:textAlignment="viewStart"
+            android:textColor="@color/main_black" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:stepSize="1"
+            android:numStars="5"
+            android:rating="5"
+            android:progressTint="@color/star_yellow"
+            style="?android:attr/ratingBarStyleSmall" />
+
+    </LinearLayout>
+
+    <!-- 후기 내용 -->
+    <TextView
+        android:id="@+id/textReviewContent"
+        android:gravity="start"
+        android:textAlignment="viewStart"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="약속 시간 너무 잘 지켜주십니다!"
+        android:textColor="@color/main_black"
+        style="@style/PretendardBody3"
+        android:layout_marginBottom="12dp" />
+
+    <!-- 후기 이미지들 -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/imageContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/reviewImage1"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/reviewImage2"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/reviewImage3"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>
