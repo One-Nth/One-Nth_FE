@@ -4,6 +4,7 @@ import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.MemberApi
 import com.example.onenthapp.data.PlusApi
 import com.example.onenthapp.data.MessageApi
+import com.example.onenthapp.data.ReviewApi
 import com.example.onenthapp.util.TokenManager
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -56,4 +57,9 @@ object RetrofitInstance {
     val memberApi: MemberApi by lazy {
         retrofit.create(MemberApi::class.java)
     }
+
+    val reviewApi: ReviewApi by lazy {
+        retrofit.create(ReviewApi::class.java)
+    }
+
 }
