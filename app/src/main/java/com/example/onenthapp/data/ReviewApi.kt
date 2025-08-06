@@ -32,4 +32,14 @@ interface ReviewApi {
         @Query("itemType") itemType: String,
         @Part images: List<MultipartBody.Part>
     ): Response<CommonResponse<String>>
+
+    @HTTP(method = "DELETE", path = "/api/reviews/{reviewId}/images", hasBody = true)
+    suspend fun deleteReviewImages(
+        @Path("reviewId") reviewId: Long,
+        @Query("itemType") itemType: String,
+        @Body request: DeleteReviewImageRequest
+    ): Response<CommonResponse<String>>
+
+
+
 }

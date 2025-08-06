@@ -16,3 +16,11 @@ data class ReviewResponse(
     )
 }
 
+data class ReviewImage(
+    val id: Long,
+    val url: String
+)
+
+data class DeleteReviewImageRequest(
+    val imageIds: List<Long>
+)

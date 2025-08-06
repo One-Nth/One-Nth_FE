@@ -3,6 +3,9 @@ package com.example.onenthapp
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
@@ -12,7 +15,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.onenthapp.data.DeleteReviewImageRequest
 import com.example.onenthapp.data.ReviewDetailResult
+import com.example.onenthapp.data.ReviewImage
 import com.example.onenthapp.databinding.EditMyReviewBinding
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -27,7 +32,10 @@ class ReviewEditActivity : AppCompatActivity() {
     private val api = RetrofitInstance.reviewApi
 
     private val selectedImageUris = mutableListOf<Uri>()
-    private val existingImageUrls = mutableListOf<String>()
+    private val existingImageList = mutableListOf<ReviewImage>() // 이미지 ID 포함
+    private val deletedImageIds = mutableListOf<Long>() // 삭제할 이미지 ID들
+
+    private var isEditMode = false
 
     private val pickImagesLauncher =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
@@ -52,20 +60,31 @@ class ReviewEditActivity : AppCompatActivity() {
             return
         }
 
-        // Toolbar 뒤로가기
         binding.topAppBar.setNavigationOnClickListener { finish() }
 
-        // 이미지 추가 버튼 동작
-        binding.addImageButton.setOnClickListener {
-            pickImagesLauncher.launch("image/*")
-        }
-
-        // 리뷰 수정 완료 버튼
         binding.editButton.setOnClickListener {
-            uploadReviewImages(selectedImageUris)
+            if (isEditMode) {
+                lifecycleScope.launch {
+                    // 1. 삭제 먼저 반영
+                    deleteSelectedImages(reviewId, itemType)
+
+                    // 2. 이미지 추가가 있다면 업로드
+                    if (selectedImageUris.isNotEmpty()) {
+                        uploadReviewImages(selectedImageUris)
+                    }
+
+                    // 3. 이미지 추가 없더라도 리뷰 내용 수정 포함될 수 있으니 성공 메시지
+                    Toast.makeText(this@ReviewEditActivity, "수정 완료", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                setEditMode(false)
+            } else {
+                setEditMode(true)
+            }
         }
 
-        // 기존 리뷰 불러오기
+
+        // 후기 상세 조회 API 호출
         lifecycleScope.launch {
             try {
                 val response = api.getReviewDetail(reviewId, itemType)
@@ -79,11 +98,21 @@ class ReviewEditActivity : AppCompatActivity() {
                     binding.starRatingDetail2.text = stars
                     binding.reviewTextDetail2.setText(review.content)
 
-                    existingImageUrls.clear()
-                    existingImageUrls.addAll(review.reviewImageList)
+                    existingImageList.clear()
+                    existingImageList.addAll(
+                        review.reviewImageList.mapIndexed { index, url ->
+                            ReviewImage(id = index.toLong(), url = url)
+                        }
+                    )
+//                    existingImageList.clear()
+//                    existingImageList.addAll(
+//                        review.reviewImageList.map { image ->
+//                            ReviewImage(id = image.id, url = image.url)
+//                        }
+//                    )
 
                     showAllImages()
-
+                    setEditMode(false)
                 } else {
                     Toast.makeText(this@ReviewEditActivity, "리뷰 불러오기 실패", Toast.LENGTH_SHORT).show()
                     finish()
@@ -95,49 +124,100 @@ class ReviewEditActivity : AppCompatActivity() {
         }
     }
 
+    private fun setEditMode(enabled: Boolean) {
+        isEditMode = enabled
+        val buttonRes = if (enabled) R.drawable.completebtn_editreview else R.drawable.editbutton
+        binding.editButton.setImageResource(buttonRes)
+        binding.reviewTextDetail2.isEnabled = enabled
+        binding.addImageButton.isEnabled = enabled
+        showAllImages()
+    }
+
     private fun showAllImages() {
         val container = binding.imageContainer
         container.removeAllViews()
 
-        // 1. 항상 맨 앞에 이미지 추가 버튼
+        // addImageButton 한 번만 설정 및 추가
+        binding.addImageButton.apply {
+            visibility = if (isEditMode) View.VISIBLE else View.GONE
+            setOnClickListener {
+                if (isEditMode) pickImagesLauncher.launch("image/*")
+            }
+        }
         container.addView(binding.addImageButton)
 
-        // 2. 기존 이미지 표시
-        existingImageUrls.forEach { url ->
-            val imageView = ImageView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(98.dpToPx(), 93.dpToPx()).apply {
-                    marginEnd = 20.dpToPx()
-                }
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                setBackgroundResource(R.color.image_placeholder)
+        // 기존 이미지 표시
+        existingImageList.forEach { image ->
+            val imageLayout = layoutInflater.inflate(R.layout.item_edit_review_image, container, false) as FrameLayout
+            val imageView = imageLayout.findViewById<ImageView>(R.id.imageView)
+            val removeButton = imageLayout.findViewById<ImageView>(R.id.deleteButton)
+            Glide.with(this).load(image.url).into(imageView)
+            removeButton.visibility = if (isEditMode) View.VISIBLE else View.GONE
+            removeButton.setOnClickListener {
+                deletedImageIds.add(image.id)
+                existingImageList.remove(image)
+                showAllImages()
             }
-            Glide.with(this).load(url).into(imageView)
-            container.addView(imageView)
+            container.addView(imageLayout)
         }
 
-        // 3. 추가된 이미지 표시
+        // 새로 추가된 이미지 표시
         selectedImageUris.forEach { uri ->
-            val imageView = ImageView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(98.dpToPx(), 93.dpToPx()).apply {
-                    marginEnd = 20.dpToPx()
-                }
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                setImageURI(uri)
-                setBackgroundResource(R.color.image_placeholder)
+            val imageLayout = layoutInflater.inflate(R.layout.item_edit_review_image, container, false) as FrameLayout
+            val imageView = imageLayout.findViewById<ImageView>(R.id.imageView)
+            val removeButton = imageLayout.findViewById<ImageView>(R.id.deleteButton)
+            imageView.setImageURI(uri)
+            removeButton.visibility = if (isEditMode) View.VISIBLE else View.GONE
+            removeButton.setOnClickListener {
+                selectedImageUris.remove(uri)
+                showAllImages()
             }
-            container.addView(imageView)
+            container.addView(imageLayout)
         }
     }
+
+    private suspend fun deleteSelectedImages(reviewId: Long, itemType: String) {
+        if (deletedImageIds.isEmpty()) return
+        try {
+            val request = DeleteReviewImageRequest(imageIds = deletedImageIds)
+            val response = api.deleteReviewImages(reviewId, itemType, request)
+            if (response.isSuccessful && response.body()?.isSuccess == true) {
+                Toast.makeText(this, "이미지 삭제 완료", Toast.LENGTH_SHORT).show()
+                // 삭제 목록 초기화
+                deletedImageIds.clear()
+
+                // ✅ 서버에서 최신 상태 가져와서 반영
+                refreshReviewDetail(reviewId, itemType)
+            } else {
+                Toast.makeText(this, "이미지 삭제 실패", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "이미지 삭제 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private suspend fun refreshReviewDetail(reviewId: Long, itemType: String) {
+        try {
+            val response = api.getReviewDetail(reviewId, itemType)
+            val body = response.body()
+            if (response.isSuccessful && body != null && body.isSuccess) {
+                val review = body.result
+                existingImageList.clear()
+                existingImageList.addAll(
+                    review.reviewImageList.mapIndexed { index, url ->
+                        ReviewImage(id = index.toLong(), url = url)
+                    }
+                )
+                showAllImages()
+            }
+        } catch (_: Exception) {
+        }
+    }
+
 
     private fun uploadReviewImages(imageUris: List<Uri>) {
         val reviewId = intent.getLongExtra("reviewId", -1)
         val itemType = intent.getStringExtra("itemType") ?: ""
-
-        if (imageUris.isEmpty()) {
-            Toast.makeText(this, "선택된 이미지가 없습니다.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         val imageParts = prepareImageParts(imageUris)
 
         lifecycleScope.launch {
@@ -148,7 +228,7 @@ class ReviewEditActivity : AppCompatActivity() {
                     images = imageParts
                 )
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
-                    Toast.makeText(this@ReviewEditActivity, "이미지 추가 완료", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ReviewEditActivity, "수정 완료", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
                     Toast.makeText(this@ReviewEditActivity, "업로드 실패", Toast.LENGTH_SHORT).show()
@@ -159,47 +239,24 @@ class ReviewEditActivity : AppCompatActivity() {
         }
     }
 
-//    private fun prepareImageParts(imageUris: List<Uri>): List<MultipartBody.Part> {
-//        val parts = mutableListOf<MultipartBody.Part>()
-//        imageUris.forEach { uri ->
-//            val file = File(getRealPathFromUri(uri) ?: return@forEach)
-//            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-//            val part = MultipartBody.Part.createFormData("images", file.name, requestFile)
-//            parts.add(part)
-//        }
-//        return parts
-//    }
-private fun prepareImageParts(imageUris: List<Uri>): List<MultipartBody.Part> {
-    val parts = mutableListOf<MultipartBody.Part>()
-
-    imageUris.forEachIndexed { index, uri ->
-        try {
-            val inputStream = contentResolver.openInputStream(uri)
-            val fileBytes = inputStream?.readBytes()
-            inputStream?.close()
-
-            if (fileBytes != null) {
-                val requestBody = fileBytes.toRequestBody("image/*".toMediaTypeOrNull())
-                val fileName = "image_$index.jpg"
-                val part = MultipartBody.Part.createFormData("images", fileName, requestBody)
-                parts.add(part)
+    private fun prepareImageParts(imageUris: List<Uri>): List<MultipartBody.Part> {
+        val parts = mutableListOf<MultipartBody.Part>()
+        imageUris.forEachIndexed { index, uri ->
+            try {
+                val inputStream = contentResolver.openInputStream(uri)
+                val fileBytes = inputStream?.readBytes()
+                inputStream?.close()
+                if (fileBytes != null) {
+                    val requestBody = fileBytes.toRequestBody("image/*".toMediaTypeOrNull())
+                    val fileName = "image_$index.jpg"
+                    val part = MultipartBody.Part.createFormData("images", fileName, requestBody)
+                    parts.add(part)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
-    }
-
-    return parts
-}
-
-
-    private fun getRealPathFromUri(uri: Uri): String? {
-        val cursor = contentResolver.query(uri, null, null, null, null)
-        return cursor?.use {
-            it.moveToFirst()
-            val index = it.getColumnIndex(MediaStore.Images.Media.DATA)
-            if (index != -1) it.getString(index) else null
-        }
+        return parts
     }
 
     private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
