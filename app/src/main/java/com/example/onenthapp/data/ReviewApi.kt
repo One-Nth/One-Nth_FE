@@ -18,4 +18,10 @@ interface ReviewApi {
 
     @GET("/api/reviews/mine")
     suspend fun getMyReviews(): Response<MyReviewResponse>
+
+    @GET("/api/reviews/{reviewId}")
+    suspend fun getReviewDetail(
+        @Path("reviewId") reviewId: Long,
+        @Query("itemType") itemType: String
+    ): Response<ReviewDetailResponse>
 }

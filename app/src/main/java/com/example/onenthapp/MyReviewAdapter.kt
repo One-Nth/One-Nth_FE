@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.onenthapp.data.MyReview
 
-class MyReviewAdapter(private val reviewList: List<MyReview>) :
-    RecyclerView.Adapter<MyReviewAdapter.MyReviewViewHolder>() {
+class MyReviewAdapter(
+    private val reviewList: List<MyReview>
+) : RecyclerView.Adapter<MyReviewAdapter.MyReviewViewHolder>() {
 
     inner class MyReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nicknameText: TextView = itemView.findViewById(R.id.textNickname)
@@ -21,6 +23,31 @@ class MyReviewAdapter(private val reviewList: List<MyReview>) :
         val reviewImage1: ImageView = itemView.findViewById(R.id.reviewImage1)
         val reviewImage2: ImageView = itemView.findViewById(R.id.reviewImage2)
         val reviewImage3: ImageView = itemView.findViewById(R.id.reviewImage3)
+
+        fun bind(review: MyReview) {
+            nicknameText.text = "나"
+            ratingBar.rating = review.rate.toFloat()
+            reviewContentText.text = review.content
+
+            val imageViews = listOf(reviewImage1, reviewImage2, reviewImage3)
+            imageViews.forEach { it.visibility = View.GONE }
+
+            review.reviewImageList.take(3).forEachIndexed { index, url ->
+                imageViews[index].visibility = View.VISIBLE
+                Glide.with(itemView.context)
+                    .load(url)
+                    .into(imageViews[index])
+            }
+
+            // ✅ 후기 클릭 시 수정 화면으로 이동
+            itemView.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, ReviewEditActivity::class.java)
+                intent.putExtra("reviewId", review.reviewId)
+                intent.putExtra("itemType", review.itemType)  // "PURCHASE" or "SHARE"
+                context.startActivity(intent)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyReviewViewHolder {
@@ -30,21 +57,7 @@ class MyReviewAdapter(private val reviewList: List<MyReview>) :
     }
 
     override fun onBindViewHolder(holder: MyReviewViewHolder, position: Int) {
-        val review = reviewList[position]
-
-        holder.nicknameText.text = "나"
-        holder.ratingBar.rating = review.rate.toFloat()
-        holder.reviewContentText.text = review.content
-
-        val imageViews = listOf(holder.reviewImage1, holder.reviewImage2, holder.reviewImage3)
-        imageViews.forEach { it.visibility = View.GONE }
-
-        review.reviewImageList.take(3).forEachIndexed { index, url ->
-            imageViews[index].visibility = View.VISIBLE
-            Glide.with(holder.itemView.context)
-                .load(url)
-                .into(imageViews[index])
-        }
+        holder.bind(reviewList[position])
     }
 
     override fun getItemCount() = reviewList.size
