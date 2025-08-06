@@ -131,15 +131,16 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp">
 
-            <!-- 추가/리스트 이미지들 -->
+            <!-- 계속 반복 -->
             <ImageView
+                android:id="@+id/addImageButton"
                 android:layout_width="98dp"
                 android:layout_height="93dp"
                 android:layout_marginEnd="20dp"
                 android:src="@drawable/rectangle_32"
                 android:scaleType="centerCrop"
                 android:background="@color/image_placeholder"/>
-            <!-- 계속 반복 -->
+
             <ImageView
                 android:layout_width="98dp"
                 android:layout_height="93dp"

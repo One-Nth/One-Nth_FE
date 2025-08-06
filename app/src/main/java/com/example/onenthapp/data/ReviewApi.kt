@@ -24,4 +24,12 @@ interface ReviewApi {
         @Path("reviewId") reviewId: Long,
         @Query("itemType") itemType: String
     ): Response<ReviewDetailResponse>
+
+    @Multipart
+    @POST("/api/reviews/{reviewId}/images")
+    suspend fun uploadReviewImages(
+        @Path("reviewId") reviewId: Long,
+        @Query("itemType") itemType: String,
+        @Part images: List<MultipartBody.Part>
+    ): Response<CommonResponse<String>>
 }
