@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.onenthapp.data.DeleteReviewImageRequest
+import com.example.onenthapp.data.ReviewBody
 import com.example.onenthapp.data.ReviewDetailResult
 import com.example.onenthapp.data.ReviewImage
 import com.example.onenthapp.databinding.EditMyReviewBinding
@@ -73,6 +74,8 @@ class ReviewEditActivity : AppCompatActivity() {
                         uploadReviewImages(selectedImageUris)
                     }
 
+                    updateReviewTextAndRate(reviewId, itemType)
+
                     // 3. 이미지 추가 없더라도 리뷰 내용 수정 포함될 수 있으니 성공 메시지
                     Toast.makeText(this@ReviewEditActivity, "수정 완료", Toast.LENGTH_SHORT).show()
                     finish()
@@ -94,8 +97,7 @@ class ReviewEditActivity : AppCompatActivity() {
 
                     binding.reviewerNameDetail2.text = "나"
                     binding.productNameText2.text = "상품 ID: ${review.itemId}"
-                    val stars = "★★★★★".substring(0, review.rate) + "☆☆☆☆☆".substring(0, 5 - review.rate)
-                    binding.starRatingDetail2.text = stars
+                    binding.ratingBar.rating = review.rate.toFloat()
                     binding.reviewTextDetail2.setText(review.content)
 
                     existingImageList.clear()
@@ -128,10 +130,17 @@ class ReviewEditActivity : AppCompatActivity() {
         isEditMode = enabled
         val buttonRes = if (enabled) R.drawable.completebtn_editreview else R.drawable.editbutton
         binding.editButton.setImageResource(buttonRes)
+
         binding.reviewTextDetail2.isEnabled = enabled
+        binding.reviewTextDetail2.isFocusable = enabled
+        binding.reviewTextDetail2.isFocusableInTouchMode = enabled
+
         binding.addImageButton.isEnabled = enabled
+        binding.ratingBar.setIsIndicator(!enabled)
+
         showAllImages()
     }
+
 
     private fun showAllImages() {
         val container = binding.imageContainer
@@ -258,6 +267,25 @@ class ReviewEditActivity : AppCompatActivity() {
         }
         return parts
     }
+
+    private suspend fun updateReviewTextAndRate(reviewId: Long, itemType: String) {
+        val content = binding.reviewTextDetail2.text.toString()
+        var rate = binding.ratingBar.rating.toInt()
+
+        val request = ReviewBody(content, rate)
+
+        try {
+            val response = api.updateReviewContentAndRate(reviewId, itemType, request)
+            if (response.isSuccessful && response.body()?.isSuccess == true) {
+                Log.d("ReviewEdit", "본문/별점 수정 완료")
+            } else {
+                Toast.makeText(this, "리뷰 본문/별점 수정 실패", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "리뷰 수정 네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
 }

@@ -40,6 +40,12 @@ interface ReviewApi {
         @Body request: DeleteReviewImageRequest
     ): Response<CommonResponse<String>>
 
+    @PATCH("/api/reviews/{reviewId}")
+    suspend fun updateReviewContentAndRate(
+        @Path("reviewId") reviewId: Long,
+        @Query("itemType") itemType: String,
+        @Body request: ReviewBody
+    ): Response<CommonResponse<String>>
 
 
 }

@@ -22,7 +22,7 @@ class EditMyReviewActivity : AppCompatActivity() {
         val nicknameView = findViewById<TextView>(R.id.reviewerNameDetail2)
         nicknameView.text = "닉네임" // 하드코딩 또는 빈 값
 
-        val ratingView = findViewById<TextView>(R.id.starRatingDetail2)
+        val ratingView = findViewById<TextView>(R.id.ratingBar)
         ratingView.text = "★★★★★"
 
         val reviewTextView = findViewById<TextView>(R.id.reviewTextDetail2)

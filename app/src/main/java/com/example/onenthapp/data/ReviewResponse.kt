@@ -2,7 +2,7 @@ package com.example.onenthapp.data
 
 data class ReviewBody(
     val content: String,
-    val rate: Float
+    val rate: Int
 )
 
 data class ReviewResponse(
