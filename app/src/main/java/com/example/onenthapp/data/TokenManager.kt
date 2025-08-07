@@ -35,4 +35,18 @@ object TokenManager {
         return if (id == -1L) null else id
     }
 
+
+    private const val KEY_REFRESH_TOKEN = "refresh_token"
+
+    fun saveRefreshToken(token: String) {
+        prefs.edit().putString(KEY_REFRESH_TOKEN, token).apply()
+    }
+
+    fun getRefreshToken(): String? {
+        return prefs.getString(KEY_REFRESH_TOKEN, null)
+    }
+
+    fun clearAll() {
+        prefs.edit().clear().apply()
+    }
 }

@@ -12,9 +12,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.onenthapp.data.AuthRepository
 import com.example.onenthapp.data.KakaoSignupRequest
+import com.example.onenthapp.data.ReissueResponse
 import com.example.onenthapp.model.KakaoLoginModelFactory
 import com.example.onenthapp.model.KakaoViewModel
+import com.example.onenthapp.util.TokenManager
 import com.kakao.sdk.auth.AuthCodeClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SplashActivity : AppCompatActivity() {
 
@@ -48,7 +53,36 @@ class SplashActivity : AppCompatActivity() {
         kakaoLoginBtn.setOnClickListener {
             loginWithKakao()
         }
+        tryAutoLogin()
     }
+
+    private fun tryAutoLogin() {
+        val refreshToken = TokenManager.getRefreshToken()
+        if (refreshToken.isNullOrEmpty()) return
+
+        val api = RetrofitInstance.authApi
+        val request = mapOf("refreshToken" to refreshToken)
+
+        api.reissueToken(request).enqueue(object : Callback<ReissueResponse> {
+            override fun onResponse(call: Call<ReissueResponse>, response: Response<ReissueResponse>) {
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    val newAccessToken = response.body()!!.result.accessToken
+                    TokenManager.saveToken(newAccessToken)   // ✅ accessToken만 저장
+                    // ❌ TokenManager.saveRefreshToken(...) 호출 금지 (reissue 응답에 없음)
+
+                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                    finish()
+                } else {
+                    // 자동로그인 실패 → 로그인 화면 유지
+                }
+            }
+            override fun onFailure(call: Call<ReissueResponse>, t: Throwable) { /* log */ }
+        })
+    }
+
+
+
+
 
     private fun loginWithKakao() {
 

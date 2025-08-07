@@ -1,5 +1,6 @@
 package com.example.onenthapp.data
 
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -47,4 +48,7 @@ interface AuthApi {
 
     @POST("/api/auth/kakao/signup")
     suspend fun signupWithKakao(@Body request: KakaoSignupRequest): Response<KakaoLoginResponse>
+
+    @POST("/api/members/reissue")
+    fun reissueToken(@Body request: Map<String, String>): Call<ReissueResponse>
 }
