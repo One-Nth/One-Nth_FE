@@ -7,14 +7,22 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ReviewApi {
-
     @Multipart
-    @POST("/api/reviews/purchase/{purchaseItemId}")
+    @POST("/api/reviews/purchases/{purchaseItemId}")
     fun submitPurchaseReview(
         @Path("purchaseItemId") purchaseItemId: Long,
         @Part("review") review: RequestBody,
-        @Part images: List<MultipartBody.Part>? = null
+        @Part images: List<MultipartBody.Part>?
     ): Call<ReviewResponse>
+
+    @Multipart
+    @POST("/api/reviews/sharings/{sharingItemId}")
+    fun submitSharingReview(
+        @Path("sharingItemId") sharingItemId: Long,
+        @Part("review") review: RequestBody,
+        @Part images: List<MultipartBody.Part>?
+    ): Call<ReviewResponse>
+
 
     @GET("/api/reviews/mine")
     suspend fun getMyReviews(): Response<MyReviewResponse>

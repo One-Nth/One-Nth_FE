@@ -54,27 +54,47 @@ class WriteReviewActivity : AppCompatActivity() {
         btnAddImage = findViewById(R.id.btnAddImage)
 
         val purchaseItemId = intent.getLongExtra("purchaseItemId", -1L)
+        val sharingItemId = intent.getLongExtra("sharingItemId", -1L)
 
         btnAddImage.setOnClickListener {
             imagePickerLauncher.launch("image/*")
         }
 
+//        submitButton.setOnClickListener {
+//            val content = reviewEditText.text.toString()
+//            val rate = ratingBar.rating.toInt()
+//
+//            if (purchaseItemId == -1L) {
+//                Toast.makeText(this, "물품 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
+//
+//            if (rate == 0) {
+//                Toast.makeText(this, "별점을 입력해주세요.", Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
+//
+//            submitReview(purchaseItemId, content, rate, imageUris)
+//        }
+
         submitButton.setOnClickListener {
             val content = reviewEditText.text.toString()
             val rate = ratingBar.rating.toInt()
-
-            if (purchaseItemId == -1L) {
-                Toast.makeText(this, "물품 정보가 없습니다.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
 
             if (rate == 0) {
                 Toast.makeText(this, "별점을 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            submitReview(purchaseItemId, content, rate, imageUris)
+            if (purchaseItemId != -1L) {
+                submitPurchaseReview(purchaseItemId, content, rate, imageUris)
+            } else if (sharingItemId != -1L) {
+                submitSharingReview(sharingItemId, content, rate, imageUris)
+            } else {
+                Toast.makeText(this, "물품 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
+
     }
 
     private fun addImagePreview(uri: Uri) {
@@ -105,7 +125,7 @@ class WriteReviewActivity : AppCompatActivity() {
         imageContainer.addView(wrapper)
     }
 
-    fun submitReview(
+    fun submitPurchaseReview(
         purchaseItemId: Long,
         content: String,
         rate: Int,
@@ -135,19 +155,67 @@ class WriteReviewActivity : AppCompatActivity() {
         call.enqueue(object : Callback<ReviewResponse> {
             override fun onResponse(call: Call<ReviewResponse>, response: Response<ReviewResponse>) {
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
-                    Log.d("REVIEW", "리뷰 전송 성공: ${response.body()?.result?.puchaseReviewId}")
+                    Log.d("REVIEW", "구매 후기 전송 성공: ${response.body()?.result?.puchaseReviewId}")
                     Toast.makeText(this@WriteReviewActivity, "후기 작성이 완료되었습니다!", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    Log.e("REVIEW", "리뷰 실패: ${response.code()} - ${response.errorBody()?.string()}")
+                    Log.e("REVIEW", "구매 후기 실패: ${response.code()} - ${response.errorBody()?.string()}")
                     Toast.makeText(this@WriteReviewActivity, "후기 작성 실패", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
-                Log.e("REVIEW", "서버 통신 실패", t)
+                Log.e("REVIEW", "구매 후기 서버 통신 실패", t)
                 Toast.makeText(this@WriteReviewActivity, "네트워크 오류", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
+
+    fun submitSharingReview(
+        sharingItemId: Long,
+        content: String,
+        rate: Int,
+        imageUris: List<Uri>?
+    ) {
+        val reviewJson = Gson().toJson(ReviewBody(content, rate))
+        val reviewRequestBody = reviewJson.toRequestBody("application/json".toMediaType())
+
+        val imageParts = imageUris?.mapNotNull { uri ->
+            try {
+                val inputStream: InputStream? = contentResolver.openInputStream(uri)
+                val bytes = inputStream?.readBytes() ?: return@mapNotNull null
+                val requestFile = bytes.toRequestBody("image/*".toMediaType())
+                MultipartBody.Part.createFormData(
+                    "images",
+                    "image_${System.currentTimeMillis()}.jpg",
+                    requestFile
+                )
+            } catch (e: Exception) {
+                Log.e("REVIEW", "이미지 변환 실패: ${e.localizedMessage}")
+                null
+            }
+        }
+
+        val call = apiService.submitSharingReview(sharingItemId, reviewRequestBody, imageParts)
+
+        call.enqueue(object : Callback<ReviewResponse> {
+            override fun onResponse(call: Call<ReviewResponse>, response: Response<ReviewResponse>) {
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    Log.d("REVIEW", "공유 후기 전송 성공: ${response.body()?.result?.sharingReviewId}")
+                    Toast.makeText(this@WriteReviewActivity, "후기 작성이 완료되었습니다!", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Log.e("REVIEW", "공유 후기 실패: ${response.code()} - ${response.errorBody()?.string()}")
+                    Toast.makeText(this@WriteReviewActivity, "후기 작성 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
+                Log.e("REVIEW", "공유 후기 서버 통신 실패", t)
+                Toast.makeText(this@WriteReviewActivity, "네트워크 오류", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 }
