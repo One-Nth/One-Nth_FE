@@ -23,4 +23,16 @@ object TokenManager {
     fun clearToken() {
         prefs.edit().remove(KEY_TOKEN).apply()
     }
+
+    private const val KEY_MEMBER_ID = "member_id"
+
+    fun saveMemberId(id: Long) {
+        prefs.edit().putLong(KEY_MEMBER_ID, id).apply()
+    }
+
+    fun getMemberId(): Long? {
+        val id = prefs.getLong(KEY_MEMBER_ID, -1)
+        return if (id == -1L) null else id
+    }
+
 }

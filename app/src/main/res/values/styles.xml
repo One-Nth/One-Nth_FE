@@ -134,6 +134,12 @@
         <item name="android:letterSpacing">-0.017</item>
         <item name="android:textAlignment">center</item>
     </style>
+    <style name="PretendardSemibold5">
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">-0.017</item>
+        <item name="android:textAlignment">center</item>
+    </style>
 
     <style name="PretendardH5">
         <item name="android:fontFamily">@font/pretendard_bold</item>

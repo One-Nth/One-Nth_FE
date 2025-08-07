@@ -56,4 +56,9 @@ interface ReviewApi {
     ): Response<CommonResponse<String>>
 
 
+    @GET("/api/reviews/user/{userId}")
+    suspend fun getUserReviews(
+        @Path("userId") userId: Long,
+        @Header("Authorization") token: String
+    ): Response<UserReviewResponse>
 }

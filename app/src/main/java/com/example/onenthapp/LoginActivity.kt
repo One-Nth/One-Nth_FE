@@ -41,10 +41,12 @@ class LoginActivity : AppCompatActivity() {
             }
 
             // ✅ ViewModel을 통해 로그인 요청
-            viewModel.login(email, password) { success, message, token ->
+            viewModel.login(email, password) { success, message, token, memberId ->
                 if (success) {
+                    TokenManager.saveToken(token ?: "")
+                    TokenManager.saveMemberId(memberId?.toLong() ?: -1)
+
                     Log.d("DEBUG", "로그인 성공, 서버에서 받은 토큰: $token")
-                    Log.d("DEBUG", "TokenManager에서 가져온 토큰: ${TokenManager.getToken()}")
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {
