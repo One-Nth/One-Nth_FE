@@ -1,0 +1,26 @@
+package com.example.onenthapp.data
+
+data class MyReview(
+    val reviewId: Long,
+    val itemType: String,
+    val itemId: Long,
+    val createdAt: String,
+    val reviewerId: Long,
+    val reviewTargetId: Long,
+    val content: String,
+    val rate: Int,
+    val reviewImageList: List<String>
+)
+
+data class MyReviewResponse(
+    val isSuccess: Boolean,
+    val code: String,
+    val message: String,
+    val result: MyReviewResult
+)
+
+data class MyReviewResult(
+    val memberId: Long,
+    val reviewList: List<MyReview>
+)
+

@@ -41,4 +41,10 @@ interface AuthApi {
     suspend fun resetPassword(
         @Body body: Map<String, String>
     ): Response<CommonResponse<Any>>
+
+    @POST("/api/auth/kakao/login")
+    suspend fun loginWithKakao(@Body request: KakaoLoginRequest): Response<KakaoLoginResponse>
+
+    @POST("/api/auth/kakao/signup")
+    suspend fun signupWithKakao(@Body request: KakaoSignupRequest): Response<KakaoLoginResponse>
 }

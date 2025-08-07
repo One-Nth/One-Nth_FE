@@ -27,4 +27,11 @@ class AuthRepository {
     suspend fun resetPassword(email: String, newPassword: String) =
         api.resetPassword(mapOf("email" to email, "newPassword" to newPassword))
 
+    suspend fun loginWithKakao(code: String): KakaoLoginResponse {
+        return api.loginWithKakao(KakaoLoginRequest(code)).body()!!
+    }
+
+    suspend fun signupWithKakao(req: KakaoSignupRequest): KakaoLoginResponse {
+        return api.signupWithKakao(req).body()!!
+    }
 }

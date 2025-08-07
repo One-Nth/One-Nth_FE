@@ -202,15 +202,33 @@ class AccountSettingsActivity : AppCompatActivity() {
     }
 
     private fun showLogoutDialog() {
-        val dialogView =
-            LayoutInflater.from(this).inflate(R.layout.mypage_account_settings_logout_popup, null)
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.mypage_account_settings_logout_popup, null)
         val alertDialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .create()
 
         alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        // ✅ 팝업 내 로그아웃 버튼
+        val confirmButton = dialogView.findViewById<ImageButton>(R.id.btnLogoutConfirm)
+        confirmButton.setOnClickListener {
+            TokenManager.clearToken() // 토큰 삭제
+            Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+
+            // ✅ SplashActivity로 이동
+            startActivity(Intent(this, SplashActivity::class.java))
+            finishAffinity()
+
+            alertDialog.dismiss()
+        }
+
+        // 취소 버튼
+        val cancelButton = dialogView.findViewById<ImageButton>(R.id.btnLogoutCancel)
+        cancelButton.setOnClickListener { alertDialog.dismiss() }
+
         alertDialog.show()
     }
+
 
     private fun showWithdrawDialog() {
         val dialogView =
