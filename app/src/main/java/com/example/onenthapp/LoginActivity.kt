@@ -26,6 +26,12 @@ class LoginActivity : AppCompatActivity() {
         val passwordEt = findViewById<EditText>(R.id.passwordEditText)
         val loginBtn = findViewById<ImageView>(R.id.button2)
         val findAccountBtn = findViewById<ImageButton>(R.id.button1)
+        val backBtn = findViewById<ImageButton>(R.id.backButton) // 뒤로가기 버튼
+
+        // 🔙 뒤로가기 버튼 클릭 시
+        backBtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         loginBtn.setOnClickListener {
             val email = emailEt.text.toString().trim()
@@ -36,19 +42,7 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-//            viewModel.login(email, password) { success, message, accessToken, refreshToken, memberId ->
-//                if (success) {
-//                    TokenManager.saveToken(accessToken ?: "")
-//                    TokenManager.saveRefreshToken(refreshToken ?: "")
-//                    TokenManager.saveMemberId(memberId?.toLong() ?: -1)
-//
-//                    Log.d("DEBUG", "로그인 성공, 액세스토큰: $accessToken")
-//                    startActivity(Intent(this, MainActivity::class.java))
-//                    finish()
-//                } else {
-//                    Toast.makeText(this, message ?: "로그인 실패", Toast.LENGTH_SHORT).show()
-//                }
-//            }
+
             viewModel.login(email, password) { success, message, accessToken, refreshToken, memberId ->
                 if (success) {
                     TokenManager.saveToken(accessToken ?: "")
