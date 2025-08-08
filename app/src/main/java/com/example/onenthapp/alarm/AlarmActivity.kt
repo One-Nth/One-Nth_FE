@@ -1,7 +1,8 @@
-package com.example.onenthapp
+package com.example.onenthapp.alarm
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.onenthapp.alarm.AlarmPagerAdapter
 import com.example.onenthapp.databinding.ActivityAlarmBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
