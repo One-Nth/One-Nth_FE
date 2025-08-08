@@ -1,15 +1,19 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.R
+import com.example.onenthapp.data.chat.ChatMessage
 
-class ChatAdapter(private val messages: List<ChatMessage>) :
-    RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
+class ChatAdapter(
+    private val myMemberId: Long // 본인 닉네임으로 메시지 방향 구분
+) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
+
+    private val messages = mutableListOf<ChatMessage>()
 
     inner class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val leftChatLayout: LinearLayout = itemView.findViewById(R.id.leftChatLayout)
@@ -19,41 +23,35 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
-        return try {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_chat, parent, false)
-            Log.d("ChatAdapter", "onCreateViewHolder called")
-            ChatViewHolder(view)
-        } catch (e: Exception) {
-            Log.e("ChatAdapter", "Inflate failed: ${e.message}")
-            throw e
-        }
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat, parent, false)
+        return ChatViewHolder(view)
     }
-
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
         val chat = messages[position]
-        val isMe = chat.sender == "유저" // 본인 메시지 구분 (필요시 수정)
-
-        Log.d("ChatAdapter", "Position: $position, Sender: ${chat.sender}, Message: ${chat.message}, isMe: $isMe")
-
+        val isMe = chat.senderMemberId == myMemberId
 
         if (isMe) {
-            // 오른쪽 메시지 보여주기
             holder.rightChatLayout.visibility = View.VISIBLE
             holder.leftChatLayout.visibility = View.GONE
-
-            holder.rightMessage.text = chat.message
-            holder.rightMessage.setBackgroundResource(R.drawable.bg_chat_bubble_received)
+            holder.rightMessage.text = chat.content
         } else {
-            // 왼쪽 메시지 보여주기
             holder.leftChatLayout.visibility = View.VISIBLE
             holder.rightChatLayout.visibility = View.GONE
-
-            holder.leftMessage.text = chat.message
-            holder.leftMessage.setBackgroundResource(R.drawable.bg_chat_bubble)
+            holder.leftMessage.text = chat.content
         }
     }
 
     override fun getItemCount(): Int = messages.size
+
+    fun setMessages(newMessages: List<ChatMessage>) {
+        messages.clear()
+        messages.addAll(newMessages)
+        notifyDataSetChanged()
+    }
+
+    fun addMessage(message: ChatMessage) {
+        messages.add(message)
+        notifyItemInserted(messages.size - 1)
+    }
 }

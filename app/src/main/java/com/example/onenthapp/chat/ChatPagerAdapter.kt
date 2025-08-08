@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

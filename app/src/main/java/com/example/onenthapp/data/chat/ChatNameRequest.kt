@@ -1,4 +1,4 @@
-package com.example.onenthapp.data
+package com.example.onenthapp.data.chat
 
 data class ChatNameRequest(
     val targetMemberId: Int,

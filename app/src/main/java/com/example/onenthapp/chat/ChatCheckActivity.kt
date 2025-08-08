@@ -1,8 +1,9 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.onenthapp.R
 import com.example.onenthapp.databinding.ActivityChatCheckBinding
 
 class ChatCheckActivity : AppCompatActivity() {

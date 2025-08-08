@@ -1,11 +1,10 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
-import com.example.onenthapp.databinding.ActivityAlarmBinding
+import com.example.onenthapp.R
 import com.example.onenthapp.databinding.ActivityChatBinding
-import com.google.android.material.tabs.TabLayoutMediator
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding

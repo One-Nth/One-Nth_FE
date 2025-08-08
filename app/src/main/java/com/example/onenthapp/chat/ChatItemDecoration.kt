@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
 import android.graphics.Rect
 import android.view.View

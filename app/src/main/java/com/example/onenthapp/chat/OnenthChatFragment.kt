@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
 import ChatNotification
 import ChatNotificationAdapter
@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.onenthapp.databinding.FragmentTipChatBinding
+import com.example.onenthapp.databinding.FragmentOnenthChatBinding
 
-class TipChatFragment : Fragment() {
+class OnenthChatFragment : Fragment() {
 
-    private var _binding: FragmentTipChatBinding? = null
+    private var _binding: FragmentOnenthChatBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var chatNotificationAdapter: ChatNotificationAdapter
@@ -22,7 +22,7 @@ class TipChatFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTipChatBinding.inflate(inflater, container, false)
+        _binding = FragmentOnenthChatBinding.inflate(inflater, container, false)
         return binding.root
     }
 

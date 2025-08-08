@@ -1,4 +1,4 @@
-package com.example.onenthapp.data
+package com.example.onenthapp.data.chat
 
 data class ChatResponse(
     val isSuccess: Boolean,

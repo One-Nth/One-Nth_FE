@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
 import android.os.Bundle
 import android.view.LayoutInflater
