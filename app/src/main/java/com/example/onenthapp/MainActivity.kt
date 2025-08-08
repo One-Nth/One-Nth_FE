@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.example.onenthapp.chat.ChatActivity
 import com.example.onenthapp.databinding.ActivityMainBinding
 
 
