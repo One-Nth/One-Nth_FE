@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_white"
@@ -212,127 +213,25 @@
         app:layout_constraintBottom_toBottomOf="@id/myAlertTitle"
         android:layout_marginStart="8dp" />
 
-    <!-- 알림 키워드 1 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/alertKeywordBox1"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/edittext_border2"
-        app:layout_constraintTop_toBottomOf="@id/myAlertTitle"
+    <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/keywordRecyclerView"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/myAlertTitle"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnConfirmDelete"
+        android:layout_width="150dp"
+        android:layout_height="43dp"
+        android:text="확인"
+        android:backgroundTint="#419461"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/alertKeywordText1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="# 옥실청소"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/alertIcon1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="8dp" />
-
-        <ImageView
-            android:id="@+id/alertIcon1"
-            android:layout_width="18dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_alarmbell"
-            android:contentDescription="알림 상태 아이콘"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="10dp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!-- 알림 키워드 2 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/alertKeywordBox2"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/edittext_border2"
-        app:layout_constraintTop_toBottomOf="@id/alertKeywordBox1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/alertKeywordText2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="# 물"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/alertIcon2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="8dp" />
-
-        <ImageView
-            android:id="@+id/alertIcon2"
-            android:layout_width="18dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_alarmbell"
-            android:contentDescription="알림 상태 아이콘"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="10dp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!-- 알림 키워드 3 (OFF 상태 예시) -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/alertKeywordBox3"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/edittext_border2"
-        app:layout_constraintTop_toBottomOf="@id/alertKeywordBox2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/alertKeywordText3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="# 월곡동"
-            android:textSize="14sp"
-            android:textColor="#999999"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/alertIcon3"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="8dp" />
-
-        <ImageView
-            android:id="@+id/alertIcon3"
-            android:layout_width="18dp"
-            android:layout_height="20dp"
-            android:src="@drawable/alarm_off"
-            android:contentDescription="알림 상태 아이콘"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="10dp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="34dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

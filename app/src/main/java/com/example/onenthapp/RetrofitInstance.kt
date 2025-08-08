@@ -1,8 +1,10 @@
 package com.example.onenthapp
 
+import android.util.Log
 import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.MemberApi
 import com.example.onenthapp.data.PlusApi
+import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.MessageApi
 import com.example.onenthapp.data.ReviewApi
 import com.example.onenthapp.util.TokenManager
@@ -52,6 +54,10 @@ object RetrofitInstance {
 
     val messageApi: MessageApi by lazy {
         retrofit.create(MessageApi::class.java)
+    }
+    
+    val usersetApi: UserSetApi by lazy {
+        retrofit.create(UserSetApi::class.java)
     }
 
     val memberApi: MemberApi by lazy {
