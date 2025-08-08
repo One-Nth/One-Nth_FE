@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.onenthapp.data.AuthRepository
 import com.example.onenthapp.data.SignupRequest
+import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
 
 class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
@@ -13,6 +14,7 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
     val emailStatus = MutableLiveData<String?>() // 이메일 발송 상태
     val codeStatus = MutableLiveData<String?>()  // 인증 코드 검증 상태
     val signupStatus = MutableLiveData<String?>() // ✅ 회원가입 결과 저장
+    val signupSuccess = MutableLiveData<Boolean?>()
 
     fun requestCode() = viewModelScope.launch {
         val emailValue = email.value ?: ""
@@ -74,9 +76,8 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
         return regex.matches(password)
     }
 
-
-
-    fun signup(
+    // ✅ 일반 회원가입
+    fun localSignup(
         name: String,
         email: String,
         password: String,
@@ -86,30 +87,39 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
         marketingAgree: Boolean
     ) = viewModelScope.launch {
         try {
-            val request = SignupRequest(
-                name = name,
+            val r = repo.Signup(
+                name = sanitize(name),
                 email = email,
                 password = password,
                 confirmPassword = confirmPassword,
-                nickname = nickname,
+                nickname = sanitize(nickname),
                 regionName = regionName,
                 marketingAgree = marketingAgree
             )
-
-            val response = repo.signup(request)
-
-            if (response.isSuccessful) {
-                val body = response.body()
-                if (body?.isSuccess == true) {
-                    signupStatus.postValue("회원가입 성공: ID=${body.result.memberId}")
-                } else {
-                    signupStatus.postValue(body?.message ?: "회원가입 실패")
-                }
+            if (r.isSuccess) {
+                val data = r.getOrNull()!!
+                data.accessToken?.let { TokenManager.saveToken(it) }
+                data.refreshToken?.let { if (it.isNotEmpty()) TokenManager.saveRefreshToken(it) }
+                signupStatus.postValue("회원가입 성공")
+                signupSuccess.postValue(true)
             } else {
-                signupStatus.postValue("오류 코드: ${response.code()}")
+                signupStatus.postValue(r.exceptionOrNull()?.message ?: "회원가입 실패")
+                signupSuccess.postValue(false)
             }
-        } catch (e: Exception) {
-            signupStatus.postValue("네트워크 오류: ${e.message}")
+        } catch (t: Throwable) {
+            signupStatus.postValue("오류: ${t.message}")
+            signupSuccess.postValue(false)
         }
+    }
+
+    private fun sanitize(raw: String, maxCodePoints: Int = 20): String {
+        val noEmoji = raw.replace(Regex("[^\\p{L}\\p{N}\\p{Zs}_\\-\\.]+"), "")
+        val it = noEmoji.codePoints().iterator()
+        val sb = StringBuilder()
+        var cnt = 0
+        while (it.hasNext() && cnt < maxCodePoints) {
+            sb.appendCodePoint(it.nextInt()); cnt++
+        }
+        return sb.toString().trim()
     }
 }

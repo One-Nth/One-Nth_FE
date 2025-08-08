@@ -3,6 +3,7 @@ package com.example.onenthapp
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,19 +20,19 @@ class SettingsActivity : AppCompatActivity() {
             finish() // 현재 Activity 종료 → 이전 Fragment 화면으로 돌아감
         }
 
-        val alertSettings = findViewById<TextView>(R.id.notificationSettings)
+        val alertSettings = findViewById<LinearLayout>(R.id.notificationSettings)
         alertSettings.setOnClickListener {
             val intent = Intent(this, AlertSettingsActivity::class.java)
             startActivity(intent)
         }
 
-        val accountSettings = findViewById<TextView>(R.id.accountSettings)
+        val accountSettings = findViewById<LinearLayout>(R.id.accountSettings)
         accountSettings.setOnClickListener {
             val intent = Intent(this, AccountSettingsActivity::class.java)
             startActivity(intent)
         }
 
-        val blockedUsersSettings = findViewById<TextView>(R.id.blockedUsers)
+        val blockedUsersSettings = findViewById<LinearLayout>(R.id.blockedUsers)
         blockedUsersSettings.setOnClickListener {
             val intent = Intent(this, BlockedUsersActivity::class.java)
             startActivity(intent)

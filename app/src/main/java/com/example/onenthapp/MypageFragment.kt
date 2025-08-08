@@ -51,7 +51,14 @@ class MypageFragment : Fragment() {
             startActivity(intent)
         }
 
-        // ✅ 내가 쓴 글 클릭 시 이동
+        // ✅ 나의 거래내역 및 후기 클릭 시 이동
+        val DealButton = view.findViewById<LinearLayout>(R.id.menuReview)
+        DealButton.setOnClickListener {
+            val intent = Intent(requireContext(), MyPageReviewsActivity::class.java)
+            startActivity(intent)
+        }
+
+        // ✅ 내가 쓴 후기 수정하기 클릭 시 이동
         val ReviewButton = view.findViewById<LinearLayout>(R.id.menuEditReview)
         ReviewButton.setOnClickListener {
             val intent = Intent(requireContext(), AllMyReviewActivity::class.java)

@@ -4,7 +4,6 @@ import LoginViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -12,8 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.onenthapp.util.TokenManager
-import com.example.onenthapp.data.LoginResponse
-
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var viewModel: LoginViewModel
@@ -23,7 +20,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         Log.d("DEBUG", "LoginActivity onCreate 실행됨")
 
-        // ✅ ViewModel 초기화
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         val emailEt = findViewById<EditText>(R.id.emailEditText)
@@ -40,11 +36,28 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // ✅ ViewModel을 통해 로그인 요청
-            viewModel.login(email, password) { success, message, token ->
+//            viewModel.login(email, password) { success, message, accessToken, refreshToken, memberId ->
+//                if (success) {
+//                    TokenManager.saveToken(accessToken ?: "")
+//                    TokenManager.saveRefreshToken(refreshToken ?: "")
+//                    TokenManager.saveMemberId(memberId?.toLong() ?: -1)
+//
+//                    Log.d("DEBUG", "로그인 성공, 액세스토큰: $accessToken")
+//                    startActivity(Intent(this, MainActivity::class.java))
+//                    finish()
+//                } else {
+//                    Toast.makeText(this, message ?: "로그인 실패", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+            viewModel.login(email, password) { success, message, accessToken, refreshToken, memberId ->
                 if (success) {
-                    Log.d("DEBUG", "로그인 성공, 서버에서 받은 토큰: $token")
-                    Log.d("DEBUG", "TokenManager에서 가져온 토큰: ${TokenManager.getToken()}")
+                    TokenManager.saveToken(accessToken ?: "")
+                    if (!refreshToken.isNullOrEmpty()) {      // ✅ 널 체크 후 저장
+                        TokenManager.saveRefreshToken(refreshToken)
+                        Log.d("DEBUG", "로그인 성공, 리프레시토큰: $refreshToken")
+                    }
+                    TokenManager.saveMemberId(memberId?.toLong() ?: -1)
+                    Log.d("DEBUG", "로그인 성공, 액세스토큰: $accessToken")
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {
@@ -52,17 +65,11 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
+
         }
 
-
-        // ✅ 계정찾기 버튼 클릭 → FindAccountActivity로 이동
         findAccountBtn.setOnClickListener {
-            val intent = Intent(this, FindAccountActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, FindAccountActivity::class.java))
         }
     }
-
-
 }
-
-

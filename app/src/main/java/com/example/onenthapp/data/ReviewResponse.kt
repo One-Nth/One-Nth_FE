@@ -12,7 +12,8 @@ data class ReviewResponse(
     val result: ResultData
 ) {
     data class ResultData(
-        val puchaseReviewId: Long
+        val puchaseReviewId: Long?,      // 구매 후기 응답용
+        val sharingReviewId: Long?       // 공유 후기 응답용
     )
 }
 
