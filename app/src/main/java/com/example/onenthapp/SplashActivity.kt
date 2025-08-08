@@ -11,12 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.onenthapp.data.AuthRepository
-import com.example.onenthapp.data.KakaoSignupRequest
 import com.example.onenthapp.data.ReissueResponse
 import com.example.onenthapp.model.KakaoLoginModelFactory
 import com.example.onenthapp.model.KakaoViewModel
 import com.example.onenthapp.util.TokenManager
 import com.kakao.sdk.auth.AuthCodeClient
+import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -85,83 +85,52 @@ class SplashActivity : AppCompatActivity() {
 
 
     private fun loginWithKakao() {
-
-        AuthCodeClient.instance.authorizeWithKakaoAccount(this) { code, error ->
+        // 인가코드 X, 바로 accessToken 받는 방식
+        UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
             when {
                 error != null -> {
                     Log.e("KAKAO_LOGIN", "카카오 로그인 실패", error)
                     Toast.makeText(this, "카카오 로그인 실패", Toast.LENGTH_SHORT).show()
                 }
-                code != null -> {
-                    Log.d("KAKAO_LOGIN", "인가 코드 발급: $code")
-                    viewModel.loginWithKakao(code) { success, message, isNew ->
-                        if (success) {
-                            val nextActivity = if (isNew) LoginActivity2::class.java else MainActivity::class.java
-                            startActivity(Intent(this, nextActivity))
-                            if (!isNew) finish()
-                        } else {
+                token != null -> {
+                    val kakaoAccessToken = token.accessToken
+                    Log.d("KAKAO_LOGIN", "kakao accessToken: $kakaoAccessToken")
+
+                    viewModel.loginWithKakaoAccessToken(kakaoAccessToken) { success, message, isNew, serverAccess, serverRefresh ->
+                        if (!success) {
+                            Log.w("KAKAO_LOGIN", "백엔드 로그인 실패: $message")
                             Toast.makeText(this, message ?: "카카오 로그인 실패", Toast.LENGTH_SHORT).show()
+                            return@loginWithKakaoAccessToken
                         }
+
+                        // 서버 토큰(기존회원인 경우)에 대한 로컬 저장은 ViewModel에서 이미 처리
+                        // 안전하게 재확인 저장도 가능
+                        serverAccess?.let { TokenManager.saveToken(it) }
+                        serverRefresh?.let { if (it.isNotEmpty()) TokenManager.saveRefreshToken(it) }
+
+                        if (isNew) {
+                            val r = viewModel.lastKakaoResult
+                            startActivity(Intent(this, SignupActivity2::class.java).apply {
+                                putExtra("loginType", "KAKAO")           // ✅ 분기 키
+                                putExtra("email",     r?.email ?: "")    // ✅ 키 이름: email (was prefillEmail)
+                                putExtra("serialId",  r?.serialId ?: "") // ✅ socialId로 사용
+                                putExtra("prefillName", r?.name ?: "")   // 선택
+                                // putExtra("prefillNick", kakaoNickname ?: "") // 닉네임 따로 있으면 여기로
+                            })
+                            // finish()는 회원가입 완료 후에
+                        } else {
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }
+
                     }
                 }
             }
         }
     }
 
-//    private fun loginWithKakaoWebOAuth() {
-//        val clientId = "b383420f841303eead9d711d8ab147d2" // 카카오 REST API 키
-//        //val redirectUri = "http://10.0.2.2:8080/api/auth/kakao/login" // 백이 요구하는 redirect_uri
-////        val redirectUri = "http://localhost:3000/api/auth/kakao/callback"
-//        val redirectUri = "b915f02e5deddf0811e43b08afbdbe41://oauth"
-//
-////        val redirectUri = "http://localhost:8080/api/auth/kakao/callback"
-//        val authUrl = "https://kauth.kakao.com/oauth/authorize" +
-//                "?client_id=$clientId" +
-//                "&redirect_uri=$redirectUri" +
-//                "&response_type=code"
-//
-//        Log.d("KAKAO_LOGIN", "카카오 로그인 URL 호출: $authUrl")
-//
-//        try {
-//            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl))
-//            startActivity(intent)
-//            Toast.makeText(this, "카카오 로그인 페이지로 이동합니다.", Toast.LENGTH_SHORT).show()
-//        } catch (e: Exception) {
-//            Log.e("KAKAO_LOGIN", "카카오 로그인 페이지 열기 실패", e)
-//            Toast.makeText(this, "카카오 로그인 실행 실패: ${e.message}", Toast.LENGTH_LONG).show()
-//        }
-//    }
-//
-//
-//
-//    override fun onNewIntent(intent: Intent?) {
-//        super.onNewIntent(intent)
-//        handleKakaoIntent(intent)
-//    }
-//
-//    private fun handleKakaoIntent(intent: Intent?) {
-//        intent?.data?.let { uri ->
-//            Log.d("KAKAO_LOGIN", "딥링크 도착: $uri") // 이 로그부터 반드시 찍혀야 함
-//
-//            if (uri.toString().startsWith("b915f02e5deddf0811e43b08afbdbe41://oauth")) {
-//                val code = uri.getQueryParameter("code")
-//                Log.d("KAKAO_LOGIN", "인가코드 수신: $code")
-//                if (code != null) {
-//                    viewModel.loginWithKakao(code) { success, message, isNew ->
-//                        runOnUiThread {
-//                            if (success) {
-//                                val next = if (isNew) SignupActivity::class.java else MainActivity::class.java
-//                                startActivity(Intent(this, next))
-//                                finish()
-//                            } else {
-//                                Toast.makeText(this, message ?: "로그인 실패", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+
+
 
 
 

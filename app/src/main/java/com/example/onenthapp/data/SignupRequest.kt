@@ -1,5 +1,7 @@
 package com.example.onenthapp.data
 
+import com.google.gson.annotations.SerializedName
+
 data class SignupRequest(
     val name: String,
     val email: String,
@@ -22,3 +24,9 @@ data class SignupResult(
     val createdAt: String
 )
 
+// 서버가 회원가입 후 바로 JWT를 내려주는 스펙 가정
+data class LocalSignupResult(
+    @SerializedName("access_token") val accessToken: String?,
+    @SerializedName("refresh_token") val refreshToken: String?,
+    val memberId: Long?
+)
