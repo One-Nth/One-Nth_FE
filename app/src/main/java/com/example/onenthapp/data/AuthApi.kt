@@ -8,17 +8,43 @@ interface AuthApi {
     @POST("email-auth/request-code")
     suspend fun requestCode(
         @Body body: Map<String, String>
-    ): Response<EmailResponse<String>>
+    ): Response<CommonResponse<String>>
 
 
     @POST("email-auth/verify-code")
     suspend fun verifyCode(
         @Body body: Map<String, String>
-    ): Response<EmailResponse<String>>
+    ): Response<CommonResponse<String>>
 
     // ✅ 회원가입 API 추가
-    @POST("members/signup")
-    suspend fun signUp(
-        @Body request: SignUpRequest
-    ): Response<SignUpResponse>
+    @POST("/api/members/signup")
+    suspend fun signup(
+        @Body request: SignupRequest
+    ): Response<SignupResponse>
+
+    @POST("/api/members/login")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): Response<LoginResponse>
+
+    @POST("/api/email-auth/password/request-code")
+    suspend fun requestPasswordResetCode(
+        @Body body: Map<String, String>
+    ): Response<CommonResponse<String>>
+
+    @POST("/api/email-auth/password/verify-code")
+    suspend fun verifyPasswordResetCode(
+        @Body body: Map<String, String>
+    ): Response<CommonResponse<String>>
+
+    @POST("/api/members/password/reset")
+    suspend fun resetPassword(
+        @Body body: Map<String, String>
+    ): Response<CommonResponse<Any>>
+
+    @POST("/api/auth/kakao/login")
+    suspend fun loginWithKakao(@Body request: KakaoLoginRequest): Response<KakaoLoginResponse>
+
+    @POST("/api/auth/kakao/signup")
+    suspend fun signupWithKakao(@Body request: KakaoSignupRequest): Response<KakaoLoginResponse>
 }

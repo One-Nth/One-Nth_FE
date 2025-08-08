@@ -1,0 +1,23 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="98dp"
+    android:layout_height="93dp"
+    android:layout_marginEnd="20dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="98dp"
+        android:layout_height="93dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/rectangle_32"
+        android:contentDescription="후기 이미지" />
+
+    <ImageView
+        android:id="@+id/deleteButton"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="10dp"
+        android:src="@drawable/streamline_ultimate_delete_2_bold"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="삭제 버튼" />
+</FrameLayout>

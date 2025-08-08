@@ -1,6 +1,6 @@
 package com.example.onenthapp.data
 
-data class EmailResponse<T>(
+data class CommonResponse<T>(
     val isSuccess: Boolean,
     val code: String,
     val message: String,

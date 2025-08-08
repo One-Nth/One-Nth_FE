@@ -1,5 +1,6 @@
 package com.example.onenthapp.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,13 @@ class ChatCheckActivity : AppCompatActivity() {
             // 거래 완료 처리 로직
             finish()
         }
+
+        // 거래 완료
+        binding.reviewButton.setOnClickListener {
+            val intent = Intent(this, WriteReviewActivity::class.java)
+            startActivity(intent)
+        }
+
 
         // 택배 거래 버튼 클릭 시 운송장 입력란 보여주기
         binding.deliveryButton.setOnClickListener {

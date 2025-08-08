@@ -3,4 +3,5 @@
     <string name="searchbar_guide">#태그명, 지역명, 상품명을 입력해주세요</string>
     <string name="title_n_1">N분의 1</string>
     <string name="title_tip_n_1">꿀팁 N분의 1</string>
+    <string name="mypage_title">마이페이지</string>
 </resources>
