@@ -21,6 +21,7 @@ import com.example.onenthapp.model.SearchResult
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import androidx.navigation.fragment.findNavController
+import com.example.onenthapp.alarm.AlarmActivity
 import com.example.onenthapp.model.SearchType
 import com.kakao.vectormap.KakaoMap;
 import com.kakao.vectormap.KakaoMapReadyCallback;
