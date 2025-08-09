@@ -2,14 +2,10 @@ package com.example.onenthapp
 
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RatingBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -17,15 +13,13 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.onenthapp.data.DeleteReviewImageRequest
 import com.example.onenthapp.data.ReviewBody
-import com.example.onenthapp.data.ReviewDetailResult
 import com.example.onenthapp.data.ReviewImage
 import com.example.onenthapp.databinding.EditMyReviewBinding
+import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 
 class ReviewEditActivity : AppCompatActivity() {
 
@@ -54,6 +48,8 @@ class ReviewEditActivity : AppCompatActivity() {
 
         val reviewId = intent.getLongExtra("reviewId", -1)
         val itemType = intent.getStringExtra("itemType") ?: ""
+
+        setMyProfile()
 
         if (reviewId == -1L || itemType.isBlank()) {
             Toast.makeText(this, "잘못된 접근입니다", Toast.LENGTH_SHORT).show()
@@ -95,7 +91,7 @@ class ReviewEditActivity : AppCompatActivity() {
                 if (response.isSuccessful && body != null && body.isSuccess) {
                     val review = body.result
 
-                    binding.reviewerNameDetail2.text = "나"
+                    binding.reviewerNameDetail2.text = TokenManager.getNickname() ?: "나"
                     binding.productNameText2.text = "상품 ID: ${review.itemId}"
                     binding.ratingBar.rating = review.rate.toFloat()
                     binding.reviewTextDetail2.setText(review.content)
@@ -119,6 +115,52 @@ class ReviewEditActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun setMyProfile() {
+        // 1) 캐시 우선
+        val cachedNick = TokenManager.getNickname()
+        if (!cachedNick.isNullOrBlank()) {
+            binding.reviewerNameDetail2.text = cachedNick
+        } else {
+            binding.reviewerNameDetail2.text = "나" // 일단 기본값
+        }
+
+        // 2) 프로필로 최신값 보강 (토큰 있으면)
+        val token = TokenManager.getAccessToken()
+        if (token.isNullOrEmpty()) return
+
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitInstance.memberApi.getProfile()
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                    val result = resp.body()!!.result
+                    val nick = result.nickname ?: "나"
+                    binding.reviewerNameDetail2.text = nick
+                    TokenManager.saveNickname(nick) // 캐시 업뎃
+
+                    // (옵션) 프로필 이미지도 레이아웃에 있으면 로드
+                    // 예: binding.profileImageDetail2 가 있을 경우
+                    val url = result.profileImageUrl
+                    val iv = runCatching { binding.root.findViewById<ImageView>(R.id.profileImage2) }.getOrNull()
+                    iv?.let {
+                        if (!url.isNullOrBlank()) {
+                            Glide.with(this@ReviewEditActivity)
+                                .load(url)
+                                .placeholder(R.drawable.profile_base)
+                                .error(R.drawable.profile_base)
+                                .circleCrop()
+                                .into(it)
+                        } else {
+                            it.setImageResource(R.drawable.profile_base)
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+                // 네트워크 실패 시 캐시값 유지
+            }
+        }
+    }
+
 
     private fun setEditMode(enabled: Boolean) {
         isEditMode = enabled

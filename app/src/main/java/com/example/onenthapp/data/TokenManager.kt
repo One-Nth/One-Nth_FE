@@ -19,6 +19,8 @@ object TokenManager {
     private const val LEGACY_KEY_MEMBER_ID = "member_id"
     private const val LEGACY_KEY_REFRESH_TOKEN = "refresh_token"
 
+    private const val KEY_NICKNAME = "nickname"
+
     fun init(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         migrateIfNeeded()
@@ -90,6 +92,7 @@ object TokenManager {
             .remove(KEY_ACCESS)
             .remove(KEY_REFRESH)
             .remove(KEY_MEMBER)
+            .remove(KEY_NICKNAME)
             // 레거시 키들도 함께 제거
             .remove(LEGACY_KEY_TOKEN)
             .remove(LEGACY_KEY_REFRESH_TOKEN)
@@ -112,4 +115,11 @@ object TokenManager {
             prefs.edit().putLong(KEY_MEMBER, legacyMember).apply()
         }
     }
+
+
+    fun saveNickname(nickname: String) {
+        prefs.edit().putString(KEY_NICKNAME, nickname).apply()
+    }
+
+    fun getNickname(): String? = prefs.getString(KEY_NICKNAME, null)
 }

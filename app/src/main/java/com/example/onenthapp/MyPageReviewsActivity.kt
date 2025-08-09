@@ -53,12 +53,12 @@ class MyPageReviewsActivity : AppCompatActivity() {
             }
         })
 
-        bindProfile()
-
         // 뒤로가기
         binding.topAppBar.setNavigationOnClickListener {
             finish()
         }
+
+        bindProfile()
 
         loadBuyerReviews()
     }
@@ -102,7 +102,6 @@ class MyPageReviewsActivity : AppCompatActivity() {
         }
     }
 
-
     private fun bindProfile() {
         val token = TokenManager.getAccessToken()
         if (token.isNullOrEmpty()) return  // 비로그인 시 기본 이미지/문구 유지
@@ -140,5 +139,4 @@ class MyPageReviewsActivity : AppCompatActivity() {
             }
         }
     }
-
 }

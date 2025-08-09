@@ -54,6 +54,8 @@ class AccountSettingsActivity : AppCompatActivity() {
                     val profile = response.body()?.result
                     nicknameInput.setText(profile?.nickname ?: "")
 
+                    TokenManager.saveNickname(profile?.nickname ?: "")
+
                     // ✅ 프로필 이미지가 있으면 Glide로 표시
                     if (!profile?.profileImageUrl.isNullOrEmpty()) {
                         Glide.with(this@AccountSettingsActivity)
@@ -162,6 +164,7 @@ class AccountSettingsActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                         nicknameInput.setText(changedName) // 변경된 닉네임으로 입력창 업데이트
+                        TokenManager.saveNickname(changedName)
                     } else {
                         Toast.makeText(
                             this@AccountSettingsActivity,
