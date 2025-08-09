@@ -112,7 +112,7 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
             )
             if (r.isSuccess) {
                 val data = r.getOrNull()!!
-                data.accessToken?.let { TokenManager.saveToken(it) }
+                data.accessToken?.let { TokenManager.saveAccessToken(it) }
                 data.refreshToken?.let { if (it.isNotEmpty()) TokenManager.saveRefreshToken(it) }
                 signupStatus.postValue("회원가입 성공")
                 signupSuccess.postValue(true)

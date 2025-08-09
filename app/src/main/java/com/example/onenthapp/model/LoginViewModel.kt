@@ -57,7 +57,7 @@ class LoginViewModel : ViewModel() {
                     val refreshToken = body.result.refreshToken
                     val memberId = body.result.memberId
 
-                    TokenManager.saveToken(accessToken)
+                    TokenManager.saveAccessToken(accessToken)
                     TokenManager.saveRefreshToken(refreshToken)
 
                     onResult(true, null, accessToken, refreshToken, memberId)

@@ -45,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
 
             viewModel.login(email, password) { success, message, accessToken, refreshToken, memberId ->
                 if (success) {
-                    TokenManager.saveToken(accessToken ?: "")
+                    TokenManager.saveAccessToken(accessToken ?: "")
                     if (!refreshToken.isNullOrEmpty()) {      // ✅ 널 체크 후 저장
                         TokenManager.saveRefreshToken(refreshToken)
                         Log.d("DEBUG", "로그인 성공, 리프레시토큰: $refreshToken")

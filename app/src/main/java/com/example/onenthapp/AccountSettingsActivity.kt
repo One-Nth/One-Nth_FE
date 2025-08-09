@@ -223,7 +223,7 @@ class AccountSettingsActivity : AppCompatActivity() {
         // ✅ 팝업 내 로그아웃 버튼
         val confirmButton = dialogView.findViewById<ImageButton>(R.id.btnLogoutConfirm)
         confirmButton.setOnClickListener {
-            TokenManager.clearAll()// 토큰 삭제
+            TokenManager.clearToken()// 토큰 삭제
             Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
 
             // ✅ SplashActivity로 이동
