@@ -23,10 +23,15 @@ object RetrofitInstance {
             val originalRequest = chain.request()
             val originalUrl = originalRequest.url.toString()
 
-            // 로그인 또는 소셜 회원가입 요청이 아닌 경우에만 Authorization 헤더 추가
+            // 토큰 가져오기 (로그 추가)
+            val token = TokenManager.getToken()
+            Log.d("토큰확인", "TokenManager.getToken(): $token")
+            Log.d("Retrofit", "Calling $originalUrl with token: Bearer $token")
+
             val requestBuilder = originalRequest.newBuilder()
+
+            // 로그인/회원가입 제외하고 Authorization 헤더 추가
             if (!originalUrl.contains("/auth/kakao/login") && !originalUrl.contains("/auth/kakao/signup")) {
-                val token = TokenManager.getToken()
                 requestBuilder.addHeader("Authorization", "Bearer $token")
             }
 
@@ -35,6 +40,7 @@ object RetrofitInstance {
         }
         .addInterceptor(logging)
         .build()
+
 
     private val retrofit by lazy {
         Retrofit.Builder()
