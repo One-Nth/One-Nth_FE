@@ -2,6 +2,7 @@ package com.example.onenthapp.data.post
 
 // TipItem.kt
 data class TipItem(
+    val postId: Long,
     val title: String,
     val content: String,
     val timeAgo: String,

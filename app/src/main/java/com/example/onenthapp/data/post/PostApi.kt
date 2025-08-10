@@ -30,4 +30,10 @@ interface PostApi {
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 10
     ): Response<SearchPostResponse>
+
+    @GET("post/{postId}")
+    suspend fun getPostDetail(
+        @Header("Authorization") bearer: String,
+        @Path("postId") postId: Long
+    ): Response<PostDetailResponse>
 }

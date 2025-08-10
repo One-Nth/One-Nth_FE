@@ -34,16 +34,11 @@ class LifeTipsSearchActivity : AppCompatActivity() {
 
         // RecyclerView
         adapter = LifeTipsSearchAdapter { item ->
-            val intent = Intent(this, LifeTipsDetailActivity::class.java).apply {
-                putExtra("title", item.title)
-                putExtra("content", item.content)
-                putExtra("timeAgo", item.timeAgo)
-                putExtra("commentCount", item.commentCount)
-                putExtra("likeCount", item.likeCount)
-                putExtra("viewCount", item.viewCount)
-            }
+            val intent = Intent(this, LifeTipsDetailActivity::class.java)
+                .putExtra("postId", item.postId)      // ✅ 이것만
             startActivity(intent)
         }
+
         binding.rvSearchResults.layoutManager = LinearLayoutManager(this)
         binding.rvSearchResults.adapter = adapter
 
@@ -73,6 +68,7 @@ class LifeTipsSearchActivity : AppCompatActivity() {
                 if (resp.isSuccessful && resp.body()?.isSuccess == true) {
                     val list = resp.body()!!.result.map { dto ->
                         TipItem(
+                            postId = dto.postId,   // ✅ 추가 (postId 타입에 따라 toLong() 필요 없으면 제거)
                             title = dto.title,
                             content = dto.contentPreview,
                             timeAgo = toTimeAgo(dto.createdAt),

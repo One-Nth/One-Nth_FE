@@ -45,12 +45,12 @@ class LifeTipsFragment : Fragment() {
         }
 
         // 3) 데이터 주입 (임시 더미)
-        val dummyList = listOf(
-            TipItem("곰팡이 제거제", "000 곰팡이 제거제 어떤가요", "3분 전", 2, 1, 24),
-            TipItem("모기약", "효과 어떤가요?", "10분 전", 1, 0, 15),
-            TipItem("방향제", "차량용 추천해주세요", "1시간 전", 4, 3, 50)
-        )
-        adapter.submitItems(dummyList)
+//        val dummyList = listOf(
+//            TipItem("곰팡이 제거제", "000 곰팡이 제거제 어떤가요", "3분 전", 2, 1, 24),
+//            TipItem("모기약", "효과 어떤가요?", "10분 전", 1, 0, 15),
+//            TipItem("방향제", "차량용 추천해주세요", "1시간 전", 4, 3, 50)
+//        )
+//        adapter.submitItems(dummyList)
     }
 
     override fun onDestroyView() {
