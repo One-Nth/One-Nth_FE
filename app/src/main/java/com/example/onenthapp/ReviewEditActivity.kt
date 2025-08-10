@@ -102,16 +102,10 @@ class ReviewEditActivity : AppCompatActivity() {
 
                     existingImageList.clear()
                     existingImageList.addAll(
-                        review.reviewImageList.mapIndexed { index, url ->
-                            ReviewImage(id = index.toLong(), url = url)
+                        review.reviewImageList.map {
+                            ReviewImage(id = it.reviewImageId, url = it.imageUrl)
                         }
                     )
-//                    existingImageList.clear()
-//                    existingImageList.addAll(
-//                        review.reviewImageList.map { image ->
-//                            ReviewImage(id = image.id, url = image.url)
-//                        }
-//                    )
 
                     showAllImages()
                     setEditMode(false)
@@ -213,10 +207,11 @@ class ReviewEditActivity : AppCompatActivity() {
                 val review = body.result
                 existingImageList.clear()
                 existingImageList.addAll(
-                    review.reviewImageList.mapIndexed { index, url ->
-                        ReviewImage(id = index.toLong(), url = url)
+                    review.reviewImageList.map {
+                        ReviewImage(id = it.reviewImageId, url = it.imageUrl)
                     }
                 )
+
                 showAllImages()
             }
         } catch (_: Exception) {

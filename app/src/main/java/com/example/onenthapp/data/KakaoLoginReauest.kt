@@ -1,30 +1,21 @@
 package com.example.onenthapp.data
 
+import com.google.gson.annotations.SerializedName
+
+// 카카오 로그인 요청 바디 (프론트 → 서버)
 data class KakaoLoginRequest(
-    val code: String
+    val accessToken: String
 )
 
-data class KakaoLoginResponse(
-    val isSuccess: Boolean,
-    val code: String,
-    val message: String,
-    val result: KakaoLoginResult
-)
 
+// 서버 응답 payload (서버 → 프론트)
+// 백이 snake_case를 쓰므로 @SerializedName으로 매핑
 data class KakaoLoginResult(
-    val access_token: String,
-    val email: String,
-    val name: String,
-    val serialId: String,
+    @SerializedName("access_token") val accessToken: String?,
+    @SerializedName("refresh_token") val refreshToken: String?,
+    val email: String?,
+    val name: String?,
+    @SerializedName("serialId") val serialId: String?,
     val isNew: Boolean
-)
-
-data class KakaoSignupRequest(
-    val email: String,
-    val socialId: String,
-    val name: String,
-    val nickname: String,
-    val regionName: String,
-    val marketingAgree: Boolean
 )
 

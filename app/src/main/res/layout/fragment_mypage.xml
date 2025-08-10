@@ -1,266 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/main_white"
-    android:padding="1dp">
+    android:background="#F4F4F4">
 
-    <!-- 상단 타이틀과 설정 버튼을 가로로 정렬 -->
+    <!-- 툴바: 마이페이지 타이틀 -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="31dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp">
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:background="@android:color/white"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/humbleicons_arrow_up"
+            android:contentDescription="뒤로가기"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
-            android:id="@+id/titleText"
-            style="@style/PretendardH5"
+            android:id="@+id/settingTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="마이페이지"
-            android:textColor="@color/main_green"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/main_black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/backButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="8dp"/>
 
         <ImageView
             android:id="@+id/settingsButton"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/uil_setting"
-            android:contentDescription="설정 버튼"
+            android:contentDescription="설정"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 프로필 영역 -->
-    <LinearLayout
-        android:id="@+id/profileSection"
-        android:layout_width="match_parent"
+    <!-- 프로필 카드뷰 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profileCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingTop="44dp"
-        android:paddingBottom="12dp"
-        android:paddingStart="57dp"
-        android:paddingEnd="24dp"
-        android:background="@color/main_white">
+        android:layout_marginTop="16dp"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
-        <ImageView
-            android:id="@+id/profileImage"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/avatar"
-            android:scaleType="centerCrop"
-            android:layout_marginEnd="10dp" />
-
-        <TextView
-            style="@style/PretendardSubtitle1"
-            android:id="@+id/nickname"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profileSection"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="닉네임"
-            android:textColor="@color/main_black"
-            android:paddingEnd="20dp"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="175dp" />
+            android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/profileArrow"
-            android:layout_width="23dp"
-            android:layout_height="13dp"
-            android:src="@drawable/mypage_vector"
-            android:contentDescription="프로필 상세 이동" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/profile_base"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/menuList"
-        android:layout_width="match_parent"
+            <TextView
+                style="@style/PretendardSubtitle1"
+                android:gravity="start"
+                android:textAlignment="viewStart"
+                android:id="@+id/nickname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="닉네임"
+                android:textColor="@color/main_black"
+                app:layout_constraintStart_toEndOf="@id/profileImage"
+                app:layout_constraintEnd_toStartOf="@id/profileArrow"
+                app:layout_constraintTop_toTopOf="@id/profileImage"
+                app:layout_constraintBottom_toBottomOf="@id/profileImage"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"/>
+
+            <ImageView
+                android:id="@+id/profileArrow"
+                android:layout_width="39dp"
+                android:layout_height="39dp"
+                android:src="@drawable/right_arrow"
+                android:contentDescription="프로필 이동"
+                app:layout_constraintTop_toTopOf="@id/profileImage"
+                app:layout_constraintBottom_toBottomOf="@id/profileImage"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 메뉴 카드뷰 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/menuCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp">
+        android:layout_marginTop="16dp"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintTop_toBottomOf="@id/profileCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
-        <!-- 구분선 (선택적으로 여기에 두세요) -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="15dp"
-            android:background="#CCCCCC" />
-
-
-        <!-- 스크랩한 글 -->
         <LinearLayout
-            android:id="@+id/menuScrap"
+            android:id="@+id/menuList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="12dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/stash_save_ribbon"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="스크랩 아이콘" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- 메뉴 항목들 (예시: 스크랩한 글) -->
+            <LinearLayout
+                android:id="@+id/menuScrap"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="스크랩한 글"
-                style="@style/PretendardSubtitle1"
-                android:textColor="@color/main_black"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/scrap"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="스크랩 아이콘"/>
+                <TextView
+                    style="@style/PretendardSubtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="스크랩한 글"
+                    android:textColor="@color/main_black" />
+            </LinearLayout>
 
-        <!-- 공감한 글 -->
-        <LinearLayout
-            android:id="@+id/menuLike"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="12dp">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/solar_heart_linear"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="공감 아이콘" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- 여기에 menuLike, menuWritten, menuReview 등 나머지 항목도 그대로 이어서 복붙 -->
+            <LinearLayout
+                android:id="@+id/menuLike"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="공감한 글"
-                style="@style/PretendardSubtitle1"
-                android:textColor="@color/main_black"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/heart"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="스크랩 아이콘"/>
+                <TextView
+                    style="@style/PretendardSubtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="공감한 글"
+                    android:textColor="@color/main_black" />
+            </LinearLayout>
 
-        <!-- 내가 쓴 글 -->
-        <LinearLayout
-            android:id="@+id/menuWritten"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="12dp">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/icon_park_outline_write"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="내가 쓴 글 아이콘" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/menuWritten"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="내가 쓴 글"
-                style="@style/PretendardSubtitle1"
-                android:textColor="@color/main_black"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/written"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="스크랩 아이콘"/>
+                <TextView
+                    style="@style/PretendardSubtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="내가 쓴 글"
+                    android:textColor="@color/main_black" />
+            </LinearLayout>
 
-        <!-- 나의 거래 내역 및 후기 -->
-        <LinearLayout
-            android:id="@+id/menuReview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="12dp">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/mdi_paper_outline"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="후기 아이콘" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/menuReview"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="나의 거래 내역 및 후기"
-                style="@style/PretendardSubtitle1"
-                android:textColor="@color/main_black"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/review"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="스크랩 아이콘"/>
+                <TextView
+                    style="@style/PretendardSubtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="나의 거래 내역 및 후기"
+                    android:textColor="@color/main_black" />
+            </LinearLayout>
 
-        <!-- 내가 쓴 후기 수정하기 -->
-        <LinearLayout
-            android:id="@+id/menuEditReview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="12dp">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/mdi_paper_outline"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="후기 아이콘" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/menuEditReview"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="내가 쓴 후기 수정하기"
-                style="@style/PretendardSubtitle1"
-                android:textColor="@color/main_black"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/editreview"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="스크랩 아이콘"/>
+                <TextView
+                    style="@style/PretendardSubtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="내가 쓴 후기 수정하기"
+                    android:textColor="@color/main_black" />
+            </LinearLayout>
 
-        <!-- 약관 및 정책 -->
-        <LinearLayout
-            android:id="@+id/menuPolicy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="12dp">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/material_symbols_info_outline"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="약관 아이콘" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/menuPolicy"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="약관 및 정책"
-                style="@style/PretendardSubtitle1"
-                android:textColor="@color/main_black"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/policy"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="스크랩 아이콘"/>
+                <TextView
+                    style="@style/PretendardSubtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="약관 및 정책"
+                    android:textColor="@color/main_black" />
+            </LinearLayout>
 
-        <!-- 고객센터 -->
-        <LinearLayout
-            android:id="@+id/menuCs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="12dp">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/material_symbols_how_to_reg_outline"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="고객센터 아이콘" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/menuCs"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="고객센터"
-                style="@style/PretendardSubtitle1"
-                android:textColor="@color/main_black"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/cs"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="스크랩 아이콘"/>
+                <TextView
+                    style="@style/PretendardSubtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="고객센터"
+                    android:textColor="@color/main_black" />
+            </LinearLayout>
         </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
-    </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

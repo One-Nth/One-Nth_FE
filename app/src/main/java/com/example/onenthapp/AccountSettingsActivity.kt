@@ -212,7 +212,7 @@ class AccountSettingsActivity : AppCompatActivity() {
         // ✅ 팝업 내 로그아웃 버튼
         val confirmButton = dialogView.findViewById<ImageButton>(R.id.btnLogoutConfirm)
         confirmButton.setOnClickListener {
-            TokenManager.clearToken() // 토큰 삭제
+            TokenManager.clearAll()// 토큰 삭제
             Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
 
             // ✅ SplashActivity로 이동
@@ -264,35 +264,3 @@ class AccountSettingsActivity : AppCompatActivity() {
 
 
 
-
-
-
-//        btnConfirmPassword.setOnClickListener {
-//            val newPassword = newPasswordInput.text.toString().trim()
-//
-//            if (newPassword.isEmpty()) {
-//                Toast.makeText(this, "새 비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
-//
-//            lifecycleScope.launch {
-//                try {
-//                    val response = RetrofitInstance.memberApi.changePassword(
-//                        mapOf("password" to newPassword)
-//                    )
-//
-//                    if (response.isSuccessful && response.body()?.isSuccess == true) {
-//                        Toast.makeText(this@AccountSettingsActivity, "비밀번호가 변경되었습니다.", Toast.LENGTH_SHORT).show()
-//                        newPasswordInput.text.clear() // 입력창 초기화
-//                    } else {
-//                        Toast.makeText(
-//                            this@AccountSettingsActivity,
-//                            response.body()?.message ?: "비밀번호 변경 실패",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                } catch (e: Exception) {
-//                    Toast.makeText(this@AccountSettingsActivity, "오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        }

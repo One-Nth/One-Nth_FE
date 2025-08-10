@@ -1,75 +1,90 @@
 package com.example.onenthapp.model
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.onenthapp.data.AuthRepository
-import com.example.onenthapp.data.KakaoLoginResponse
-import com.example.onenthapp.data.KakaoSignupRequest
+import com.example.onenthapp.data.KakaoLoginResult
+import com.example.onenthapp.data.userset.KakaoSignupRequest
+import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import okio.IOException
-import org.json.JSONObject
 
-class KakaoViewModel(private val repository: AuthRepository) : ViewModel() {
-    private val _loginResult = MutableLiveData<KakaoLoginResponse>()
-    val loginResult: LiveData<KakaoLoginResponse> get() = _loginResult
+class KakaoViewModel(private val repo: AuthRepository) : ViewModel() {
 
-    fun loginWithKakao(code: String, callback: (Boolean, String?, Boolean) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val response = repository.loginWithKakao(code)
-                callback(true, null, response.result.isNew)
-            } catch (e: Exception) {
-                Log.e("KakaoLogin", "error: ${e.message}")
-                callback(false, e.message, false)
-            }
+    val signupStatus = MutableLiveData<String?>()
+    val signupSuccess = MutableLiveData<Boolean?>()
+
+    // 마지막 결과를 가입 프리필에 쓰고 싶으면 보관
+    var lastKakaoResult: KakaoLoginResult? = null
+        private set
+
+    fun loginWithKakaoAccessToken(
+        kakaoAccessToken: String,
+        onResult: (success: Boolean, message: String?, isNew: Boolean, accessToken: String?, refreshToken: String?) -> Unit
+    ) = viewModelScope.launch {
+        val r = repo.loginWithKakaoAccessToken(kakaoAccessToken)
+        if (r.isSuccess) {
+            val data = r.getOrNull()!!
+            lastKakaoResult = data
+
+            // 기존회원이면 서버가 자체 JWT(access_token/refresh_token)를 내려줌
+            data.accessToken?.let { TokenManager.saveToken(it) }
+            data.refreshToken?.let { if (it.isNotEmpty()) TokenManager.saveRefreshToken(it) }
+
+            onResult(true, null, data.isNew, data.accessToken, data.refreshToken)
+        } else {
+            onResult(false, r.exceptionOrNull()?.message ?: "카카오 로그인 실패", false, null, null)
         }
     }
 
-//    fun loginWithKakao(code: String, callback: (Boolean, String?, Boolean) -> Unit) {
-//        val client = OkHttpClient()
-//        val json = JSONObject().apply { put("code", code) }
-//        val body = json.toString().toRequestBody("application/json".toMediaType())
-//
-//        val request = Request.Builder()
-//            .url("http://10.0.2.2:8080/api/auth/kakao/login")
-//            .post(body)
-//            .build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                callback(false, e.message, false)
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                val responseString = response.body?.string()
-//                val json = JSONObject(responseString)
-//                val isSuccess = json.optBoolean("isSuccess")
-//                val isNew = json.optJSONObject("result")?.optBoolean("isNew") ?: false
-//                callback(isSuccess, null, isNew)
-//            }
-//        })
-//    }
 
 
-    fun signupWithKakao(req: KakaoSignupRequest) {
-        viewModelScope.launch {
-            try {
-                repository.signupWithKakao(req)
-                // 이후 로직 필요 시 여기에 추가
-            } catch (e: Exception) {
-                Log.e("KakaoSignup", "error: ${e.message}")
+    // ✅ 카카오 신규가입
+    fun kakaoSignup(
+        email: String,
+        socialId: String,
+        name: String,
+        nickname: String,
+        regionName: String,
+        marketingAgree: Boolean
+    ) = viewModelScope.launch {
+        try {
+            val req = KakaoSignupRequest(
+                email = email,
+                socialId = socialId, // ← 카카오 로그인 응답의 serialId를 그대로
+                name = sanitize(name),
+                nickname = sanitize(nickname),
+                regionName = regionName,
+                marketingAgree = marketingAgree
+            )
+            val r = repo.kakaoSignup(req)
+            if (r.isSuccess) {
+                val data = r.getOrNull()!!
+                data.accessToken?.let { TokenManager.saveToken(it) }
+                data.refreshToken?.let { if (it.isNotEmpty()) TokenManager.saveRefreshToken(it) }
+                signupStatus.postValue("카카오 회원가입 성공")
+                signupSuccess.postValue(true)
+            } else {
+                signupStatus.postValue(r.exceptionOrNull()?.message ?: "카카오 회원가입 실패")
+                signupSuccess.postValue(false)
             }
+        } catch (t: Throwable) {
+            signupStatus.postValue("오류: ${t.message}")
+            signupSuccess.postValue(false)
         }
+    }
+
+    // DB 컬럼 초과/이모지 방지
+    private fun sanitize(raw: String, maxCodePoints: Int = 20): String {
+        val noEmoji = raw.replace(Regex("[^\\p{L}\\p{N}\\p{Zs}_\\-\\.]+"), "")
+        val it = noEmoji.codePoints().iterator()
+        val sb = StringBuilder()
+        var cnt = 0
+        while (it.hasNext() && cnt < maxCodePoints) {
+            sb.appendCodePoint(it.nextInt()); cnt++
+        }
+        return sb.toString().trim()
     }
 }
+
 

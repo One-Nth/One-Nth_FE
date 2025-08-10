@@ -1,5 +1,8 @@
 package com.example.onenthapp.data
 
+import com.example.onenthapp.data.userset.KakaoSignupRequest
+import com.example.onenthapp.data.userset.KakaoSignupResult
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -16,12 +19,11 @@ interface AuthApi {
         @Body body: Map<String, String>
     ): Response<CommonResponse<String>>
 
-    // ✅ 회원가입 API 추가
-    @POST("/api/members/signup")
+    // ✅ LOCAL 회원가입
+    @POST("members/signup")
     suspend fun signup(
         @Body request: SignupRequest
-    ): Response<SignupResponse>
-
+    ): Response<CommonResponse<LocalSignupResult>>
     @POST("/api/members/login")
     suspend fun login(
         @Body request: LoginRequest
@@ -42,9 +44,14 @@ interface AuthApi {
         @Body body: Map<String, String>
     ): Response<CommonResponse<Any>>
 
-    @POST("/api/auth/kakao/login")
-    suspend fun loginWithKakao(@Body request: KakaoLoginRequest): Response<KakaoLoginResponse>
+    @POST("auth/kakao/login")
+    suspend fun loginWithKakao(@Body req: KakaoLoginRequest): Response<CommonResponse<KakaoLoginResult>>
 
-    @POST("/api/auth/kakao/signup")
-    suspend fun signupWithKakao(@Body request: KakaoSignupRequest): Response<KakaoLoginResponse>
+    @POST("auth/kakao/signup")
+    suspend fun signupWithKakao(
+        @Body req: KakaoSignupRequest
+    ): Response<CommonResponse<KakaoSignupResult>>
+
+    @POST("/api/members/reissue")
+    fun reissueToken(@Body request: Map<String, String>): Call<ReissueResponse>
 }

@@ -14,6 +14,7 @@ data class LoginResponse(
 
 data class LoginResult(
     val memberId: Int,
-    val accessToken: String
+    val accessToken: String,
+    val refreshToken: String
 )
 

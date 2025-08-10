@@ -110,6 +110,6 @@
         <activity android:name=".WriteReviewActivity" />
         <activity android:name=".AllMyReviewActivity" />
         <activity android:name=".ReviewEditActivity" />
-
+        <activity android:name=".MyPageReviewsActivity" />
     </application>
 </manifest>
