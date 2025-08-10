@@ -7,7 +7,8 @@ data class ProfileResponse(
 
 data class ProfileResult(
     val profileImageUrl: String?,
-    val nickname: String
+    val nickname: String,
+    val verifiedRegionNames: List<String> = emptyList()
 )
 
 data class NicknameResponse(

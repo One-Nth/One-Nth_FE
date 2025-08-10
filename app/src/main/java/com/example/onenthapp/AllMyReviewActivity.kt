@@ -7,28 +7,72 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.util.TokenManager
+import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.launch
 
 
 class AllMyReviewActivity : AppCompatActivity() {
+
+    private lateinit var adapter: MyReviewAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_my_review)
 
+        // ✅ 뒤로가기 버튼 클릭 시 현재 액티비티 종료
+        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar.setNavigationOnClickListener {
+            finish()
+        }
+
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerMyReviews)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val api = RetrofitInstance.reviewApi
+        // 1) 어댑터 먼저 붙이기 (빈 리스트)
+        adapter = MyReviewAdapter(emptyList())
+        recyclerView.adapter = adapter
+
+        // 2) 캐시 닉네임으로 먼저 표시(있으면)
+        adapter.setProfileData(TokenManager.getNickname(), null)
+
+        // 3) 프로필 최신값 불러와서 주입
+        loadMyProfileForAdapter()
+
+        // 4) 내 리뷰 목록 불러오기
+        loadMyReviews()
+
+
+    }
+
+    private fun loadMyProfileForAdapter() {
+        val token = TokenManager.getAccessToken()
+        if (token.isNullOrEmpty()) return
 
         lifecycleScope.launch {
             try {
-                val response = api.getMyReviews()
+                val resp = RetrofitInstance.memberApi.getProfile()
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                    val result = resp.body()!!.result
+                    adapter.setProfileData(result.nickname, result.profileImageUrl)
+                    // (옵션) 닉네임 캐시 갱신
+                    result.nickname?.let { TokenManager.saveNickname(it) }
+                }
+            } catch (_: Exception) {
+                // 실패 시 캐시 닉네임으로만 표시
+            }
+        }
+    }
 
-                // 💡 body() 꺼내고 null 체크
+    private fun loadMyReviews() {
+        val api = RetrofitInstance.reviewApi
+        lifecycleScope.launch {
+            try {
+                val response = api.getMyReviews()
                 val body = response.body()
                 if (response.isSuccessful && body != null && body.isSuccess) {
                     val reviews = body.result.reviewList
-                    recyclerView.adapter = MyReviewAdapter(reviews)
+                    adapter.updateList(reviews)   // ✅ 리스트 갱신
                 } else {
                     Toast.makeText(
                         this@AllMyReviewActivity,
@@ -46,4 +90,3 @@ class AllMyReviewActivity : AppCompatActivity() {
         }
     }
 }
-

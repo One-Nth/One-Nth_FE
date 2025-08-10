@@ -8,9 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.onenthapp.data.MyReview
 import com.example.onenthapp.databinding.ActivityMypageReviewsBinding
 import com.example.onenthapp.util.TokenManager
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class MyPageReviewsActivity : AppCompatActivity() {
@@ -57,12 +61,14 @@ class MyPageReviewsActivity : AppCompatActivity() {
             finish()
         }
 
+        bindProfile()
+
         loadBuyerReviews()
     }
 
     private fun loadBuyerReviews() {
         val userId = TokenManager.getMemberId()
-        val token = TokenManager.getToken()
+        val token = TokenManager.getAccessToken()
 
         if (userId == null || token.isNullOrEmpty()) {
             Toast.makeText(this, "로그인이 필요합니다", Toast.LENGTH_SHORT).show()
@@ -95,6 +101,44 @@ class MyPageReviewsActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Toast.makeText(this@MyPageReviewsActivity, "네트워크 오류", Toast.LENGTH_SHORT).show()
                 Log.e("MyPageReviews", "네트워크 오류: ${e.message}")
+            }
+        }
+    }
+
+    private fun bindProfile() {
+        val token = TokenManager.getAccessToken()
+        if (token.isNullOrEmpty()) return  // 비로그인 시 기본 이미지/문구 유지
+
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitInstance.memberApi.getProfile() // 인터셉터에서 Bearer 붙는다고 가정
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                    val p = resp.body()!!.result
+
+                    // 닉네임
+                    binding.nickname.text = p.nickname ?: "닉네임"
+
+                    // 프로필 이미지
+                    val url = p.profileImageUrl
+                    if (!url.isNullOrBlank()) {
+                        Glide.with(this@MyPageReviewsActivity)
+                            .load(url)
+                            .placeholder(R.drawable.profile_base)
+                            .error(R.drawable.profile_base)
+                            .circleCrop()
+                            .into(binding.profileImage)
+                    } else {
+                        binding.profileImage.setImageResource(R.drawable.profile_base)
+                    }
+
+                    // (옵션) 인증 지역 표시까지 필요하면 여기에 verifiedRegionNames 처리 추가 가능
+                    // val dong = p.verifiedRegionNames.firstOrNull()?.let { extractDong(it) }
+                    // binding.regionText.text = dong?.let { "$it 인증 완료" } ?: "인증된 지역 없음"
+                } else {
+                    Log.e("MyPageReviews", "프로필 응답 실패: ${resp.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("MyPageReviews", "프로필 로드 오류: ${e.message}")
             }
         }
     }

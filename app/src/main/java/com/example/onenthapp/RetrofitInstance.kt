@@ -26,7 +26,7 @@ object RetrofitInstance {
             // 로그인 또는 소셜 회원가입 요청이 아닌 경우에만 Authorization 헤더 추가
             val requestBuilder = originalRequest.newBuilder()
             if (!originalUrl.contains("/auth/kakao/login") && !originalUrl.contains("/auth/kakao/signup")) {
-                val token = TokenManager.getToken()
+                val token = TokenManager.getAccessToken()
                 requestBuilder.addHeader("Authorization", "Bearer $token")
             }
 
