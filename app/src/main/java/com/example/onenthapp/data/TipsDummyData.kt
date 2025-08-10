@@ -1,6 +1,6 @@
 package com.example.onenthapp.data
 
-import com.example.onenthapp.model.TipItem
+import com.example.onenthapp.data.post.TipItem
 
 object TipsDummyData {
 

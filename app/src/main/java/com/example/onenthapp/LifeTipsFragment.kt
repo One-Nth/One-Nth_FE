@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.onenthapp.databinding.FragmentTipsLifetipsBinding
-import com.example.onenthapp.model.TipItem
+import com.example.onenthapp.data.post.TipItem
 
 
 class LifeTipsFragment : Fragment() {
@@ -24,13 +24,8 @@ class LifeTipsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val dummyList = listOf(
-            TipItem("곰팡이 제거제", "000 곰팡이 제거제 어떤가요", "3분 전", 2, 1, 24),
-            TipItem("모기약", "효과 어떤가요?", "10분 전", 1, 0, 15),
-            TipItem("방향제", "차량용 추천해주세요", "1시간 전", 4, 3, 50)
-        )
-
-        adapter = LifeTipsSearchAdapter(dummyList) { tipItem ->
+        // 1) 어댑터 생성 (onClick 콜백만 전달)
+        adapter = LifeTipsSearchAdapter { tipItem ->
             val intent = Intent(requireContext(), LifeTipsDetailActivity::class.java).apply {
                 putExtra("title", tipItem.title)
                 putExtra("content", tipItem.content)
@@ -42,8 +37,20 @@ class LifeTipsFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.rvLifeTips.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvLifeTips.adapter = adapter
+        // 2) 리사이클러뷰 붙이기
+        binding.rvLifeTips.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = this@LifeTipsFragment.adapter
+        }
+
+        // 3) 데이터 주입 (임시 더미)
+        val dummyList = listOf(
+            TipItem("곰팡이 제거제", "000 곰팡이 제거제 어떤가요", "3분 전", 2, 1, 24),
+            TipItem("모기약", "효과 어떤가요?", "10분 전", 1, 0, 15),
+            TipItem("방향제", "차량용 추천해주세요", "1시간 전", 4, 3, 50)
+        )
+        adapter.submitItems(dummyList)
     }
 
     override fun onDestroyView() {

@@ -61,30 +61,6 @@
             </intent-filter>
         </activity>
 
-<!--        <activity-->
-<!--            android:name=".SplashActivity"-->
-<!--            android:launchMode="singleTop"-->
-<!--            android:exported="true">-->
-
-<!--            &lt;!&ndash; 앱 실행용 &ndash;&gt;-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-
-<!--            &lt;!&ndash; 딥링크용 &ndash;&gt;-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW"/>-->
-<!--                <category android:name="android.intent.category.DEFAULT"/>-->
-<!--                <category android:name="android.intent.category.BROWSABLE"/>-->
-<!--                <data-->
-<!--                    android:scheme="b915f02e5deddf0811e43b08afbdbe41"-->
-<!--                    android:host="oauth"/>-->
-<!--            </intent-filter>-->
-
-<!--        </activity>-->
-
-
         <activity android:name=".SignupActivity" android:exported="false" />
         <activity android:name=".LoginActivity" android:exported="true" />
         <activity android:name=".SignupActivity2" android:exported="false" />

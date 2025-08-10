@@ -1,7 +1,6 @@
-package com.example.onenthapp.model
+package com.example.onenthapp.data.post
 
-import java.io.Serializable
-
+// TipItem.kt
 data class TipItem(
     val title: String,
     val content: String,
@@ -9,4 +8,5 @@ data class TipItem(
     val commentCount: Int,
     val likeCount: Int,
     val viewCount: Int
-) : Serializable
+)
+
