@@ -74,81 +74,135 @@
             android:padding="16dp">
 
             <!-- 사진 추가 영역 -->
+<!--            <LinearLayout-->
+<!--                android:id="@+id/imageContainer"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                &lt;!&ndash; 카메라 아이콘 &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/cameraTile"-->
+<!--                    android:layout_width="116dp"-->
+<!--                    android:layout_height="116dp"-->
+<!--                    android:background="@drawable/rectangle_11"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:gravity="center_horizontal">-->
+
+<!--                    &lt;!&ndash; 카메라 아이콘 &ndash;&gt;-->
+<!--                    <ImageView-->
+<!--                        android:layout_width="22dp"-->
+<!--                        android:layout_height="20dp"-->
+<!--                        android:layout_marginTop="40dp"-->
+<!--                        android:src="@drawable/camera_vector" />-->
+
+<!--                    &lt;!&ndash; 텍스트 &ndash;&gt;-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/tvImageCount"-->
+<!--                        style="@style/PretendardSubtitle2"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:text="1/10"-->
+<!--                        android:textColor="@color/text_btn_ok" />-->
+<!--                </LinearLayout>-->
+
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    &lt;!&ndash; 첫 번째 박스 &ndash;&gt;-->
+<!--                    <FrameLayout-->
+<!--                        android:layout_width="116dp"-->
+<!--                        android:layout_height="116dp"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:background="@drawable/rectangle_11">-->
+
+<!--                        &lt;!&ndash; X 버튼 &ndash;&gt;-->
+<!--                        <ImageView-->
+<!--                            android:layout_width="22dp"-->
+<!--                            android:layout_height="22dp"-->
+<!--                            android:layout_gravity="end|top"-->
+<!--                            android:layout_margin="10dp"-->
+<!--                            android:src="@drawable/btn_delete" />-->
+<!--                    </FrameLayout>-->
+
+<!--                    &lt;!&ndash; 두 번째 박스 &ndash;&gt;-->
+<!--                    <FrameLayout-->
+<!--                        android:layout_width="116dp"-->
+<!--                        android:layout_height="116dp"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:background="@drawable/rectangle_11">-->
+
+<!--                        <ImageView-->
+<!--                            android:layout_width="22dp"-->
+<!--                            android:layout_height="22dp"-->
+<!--                            android:layout_gravity="end|top"-->
+<!--                            android:layout_margin="10dp"-->
+<!--                            android:src="@drawable/btn_delete" />-->
+<!--                    </FrameLayout>-->
+
+<!--                </LinearLayout>-->
+
+<!--            </LinearLayout>-->
+            <!-- 사진 추가 영역 -->
             <LinearLayout
+                android:id="@+id/photoRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <!-- 카메라 아이콘 -->
+                <!-- 고정 카메라 타일 -->
                 <LinearLayout
+                    android:id="@+id/cameraTile"
                     android:layout_width="116dp"
                     android:layout_height="116dp"
                     android:background="@drawable/rectangle_11"
                     android:orientation="vertical"
                     android:gravity="center_horizontal">
 
-                    <!-- 카메라 아이콘 -->
                     <ImageView
                         android:layout_width="22dp"
                         android:layout_height="20dp"
                         android:layout_marginTop="40dp"
                         android:src="@drawable/camera_vector" />
 
-                    <!-- 텍스트 -->
                     <TextView
+                        android:id="@+id/tvImageCount"
                         style="@style/PretendardSubtitle2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="1/10"
+                        android:text="0/10"
                         android:textColor="@color/text_btn_ok" />
                 </LinearLayout>
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <!-- 오른쪽 썸네일 스크롤 -->
+                <HorizontalScrollView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:scrollbars="none"
+                    android:fillViewport="false">
 
-                    <!-- 첫 번째 박스 -->
-                    <FrameLayout
-                        android:layout_width="116dp"
-                        android:layout_height="116dp"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/rectangle_11">
-
-                        <!-- X 버튼 -->
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_gravity="end|top"
-                            android:layout_margin="10dp"
-                            android:src="@drawable/btn_delete" />
-                    </FrameLayout>
-
-                    <!-- 두 번째 박스 -->
-                    <FrameLayout
-                        android:layout_width="116dp"
-                        android:layout_height="116dp"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/rectangle_11">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_gravity="end|top"
-                            android:layout_margin="10dp"
-                            android:src="@drawable/btn_delete" />
-                    </FrameLayout>
-
-                </LinearLayout>
-
+                    <LinearLayout
+                        android:id="@+id/thumbsContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
             </LinearLayout>
+
+
 
             <!-- 제목 / 내용 -->
             <EditText
                 style="@style/PretendardH2"
+                android:id="@+id/etTitle"
                 android:gravity="start|center_vertical"
                 android:textAlignment="viewStart"
                 android:layout_width="match_parent"
@@ -164,6 +218,7 @@
 
             <EditText
                 style="@style/PretendardSubtitle2"
+                android:id="@+id/etContent"
                 android:gravity="start|top"
                 android:textAlignment="viewStart"
                 android:layout_width="match_parent"
@@ -182,12 +237,10 @@
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="7dp"
-                android:background="@color/main_gray"
-                app:layout_constraintTop_toBottomOf="@id/postContainer"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:background="@color/main_gray" />
 
             <TextView
+                android:id="@+id/tvLinkHeader"
                 style="@style/PretendardSubtitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -197,23 +250,26 @@
                 android:textColor="@color/main_black" />
 
             <LinearLayout
+                android:id="@+id/linkInputContainer"
                 android:layout_width="332dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/bg_search_bar"
                 android:layout_marginStart="20dp"
+                android:background="@drawable/bg_search_bar"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
 
                 <ImageView
+                    android:id="@+id/ivLinkIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_search_glasses"
                     app:tint="@color/text_search" />
 
+                <!-- ✅ 액티비티 코드와 매칭: etLink -->
                 <EditText
-                    android:id="@+id/search_bar_et"
+                    android:id="@+id/etLink"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -228,19 +284,16 @@
             </LinearLayout>
 
 
-
             <!-- 태그 -->
             <View
                 android:id="@+id/divider2"
                 android:layout_width="match_parent"
                 android:layout_height="7dp"
-                android:background="@color/main_gray"
                 android:layout_marginTop="60dp"
-                app:layout_constraintTop_toBottomOf="@id/postContainer"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:background="@color/main_gray" />
 
             <TextView
+                android:id="@+id/tvTagHeader"
                 style="@style/PretendardSemibold4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -250,45 +303,49 @@
                 android:textColor="@color/main_black" />
 
             <LinearLayout
+                android:id="@+id/tagsInputContainer"
                 android:layout_width="332dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/bg_search_bar"
                 android:layout_marginStart="20dp"
+                android:background="@drawable/bg_search_bar"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
 
                 <TextView
+                    android:id="@+id/tvHashPrefix"
                     style="@style/PretendardBody5"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:text="#"
-                    android:src="@drawable/ic_search_glasses"
-                    android:textColor="@color/main_black"/>
+                    android:textColor="@color/main_black" />
 
+                <!-- ✅ 액티비티 코드와 매칭: etTags -->
                 <EditText
-                    android:id="@+id/search_bar_et2"
+                    android:id="@+id/etTags"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="태그를 입력하세요"
+                    android:hint="태그를 입력하세요 (쉼표로 구분)"
                     android:textColor="@color/main_black"
                     android:textColorHint="@color/text_search"
                     android:textSize="14sp"
-                    android:imeOptions="actionSearch"
+                    android:imeOptions="actionDone"
                     android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/tagChipsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="20dp">
 
                 <TextView
+                    android:id="@+id/tvSampleTag1"
                     style="@style/PretendardBody3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -300,16 +357,18 @@
                     android:textColor="@color/main_green" />
 
                 <TextView
+                    android:id="@+id/tvSampleTag2"
                     style="@style/PretendardBody3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:background="@drawable/bg_custom_border"
                     android:text="# 곰팡이"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
-                    android:layout_marginStart="10dp"
                     android:textColor="@color/main_green" />
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
