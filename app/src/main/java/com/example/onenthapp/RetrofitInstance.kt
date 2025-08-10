@@ -7,6 +7,7 @@ import com.example.onenthapp.data.PlusApi
 import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
+import com.example.onenthapp.data.notificationboard.NotificationboardApi
 import com.example.onenthapp.data.transaction.TransactionApi
 import com.example.onenthapp.util.TokenManager
 import retrofit2.Retrofit
@@ -77,6 +78,10 @@ object RetrofitInstance {
 
     val transactionApi: TransactionApi by lazy {
         retrofit.create(TransactionApi::class.java)
+    }
+
+    val notificationboardApi: NotificationboardApi by lazy {
+        retrofit.create(NotificationboardApi::class.java)
     }
 
 }
