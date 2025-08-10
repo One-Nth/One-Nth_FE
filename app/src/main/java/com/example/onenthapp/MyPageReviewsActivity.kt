@@ -12,6 +12,9 @@ import com.bumptech.glide.Glide
 import com.example.onenthapp.data.MyReview
 import com.example.onenthapp.databinding.ActivityMypageReviewsBinding
 import com.example.onenthapp.util.TokenManager
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class MyPageReviewsActivity : AppCompatActivity() {

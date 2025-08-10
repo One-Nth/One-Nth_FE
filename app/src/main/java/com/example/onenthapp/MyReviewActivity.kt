@@ -33,7 +33,7 @@ class MyReviewActivity : AppCompatActivity() {
 
 
         // ✅ 어댑터 연결
-         recyclerView.adapter = ReviewAdapter(reviews)
+//         recyclerView.adapter = ReviewAdapter()
 
 
         // ✅ TextView 클릭 시 BuyerReview 페이지로 이동

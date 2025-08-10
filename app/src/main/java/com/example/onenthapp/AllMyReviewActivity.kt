@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onenthapp.util.TokenManager
+import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.launch
 
 
@@ -18,6 +19,12 @@ class AllMyReviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_my_review)
+
+        // ✅ 뒤로가기 버튼 클릭 시 현재 액티비티 종료
+        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar.setNavigationOnClickListener {
+            finish()
+        }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerMyReviews)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -34,6 +41,8 @@ class AllMyReviewActivity : AppCompatActivity() {
 
         // 4) 내 리뷰 목록 불러오기
         loadMyReviews()
+
+
     }
 
     private fun loadMyProfileForAdapter() {
