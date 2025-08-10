@@ -5,7 +5,7 @@ import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.MemberApi
 import com.example.onenthapp.data.PlusApi
 import com.example.onenthapp.data.userset.UserSetApi
-import com.example.onenthapp.data.MessageApi
+import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
 import com.example.onenthapp.util.TokenManager
 import retrofit2.Retrofit
