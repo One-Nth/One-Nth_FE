@@ -7,6 +7,7 @@ import com.example.onenthapp.data.PlusApi
 import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
+import com.example.onenthapp.data.post.PostApi
 import com.example.onenthapp.util.TokenManager
 import com.example.onenthapp.data.MyRegionApi
 import retrofit2.Retrofit
@@ -71,5 +72,8 @@ object RetrofitInstance {
     val reviewApi: ReviewApi by lazy {
         retrofit.create(ReviewApi::class.java)
     }
+
+    val postApi: PostApi by lazy{
+        retrofit.create(PostApi::class.java) }
 
 }
