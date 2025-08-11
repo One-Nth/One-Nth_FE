@@ -6,12 +6,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class MyPostTipNFragment : Fragment(R.layout.fragment_mypost_ntip) {
+class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewMyPostTip)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewMyPostProduct)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // 더미 데이터 (나중에 API 연결 시 교체)

@@ -1,5 +1,6 @@
 package com.example.onenthapp.data.post
 
+import com.example.onenthapp.data.CommonResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
