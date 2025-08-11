@@ -43,9 +43,15 @@ interface MemberApi {
         @Part image: MultipartBody.Part
     ): Response<ProfileImageResponse>
 
-    @GET("/api/members/mypage/posts")
+    @GET("members/mypage/posts")
     suspend fun getMyPosts(
         @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Response<CommonResponse<MyPostsPage>>
+
+    @GET("members/mypage/scraps")
+    suspend fun getMyScrapPosts(
+        @Query("page") page: Int,   // 1부터 시작
         @Query("size") size: Int
     ): Response<CommonResponse<MyPostsPage>>
 }

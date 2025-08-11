@@ -11,7 +11,7 @@ class MyPostPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(act
         return when (position) {
             0 -> MyPostProductFragment() // 첫 번째 탭 Fragment
             1 -> MyPostFragment()  // 두 번째 탭 Fragment
-            else -> ScrapNFragment()
+            else -> ScrapPostFragment()
         }
     }
 }
