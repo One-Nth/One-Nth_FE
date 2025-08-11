@@ -13,6 +13,7 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MemberApi {
@@ -60,4 +61,9 @@ interface MemberApi {
         @Query("page") page: Int,   // 1부터 시작
         @Query("size") size: Int
     ): Response<CommonResponse<MyPostsPage>>
+
+    @GET("users/trade-history/{userId}")
+    suspend fun getUserTradeHistory(
+        @Path("userId") userId: Long
+    ): Response<TradeHistoryResponse>
 }

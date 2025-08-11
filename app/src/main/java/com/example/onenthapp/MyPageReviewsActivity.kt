@@ -61,9 +61,9 @@ class MyPageReviewsActivity : AppCompatActivity() {
             finish()
         }
 
-        bindProfile()
-
         loadBuyerReviews()
+        bindProfile()
+        loadTradeSummary()
     }
 
     private fun loadBuyerReviews() {
@@ -142,6 +142,60 @@ class MyPageReviewsActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 Log.e("MyPageReviews", "프로필 로드 오류: ${e.message}")
+            }
+        }
+    }
+
+
+    private fun loadTradeSummary() {
+        val userId = TokenManager.getMemberId()
+        if (userId == null) {
+            // 비로그인 시 0으로 표시
+            binding.sellCount.text = "0"
+            binding.reviewCount.text = "0"
+            binding.ratingSummary.setIsIndicator(true)
+            binding.ratingSummary.rating = 0f
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitInstance.memberApi.getUserTradeHistory(userId)
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                    val r = resp.body()!!.result
+
+                    // 판매/거래 수
+                    binding.sellCount.text = r.totalDealsCount.toString()
+
+                    // 리뷰 수
+                    binding.reviewCount.text = r.reviewCount.toString()
+
+                    // 별점: totalRating이 '합계'인지 '평균'인지 모호하니 안전하게 처리
+                    val avg = when {
+                        r.reviewCount <= 0 -> 0f
+                        r.totalRating > 5f -> (r.totalRating / r.reviewCount) // 합계로 내려온 경우
+                        else -> r.totalRating                                // 이미 평균인 경우
+                    }.coerceIn(0f, 5f)
+
+                    binding.ratingSummary.setIsIndicator(true)
+                    binding.ratingSummary.rating = avg
+                } else {
+                    // 실패 시 기본값
+                    binding.sellCount.text = "0"
+                    binding.reviewCount.text = "0"
+                    binding.ratingSummary.setIsIndicator(true)
+                    binding.ratingSummary.rating = 0f
+
+                    Log.e("TradeSummary", "응답 실패: ${resp.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                // 네트워크 오류 시 기본값
+                binding.sellCount.text = "0"
+                binding.reviewCount.text = "0"
+                binding.ratingSummary.setIsIndicator(true)
+                binding.ratingSummary.rating = 0f
+
+                Log.e("TradeSummary", "오류: ${e.message}")
             }
         }
     }
