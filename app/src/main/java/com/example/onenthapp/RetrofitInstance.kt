@@ -8,7 +8,6 @@ import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
 import com.example.onenthapp.util.TokenManager
-import com.example.onenthapp.data.MessageApi
 import com.example.onenthapp.data.MyRegionApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
