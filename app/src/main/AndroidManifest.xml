@@ -111,5 +111,6 @@
         <activity android:name=".AllMyReviewActivity" />
         <activity android:name=".ReviewEditActivity" />
         <activity android:name=".MyPageReviewsActivity" />
+        <activity android:name=".MyRegionActivity" />
     </application>
 </manifest>

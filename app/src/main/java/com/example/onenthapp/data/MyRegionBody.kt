@@ -2,11 +2,17 @@ package com.example.onenthapp.data
 
 import com.google.gson.annotations.SerializedName
 
-data class MyRegionResponse<T>(
+data class GenericResponse<T>(
     val isSuccess: Boolean,
     val code: String,
     val message: String,
     val result: T?
+)
+
+data class DeleteResponse(
+    val isSuccess: Boolean,
+    val code: String,
+    val message: String
 )
 
 data class MyRegionResult(
@@ -15,12 +21,31 @@ data class MyRegionResult(
 )
 
 
-data class AddRegionRequest(
-    val regionId: Long
-)
-
 data class MyRegion(
     val regionId: Long,
     val regionName: String,
     val main: Boolean = false
+)
+
+data class AddRegionRequest(
+    val regionId: Long
+)
+
+//검색 결과
+data class SimpleRegion(
+    val regionId: Long,
+    val regionName: String
+)
+
+data class Pagination(
+    val page: Int,
+    val size: Int,
+    val totalPages: Int,
+    val totalElements: Long,
+    val last: Boolean
+)
+
+data class SearchRegionsResult(
+    val regions: List<SimpleRegion>,
+    val pagination: Pagination
 )

@@ -140,6 +140,22 @@
                 android:text="함께 나눠요"/>
 
         </com.google.android.material.tabs.TabLayout>
+        <TextView
+            android:id="@+id/tv_myregion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:drawableStartCompat="@drawable/ic_map_pin"
+            app:layout_constraintTop_toBottomOf="@id/tabLayout_home"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="상월곡동"
+            android:drawablePadding="6dp"
+            android:textSize="15sp"
+            android:elevation="4dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="35dp"
+            android:textColor="@color/main_green"
+            />
+
 
         <!-- 4) 지도(전체를 차지하되, 위 컨텐츠 아래) -->
         <com.kakao.vectormap.MapView

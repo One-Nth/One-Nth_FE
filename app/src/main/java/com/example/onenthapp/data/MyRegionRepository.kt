@@ -19,34 +19,29 @@ class MyRegionRepository {
     suspend fun addMyRegion(regionId: Long): List<MyRegion> = withContext(Dispatchers.IO) {
         val resp = api.addMyRegion(AddRegionRequest(regionId))
         if (resp.isSuccess && resp.result != null) {
-            resp.result.regions
+            getMyRegions()
         } else throw Exception("지역 등록 실패: ${resp.message}")
     }
 
     suspend fun deleteMyRegion(regionId: Long): List<MyRegion> = withContext(Dispatchers.IO) {
         val resp = api.deleteMyRegion(regionId)
-        if (resp.isSuccess && resp.result != null) {
-            resp.result.regions
+        if (resp.isSuccess) {
+            getMyRegions()
         } else throw Exception("지역 삭제 실패: ${resp.message}")
     }
 
     suspend fun setMainRegion(regionId: Long): List<MyRegion> = withContext(Dispatchers.IO) {
         val resp = api.setMainRegion(regionId)
         if (resp.isSuccess && resp.result != null) {
-            resp.result.regions
+            getMyRegions()
         } else throw Exception("메인 지역 변경 실패: ${resp.message}")
     }
 
-    // TODO: 실제 API 연동 전까지는 더미 데이터 활용
-    private val allRegions = listOf(
-        Region(2, "서울시 상월곡동", "", 37.617014, 127.074047),
-        Region(5, "서울시 사당동", "", 37.476687, 126.981737),
-        Region(10, "서울시 마포구 홍대입구", "", 37.557670, 126.924537),
-        Region(1, "서울시 강남구 역삼동", "", 37.612354, 126.452342),
+    suspend fun searchRegions(keyword: String, page: Int, size: Int): Pair<List<SimpleRegion>, Pagination?> = withContext(Dispatchers.IO) {
 
-        // ... 필요시 추가
-    )
-
-    fun searchRegions(query: String): List<Region> =
-        allRegions.filter { it.name.contains(query) }
+        //allRegions.filter { it.name.contains(query) }
+        val resp = api.searchRegions(keyword = keyword, page = 0, size = 3)
+        if (resp.isSuccess && resp.result != null) resp.result.regions to resp.result.pagination
+        else emptyList<SimpleRegion>() to null
+    }
 }

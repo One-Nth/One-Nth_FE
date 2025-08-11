@@ -13,7 +13,11 @@
     <com.kakao.vectormap.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="280dp"
+        app:layout_constraintTop_toBottomOf="@id/include_toolbar"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <!-- 2) 고정된 하단 컨테이너 (바텀시트 대신) -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +28,6 @@
         android:background="@drawable/bg_bottom_sheet"
         android:elevation="20dp"
         android:paddingTop="8dp"
-        android:paddingBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <!-- 드래그 핸들 모양 -->
@@ -36,6 +39,7 @@
             android:layout_marginTop="14dp"
             android:background="@drawable/ic_scrollbar_bar"
             app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,33 +68,45 @@
             app:layout_constraintEnd_toEndOf="@id/bottom_container"
             app:layout_constraintStart_toStartOf="@id/bottom_container"
             app:layout_constraintTop_toBottomOf="@id/title" />
-
+        <!-- 지도 표시 지역 라벨 -->
+        <TextView
+            android:id="@+id/tvMapRegionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="12dp"
+            android:text="지도 표시 지역"
+            android:textColor="@color/main_green"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="@id/flexSelected"
+            app:layout_constraintTop_toBottomOf="@id/detail" />
         <!-- 1) 선택된 지역 칩 영역 -->
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/flexSelected"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_height="70dp"
             android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="32dp"
             app:flexWrap="wrap"
             app:justifyContent="flex_start"
-            app:layout_constraintTop_toBottomOf="@id/detail"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/detail" />
 
         <!-- 2) 검색창 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/search_bar"
-            android:layout_width="362dp"
+            android:layout_width="0dp"
             android:layout_height="35dp"
-            android:layout_marginStart="19dp"
-            android:layout_marginEnd="19dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginEnd="26dp"
+            android:layout_marginBottom="40dp"
             app:cardCornerRadius="10dp"
-            app:cardElevation="3dp"
-            android:layout_marginTop="40dp"
-            app:layout_constraintTop_toBottomOf="@id/flexSelected"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/flexSelected"
+            app:layout_constraintBottom_toBottomOf="@id/bottom_container">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -116,70 +132,65 @@
                     android:background="@null"
                     android:gravity="center_vertical"
                     android:hint="추가할 지역을 입력해주세요"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:singleLine="true"
                     android:textColor="@color/main_black"
                     android:textColorHighlight="@color/main_green_3"
                     android:textColorHint="@color/text_search"
-                    android:textSize="14sp"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    android:imeOptions="actionSearch"/>
+                    android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <!-- 3) 검색 결과 리스트 -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSuggestions"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardSuggestions"
             android:layout_width="0dp"
-            android:layout_height="215dp"
-            android:layout_marginTop="4dp"
-            android:background="@color/main_white"
+            android:layout_height="180dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/bg_bottom_sheet"
             android:elevation="8dp"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/search_bar"
-            app:layout_constraintStart_toStartOf="@id/search_bar"
-            app:layout_constraintEnd_toEndOf="@id/search_bar"/>
-        <!-- midContainer: 선택된 지역 미리보기 등 -->
-<!--        <FrameLayout-->
-<!--            android:id="@+id/midContainer"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="16dp"-->
-<!--            android:layout_marginTop="28dp"-->
-<!--            app:layout_constraintTop_toTopOf="@id/detail">-->
 
-<!--            <LinearLayout-->
-<!--                android:id="@+id/rxilab4sndh"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginEnd="18dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:clickable="true"-->
-<!--                android:focusable="true"-->
-<!--                android:gravity="center_vertical"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:paddingVertical="10dp">-->
+            app:layout_constraintBottom_toTopOf="@id/search_bar"
+            app:layout_constraintEnd_toEndOf="@id/search_bar"
+            app:layout_constraintStart_toStartOf="@id/search_bar">
 
-<!--                <TextView-->
-<!--                    android:id="@+id/r61dy0c6c81v"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="19dp"-->
-<!--                    android:layout_marginEnd="7dp"-->
-<!--                    android:text="OO동"-->
-<!--                    android:textColor="#000000"-->
-<!--                    android:textSize="15sp" />-->
+            <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/clRegionName"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:paddingHorizontal="18dp">
 
-<!--                <com.google.android.material.imageview.ShapeableImageView-->
-<!--                    android:id="@+id/r5zsq0uuzpd4"-->
-<!--                    android:layout_width="14dp"-->
-<!--                    android:layout_height="14dp"-->
-<!--                    android:layout_marginEnd="19dp"-->
-<!--                    app:shapeAppearanceOverlay="@style/cr10"-->
-<!--            </LinearLayout>-->
+                <TextView
+                    android:id="@+id/tvRegionName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@style/PretendardBody8"
+                    android:text="주소"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-<!--        </FrameLayout>-->
+                <View
+                    android:id="@+id/group_divider_mid"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/border_upperbar"
+                    app:layout_constraintBottom_toBottomOf="@id/clRegionName"
+                    app:layout_constraintEnd_toEndOf="@id/tvRegionName"
+                    app:layout_constraintStart_toStartOf="@id/tvRegionName" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSuggestions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="51dp"
+                android:overScrollMode="never" />
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

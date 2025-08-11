@@ -60,21 +60,56 @@
             </LinearLayout>
             <!-- 카테고리 태그 -->
             <TextView
-                android:id="@+id/tvCategory"
+                android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_height="24dp"
                 android:paddingTop="4dp"
                 android:paddingVertical="4dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="13dp"
                 android:layout_marginStart="13dp"
-                android:textColor="@color/main_black"
+                android:textColor="@color/main_green"
+                android:textSize="13sp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="판매중"
+                android:background="@drawable/bg_status_tag"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingTop="4dp"
+                android:paddingVertical="4dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/main_white"
                 android:textSize="13sp"
                 android:fontFamily="@font/pretendard_regular"
                 android:text="생활용품"
                 android:background="@drawable/bg_category_tag"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tvStatus"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <TextView
+                android:id="@+id/tvMethod"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingTop="4dp"
+                android:paddingVertical="4dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/main_white"
+                android:textSize="13sp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="직거래"
+                android:background="@drawable/bg_category_method"
+                app:layout_constraintLeft_toRightOf="@id/tvCategory"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <!-- 북마크 아이콘 -->
