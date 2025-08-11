@@ -43,4 +43,24 @@ class PostRepository(private val api: MemberApi) {
             Result.failure(e)
         }
     }
+
+    suspend fun getMyLikedPosts(page: Int, size: Int): Result<MyPostsPage> {
+        return try {
+            val resp = api.getMyLikedPosts(page, size)
+            if (resp.isSuccessful) {
+                val body = resp.body()
+                if (body?.isSuccess == true && body.result != null) {
+                    Result.success(body.result)
+                } else {
+                    Result.failure(IllegalStateException(body?.message ?: "요청 실패"))
+                }
+            } else {
+                val err = resp.errorBody()?.string()
+                Log.e("API", "getMyLikedPosts ${resp.code()} body=$err")
+                Result.failure(IllegalStateException("HTTP ${resp.code()} ${resp.message()} ${err ?: ""}".trim()))
+            }
+        } catch (e: Throwable) {
+            Result.failure(e)
+        }
+    }
 }

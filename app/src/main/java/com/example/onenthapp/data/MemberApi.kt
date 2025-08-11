@@ -54,4 +54,10 @@ interface MemberApi {
         @Query("page") page: Int,   // 1부터 시작
         @Query("size") size: Int
     ): Response<CommonResponse<MyPostsPage>>
+
+    @GET("members/mypage/likes")
+    suspend fun getMyLikedPosts(
+        @Query("page") page: Int,   // 1부터 시작
+        @Query("size") size: Int
+    ): Response<CommonResponse<MyPostsPage>>
 }
