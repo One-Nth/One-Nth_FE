@@ -76,6 +76,7 @@ class MyPageReviewsActivity : AppCompatActivity() {
             return
         }
 
+
         lifecycleScope.launch {
             try {
                 val response = reviewApi.getUserReviews(userId, "Bearer $token")
@@ -87,6 +88,8 @@ class MyPageReviewsActivity : AppCompatActivity() {
                             itemId = review.itemId,
                             createdAt = review.createdAt,
                             reviewerId = review.reviewerId,
+                            reviewerNickName = review.reviewerNickName,
+                            reviewerProfileImageUrl = review.reviewerProfileImageUrl,
                             reviewTargetId = review.reviewTargetId,
                             content = review.content,
                             rate = review.rate,

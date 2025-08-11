@@ -6,6 +6,8 @@ data class MyReview(
     val itemId: Long,
     val createdAt: String,
     val reviewerId: Long,
+    val reviewerNickName: String,          // ✅ 추가
+    val reviewerProfileImageUrl: String?,  // ✅ 추가
     val reviewTargetId: Long,
     val content: String,
     val rate: Int,
