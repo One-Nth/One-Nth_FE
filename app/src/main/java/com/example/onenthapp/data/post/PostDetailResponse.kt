@@ -9,6 +9,7 @@ data class PostDetailResponse(
     data class Detail(
         val postId: String,              // 서버가 문자열로 내려줌
         val nickname: String?,
+        val profileImageUrl: String?,
         val regionName: String?,         // LIFE_TIP이면 null
         val title: String,
         val content: String,

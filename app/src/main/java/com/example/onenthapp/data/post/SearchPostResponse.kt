@@ -15,6 +15,7 @@ data class SearchPostDto(
     val likeCount: Int,
     val viewCount: Int,
     val scrapStatus: Boolean,
+    val imageUrls: List<String>?,
     val createdAt: String
 )
 

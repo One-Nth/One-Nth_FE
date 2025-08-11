@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 
+
 class LifeTipsSearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTipsSearchBinding
@@ -74,7 +75,8 @@ class LifeTipsSearchActivity : AppCompatActivity() {
                             timeAgo = toTimeAgo(dto.createdAt),
                             commentCount = dto.commentCount,
                             likeCount = dto.likeCount,
-                            viewCount = dto.viewCount
+                            viewCount = dto.viewCount,
+                            imageUrls = dto.imageUrls ?: emptyList()
                         )
                     }
                     adapter.submitItems(list)

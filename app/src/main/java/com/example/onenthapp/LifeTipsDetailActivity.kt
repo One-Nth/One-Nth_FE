@@ -23,86 +23,24 @@ import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
 import org.w3c.dom.Comment
 
-//class LifeTipsDetailActivity : AppCompatActivity() {
-//    private lateinit var binding: ActivityLifeDetailsBinding
-//    private lateinit var commentAdapter: CommentAdapter   // ✅ 댓글 어댑터 추가
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        binding = ActivityLifeDetailsBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        // 전달받은 데이터
-//        val title = intent.getStringExtra("title")
-//        val content = intent.getStringExtra("content")
-//        val timeAgo = intent.getStringExtra("timeAgo")
-//        val commentCount = intent.getIntExtra("commentCount", 0)
-//        val likeCount = intent.getIntExtra("likeCount", 0)
-//        val viewCount = intent.getIntExtra("viewCount", 0)
-//
-//        // RecyclerView 설정
-//        setupRecyclerView()
-//
-//        // 뒤로가기 버튼
-//        binding.ivBack.setOnClickListener { finish() }
-//
-//        // 공유 버튼
-//        binding.ivShare.setOnClickListener { showSharePopup() }
-//    }
-//
-//    private fun setupRecyclerView() {
-//        // 더미 댓글 데이터
-//        val comments = listOf(
-//            Comment("닉네임1", "댓글 내용 1", 2),
-//            Comment("닉네임2", "댓글 내용 2", 5),
-//            Comment("닉네임3", "댓글 내용 3", 1)
-//        )
-//
-//        // 어댑터 연결
-//        commentAdapter = CommentAdapter(comments)
-//        binding.rvComments.layoutManager = LinearLayoutManager(this)
-//        binding.rvComments.adapter = commentAdapter
-//    }
-//
-//    private fun showSharePopup() {
-//        val dialog = Dialog(this)
-//        val view = LayoutInflater.from(this).inflate(R.layout.share_nwon_popup, null)
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-//        dialog.setContentView(view)
-//        dialog.setCancelable(true)
-//
-//        val closeButton = view.findViewById<TextView>(R.id.closeButton)
-//        val linkEditText = view.findViewById<EditText>(R.id.shareLinkEditText)
-//        val copyButton = view.findViewById<ImageButton>(R.id.copyButton)
-//
-//        linkEditText.setText("https://yourapp.com/post/123")
-//
-//        copyButton.setOnClickListener {
-//            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-//            val clip = ClipData.newPlainText("링크 복사", linkEditText.text.toString())
-//            clipboard.setPrimaryClip(clip)
-//            Toast.makeText(this, "링크가 복사되었습니다.", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        closeButton.setOnClickListener { dialog.dismiss() }
-//
-//        val widthInPx = (347 * resources.displayMetrics.density).toInt()
-//        val heightInPx = (202 * resources.displayMetrics.density).toInt()
-//        dialog.window?.setLayout(widthInPx, heightInPx)
-//        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-//        dialog.show()
-//    }
-//}
-
-
 class LifeTipsDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLifeDetailsBinding
+    private lateinit var commentAdapter: CommentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLifeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        // 댓글  ---------------------------------------------------------
+        // 댓글 리사이클러뷰 세팅
+        setupCommentsRv()
+        // 🔹더미 댓글로 팝업 테스트
+        showDummyComments()
+        // 댓글  ---------------------------------------------------------
+
 
         binding.ivBack.setOnClickListener { finish() }
 
@@ -140,9 +78,53 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
+
+
+    // 댓글  ---------------------------------------------------------
+    private fun setupCommentsRv() {
+        commentAdapter = CommentAdapter { action, c ->
+            when (action) {
+                CommentAdapter.Action.Chat  -> Toast.makeText(this, "채팅: ${c.nickname}", Toast.LENGTH_SHORT).show()
+                CommentAdapter.Action.Block -> Toast.makeText(this, "차단: ${c.nickname}", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.rvComments.apply {
+            layoutManager = LinearLayoutManager(this@LifeTipsDetailActivity)
+            adapter = commentAdapter
+            setHasFixedSize(false)
+            isNestedScrollingEnabled = false
+        }
+    }
+
+    private fun showDummyComments() {
+        val dummy = listOf(
+            Comment(nickname = "asdds", content = "저 여름마다 잘 쓰고 있어요", likeCount = 2),
+            Comment(nickname = "bt26az", content = "사진 첨부합니다~", likeCount = 0),
+        )
+        commentAdapter.submitList(dummy)
+    }
+    // 댓글  ---------------------------------------------------------
+
+
+
+
+
     private fun bindDetail(d: PostDetailResponse.Detail) {
         binding.tvTitle.text = d.title
         binding.tvNickname.text = d.nickname ?: "익명"
+
+        // 프로필 이미지
+        val pUrl = d.profileImageUrl
+        if (!pUrl.isNullOrBlank()) {
+            Glide.with(this)
+                .load(pUrl)
+                .circleCrop()
+                .placeholder(R.drawable.profile_base)
+                .error(R.drawable.profile_base)
+                .into(binding.ivProfile)
+        } else {
+            binding.ivProfile.setImageResource(R.drawable.profile_base)
+        }
 
         val timeAgo = toTimeAgo(d.createdAt)
         // LIFE_TIP은 regionName=null → 시간만 보여주기
@@ -174,7 +156,6 @@ class LifeTipsDetailActivity : AppCompatActivity() {
                 binding.ivPhoto2.visibility = View.VISIBLE
                 Glide.with(this).load(urls[0]).centerCrop().into(binding.ivPhoto1)
                 Glide.with(this).load(urls[1]).centerCrop().into(binding.ivPhoto2)
-                // 3장 이상이면 ivPhoto2에 "+N" 오버레이 넣고 싶으면 말해줘—바로 얹어줄게!
             }
         }
     }
@@ -197,7 +178,6 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         val days = hours / 24
 
         when {
-            mins < 1 -> "방금 전"
             mins < 60 -> "${mins}분 전"
             hours < 24 -> "${hours}시간 전"
             days < 7 -> "${days}일 전"

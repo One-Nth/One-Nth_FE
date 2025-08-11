@@ -8,6 +8,7 @@ data class TipItem(
     val timeAgo: String,
     val commentCount: Int,
     val likeCount: Int,
-    val viewCount: Int
+    val viewCount: Int,
+    val imageUrls: List<String> = emptyList()
 )
 

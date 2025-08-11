@@ -6,83 +6,116 @@
     android:paddingHorizontal="16dp"
     android:paddingVertical="12dp">
 
-    <!-- 닉네임 + 프로필 -->
-    <LinearLayout
+    <!-- 상단: 프로필 · 닉네임 · 인증 · 더보기 -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="20dp"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content">
 
-        <ImageView
+        <!-- 원형 프로필 (뷰가 모양으로 클리핑) -->
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivProfile"
             android:layout_width="22dp"
             android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:scaleType="centerCrop"
             android:src="@drawable/group_172"
-            android:layout_marginEnd="8dp" />
+            style="@style/Widget.MaterialComponents.ShapeableImageView" />
 
-        <TextView
-            android:id="@+id/tvCommentNickname"
+        <!-- 우측 더보기 -->
+        <ImageButton
+            android:id="@+id/btnMore"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/majesticons_more_menu_line"/>
+
+        <!-- 닉네임 + 인증 뱃지 (우측 버튼과 겹치지 않도록 toStartOf 설정) -->
+        <LinearLayout
+            android:id="@+id/headerTextRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="닉네임"
-            android:textStyle="bold"
-            android:textColor="@color/main_black" />
-    </LinearLayout>
+            android:layout_toEndOf="@id/ivProfile"
+            android:layout_toStartOf="@id/btnMore"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:baselineAligned="true">>
 
-    <!-- 댓글 내용 -->
+            <TextView
+                android:id="@+id/tvCommentNickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/PretendardSubtitle6"
+                android:text="asdds"
+                android:textColor="@color/main_black" />
+
+            <!-- 중간 점 + 인증 텍스트 (초록) -->
+            <TextView
+                style="@style/PretendardSubtitle5"
+                android:id="@+id/tvCertification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="· 00동 인증"
+                android:textColor="@color/main_green" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- 본문 -->
     <TextView
         android:id="@+id/tvCommentContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="댓글 내용"
-        android:textColor="@color/main_black"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:text="저 여름마다 잘 쓰고 있어요"
+        android:textColor="@color/main_black" />
 
-    <!-- 좋아요 / 답글 -->
+    <!-- 하단 아이콘/텍스트 줄: 좋아요 · 시간 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/Like"
+            android:id="@+id/ivLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/solar_heart_linear"
-            android:layout_marginTop="3dp"/>
+            android:layout_marginTop="2dp"
+            android:src="@drawable/solar_heart_linear" />
 
         <TextView
             android:id="@+id/tvLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:text="좋아요 2"
             android:textColor="@color/light_gray"
-            android:textSize="12sp"
-            android:layout_marginStart="5dp"/>
+            android:textSize="12sp" />
 
-        <ImageView
-            android:id="@+id/Chat"
+        <!-- 점 구분자 -->
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/mynaui_chat"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="3dp"/>
+            android:layout_marginStart="8dp"
+            android:text="·"
+            android:textColor="@color/light_gray"
+            android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/tvReply"
+            android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="답글쓰기"
+            android:layout_marginStart="8dp"
+            android:text="21초 전"
             android:textColor="@color/light_gray"
-            android:textSize="12sp"
-            android:layout_marginStart="5dp" />
+            android:textSize="12sp" />
     </LinearLayout>
-
 
     <!-- 구분선 -->
     <View
@@ -92,5 +125,6 @@
         android:background="#EBEBEB" />
 
 </LinearLayout>
+
 
 
