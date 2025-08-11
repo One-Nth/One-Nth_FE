@@ -15,6 +15,7 @@ import android.widget.PopupMenu
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.onenthapp.databinding.FragmentHomeBinding
 import com.example.onenthapp.databinding.ItemSearchResultBinding
 import com.example.onenthapp.model.SearchResult
@@ -29,6 +30,8 @@ import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
+import com.example.onenthapp.data.PlusRepository
+import kotlinx.coroutines.launch
 
 
 class HomeFragment : Fragment() {
@@ -37,8 +40,9 @@ class HomeFragment : Fragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
     private var kakaoMapView: MapView? = null // Kakao MapView 객체
     private var kakaoMapInstance: KakaoMap? = null // KakaoMap 객체
+    private val repo = PlusRepository()
 
-    private var lastResults: List<SearchResult> = emptyList()
+    // private var lastResults: List<SearchResult> = emptyList()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -46,14 +50,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        // 1) 지도 초기화
-//        val fm = childFragmentManager
-//        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
-//            ?: MapFragment.newInstance().also {
-//                fm.beginTransaction().add(R.id.map, it).commit()
-//            }
-//        mapFragment.getMapAsync(this)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -61,7 +57,7 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    @SuppressLint("RestrictedApi", "DiscouragedPrivateApi")
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         kakaoMapView = binding.map
@@ -71,14 +67,14 @@ class HomeFragment : Fragment() {
             val intent = Intent(requireContext(), AlarmActivity::class.java)
             startActivity(intent)
         }
-
-        // 진입 시: 결과가 있으면 mid, 없으면 숨김
-        if (lastResults.isNotEmpty()) {
-            initBottomSheet()
-            binding.bottomSheet.visibility = View.VISIBLE
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            //sheetInitialized = true
-        } else binding.bottomSheet.visibility = View.GONE
+//
+//        // 진입 시: 결과가 있으면 mid, 없으면 숨김
+//        if (lastResults.isNotEmpty()) {
+//            initBottomSheet()
+//            binding.bottomSheet.visibility = View.VISIBLE
+//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+//            //sheetInitialized = true
+//        } else binding.bottomSheet.visibility = View.GONE
 
         // MapView 시작
         kakaoMapView?.start(object : MapLifeCycleCallback() {
@@ -98,10 +94,54 @@ class HomeFragment : Fragment() {
                 Log.d("KakaoMap", "onMapReady")
                 kakaoMapInstance = kakaoMap
                 // 여기에 지도 준비 완료 후 초기 설정 (예: 카메라 위치, 마커 표시 등)
-                // 예: val cameraUpdate = CameraUpdateFactory.newLatLng(LatLng.from(37.5665, 126.9780))
-                // kakaoMap.moveCamera(cameraUpdate)
+                // 3) SharedViewModel 의 탭 변경 감지 → 마커 다시 불러오기
+                sharedViewModel.currentHomeTab.observe(viewLifecycleOwner) {
+                    //loadMarkers(it)
+                }
             }
-
+//
+//            private fun loadMarkers(tab: HomeTabType) {
+//                val markerType = if (tab == HomeTabType.BUY) "purchase-item" else "sharing-item"
+//                lifecycleScope.launch {
+//                    try {
+//                        val resp = repo.fetchMapMarkers(markerType, regionId = null)
+//                        if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+//                            plotMarkers(resp.body()!!.result.groupedMarkers)
+//                        }
+//                    } catch (e: Exception) {
+//                        Log.e("HomeFragment", "마커 불러오기 실패", e)
+//                    }
+//                }
+//            }
+//            private fun plotMarkers(groups: List<GroupedMarker>) {
+//                kakaoMapInstance?.let { map ->
+//                    map.clear() // 기존 마커 모두 제거
+//
+//                    groups.forEach { grp ->
+//                        // 카카오맵 마커 생성
+//                        val marker = map.addMarker(
+//                            com.kakao.vectormap.LatLng.from(grp.latitude, grp.longitude)
+//                        )!!
+//                        // 텍스트 오버레이(상품 개수)도 함께
+//                        map.addLabel(
+//                            com.kakao.vectormap.LatLng.from(grp.latitude, grp.longitude),
+//                            "${grp.markers.size}"
+//                        )
+//                        // 클릭 시 id 리스트를 꺼내기 위해 userData 에 저장
+//                        marker.userData = grp.markers.map { it.id }
+//
+//                        // 클릭 리스너
+//                        marker.setOnClickListener {
+//                            @Suppress("UNCHECKED_CAST")
+//                            val itemIds =
+//                                marker.userData as? List<Int> ?: return@setOnClickListener true
+//                            // TODO: 클릭 후 preview bottom sheet → 상세 네비게이트
+//                            // ex) showPreview(itemIds)
+//                            true
+//                        }
+//                    }
+//                }
+//            }
             override fun getPosition(): com.kakao.vectormap.LatLng {
                 // TODO("Not yet implemented")
                 return com.kakao.vectormap.LatLng.from(37.5665, 126.9780) // 초기 위치 (예: 서울 시청)
@@ -152,7 +192,7 @@ class HomeFragment : Fragment() {
                     .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(et.windowToken, 0)
                 et.clearFocus()
-                performSearch(et.text.toString())
+                //performSearch(et.text.toString())
                 //binding.bottomSheet.visibility = View.VISIBLE
                 //bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                 true
@@ -176,6 +216,9 @@ class HomeFragment : Fragment() {
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
+        binding.tvMyregion.setOnClickListener {
+            startActivity(Intent(requireContext(), MyRegionActivity::class.java))
+        }
     }
     override fun onResume() {
         super.onResume()
@@ -194,32 +237,32 @@ class HomeFragment : Fragment() {
         kakaoMapView?.pause() // MapView 의 pause 호출
         Log.d("KakaoMap", "onPause called, map paused")
     }
-
-    private fun performSearch(query: String) {
-        // TODO: 실제 API 연동 대신 더미 데이터 생성
-        val results = dummySearchData(query)
-        lastResults = results
-        // mid 상태: 첫 번째 아이템만 preview_card 에 바인딩
-        val previewBinding: ItemSearchResultBinding = binding.previewCard
-        results.firstOrNull()?.let {
-//            searchResult ->
-//            fun bind(item: SearchResult) {
-//            }
-            previewBinding.bind(it)
-        }
-        previewBinding.root.setOnClickListener { onItemClicked(results.first()) }
-
-        // 지도 마커 갱신
-        // showMarkers(results)
-        // 검색 결과 리스트 갱신
-        // searchAdapter.submitList(results)
-        // BottomSheet 펼치기
-        if(results.isNotEmpty()) {
-            binding.bottomSheet.visibility = View.VISIBLE
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        } else
-            binding.bottomSheet.visibility = View.GONE
-    }
+//
+//    private fun performSearch(query: String) {
+//        // TODO: 실제 API 연동 대신 더미 데이터 생성
+//        val results = dummySearchData(query)
+//        lastResults = results
+//        // mid 상태: 첫 번째 아이템만 preview_card 에 바인딩
+//        val previewBinding: ItemSearchResultBinding = binding.previewCard
+//        results.firstOrNull()?.let {
+////            searchResult ->
+////            fun bind(item: SearchResult) {
+////            }
+//            previewBinding.bind(it)
+//        }
+//        previewBinding.root.setOnClickListener { onItemClicked(results.first()) }
+//
+//        // 지도 마커 갱신
+//        // showMarkers(results)
+//        // 검색 결과 리스트 갱신
+//        // searchAdapter.submitList(results)
+//        // BottomSheet 펼치기
+//        if(results.isNotEmpty()) {
+//            binding.bottomSheet.visibility = View.VISIBLE
+//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+//        } else
+//            binding.bottomSheet.visibility = View.GONE
+//    }
 
     fun collapseSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -229,10 +272,10 @@ class HomeFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
     }
-    private fun onItemClicked(item: SearchResult){
-        val action = HomeFragmentDirections.actionHomeToProductdetail()
-        findNavController().navigate(action)
-    }
+//    private fun onItemClicked(item: SearchResult){
+//        val action = HomeFragmentDirections.actionHomeToBuydetail()
+//        findNavController().navigate(action)
+//    }
     private fun dummySearchData(query: String): List<SearchResult> {
         return listOf(
             SearchResult(id = "1", title = "$query 상품 A", price = 1000, "개", category = "생활용품", type = SearchType.BUY, imageUrls = listOf(android.R.drawable.btn_plus, android.R.drawable.btn_plus, android.R.drawable.btn_plus)),
@@ -247,10 +290,9 @@ class HomeFragment : Fragment() {
     fun onSearchItemSelected(result: SearchResult) {
         if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
             // 완전 확장 상태 → 상세로 이동
-            val action = HomeFragmentDirections
-                .actionHomeToProductdetail()
+            //val action = HomeFragmentDirections.actionHomeToBuydetail()
             //productId = result.id 나중에 상품 id 추가
-            findNavController().navigate(action)
+            //findNavController().navigate(action)
         } else {
             // mid 상태 → preview
             showMidPreview(result)
@@ -296,12 +338,12 @@ class HomeFragment : Fragment() {
                     }
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         // full: 툴바+리스트
-                        childFragmentManager.beginTransaction()
-                            .replace(
-                                R.id.expandedContainerFragment,
-                                SearchResultFragment.newInstance(lastResults)
-                            )
-                            .commitNowAllowingStateLoss()
+//                        childFragmentManager.beginTransaction()
+//                            .replace(
+//                                R.id.expandedContainerFragment,
+//                                SearchResultFragment.newInstance(lastResults)
+//                            )
+//                            .commitNowAllowingStateLoss()
                         binding.scrollBar.isVisible = false
                         binding.midContainer.isVisible = false
                         binding.expandedContainerFragment.isVisible = true
