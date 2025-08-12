@@ -27,7 +27,7 @@ class LikePostActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_like_post) // ← 네가 올린 상단/검색/리사이클러뷰 레이아웃
+        setContentView(R.layout.activity_like_post) //
 
         findViewById<ImageView>(R.id.backButton).setOnClickListener { finish() }
 
@@ -36,24 +36,23 @@ class LikePostActivity : AppCompatActivity() {
         adapter = MyPostAdapter()
         rv.adapter = adapter
 
+
         // VM
         val api = RetrofitInstance.memberApi
         val repo = PostRepository(api)
         vm = ViewModelProvider(this, object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                // 공감은 게시판만 → TIP 고정 (전체면 null)
-                return MyLikesViewModel(repo, postTypeFilter = "TIP") as T
+                // ✅ 필터 없음 → 공감한 모든 게시글
+                return MyLikesViewModel(repo, postTypeFilter = null) as T
             }
         })[MyLikesViewModel::class.java]
+
 
         // Observe
         vm.state.observe(this) { s ->
             fullList = s.items
             adapter.submitList(applyQuery(fullList, currentQuery))
-            // 필요하면 로딩/빈뷰 추가
-            // findViewById<View>(R.id.progress)?.isVisible = s.loading
-            // findViewById<View>(R.id.emptyView)?.isVisible = !s.loading && s.items.isEmpty() && s.error==null
             s.error?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
         }
 

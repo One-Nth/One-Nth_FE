@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class MyLikesViewModel(
     private val repo: PostRepository,
-    private val postTypeFilter: String? = "TIP" // 공감은 TIP 고정
+    private val postTypeFilter: String? = null
 ) : ViewModel() {
 
     data class UiState(

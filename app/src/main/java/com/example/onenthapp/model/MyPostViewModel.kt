@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class MyPostsViewModel(
     private val repo: PostRepository,
-    private val postTypeFilter: String? = "TIP"
+    private val postTypeFilter: String? = null
 ) : ViewModel() {
 
     data class UiState(
@@ -26,6 +26,7 @@ class MyPostsViewModel(
 
     private fun List<MyPostItem>.applyFilter(): List<MyPostItem> {
         val f = postTypeFilter ?: return this
+        // 서버 값만 비교: LIFE_TIP / DISCOUNT / RESTAURANT
         return filter { it.postType.equals(f, ignoreCase = true) }
     }
 

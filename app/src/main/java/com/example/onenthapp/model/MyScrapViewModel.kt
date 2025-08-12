@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class MyScrapsViewModel(
     private val repo: PostRepository,
-    private val postTypeFilter: String? = "TIP"
+    private val postTypeFilter: String? = null
 ) : ViewModel() {
 
     data class UiState(

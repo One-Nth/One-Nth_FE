@@ -326,6 +326,5 @@
             android:paddingBottom="12dp"
             android:overScrollMode="never"
             android:scrollbars="horizontal"/>
-
     </LinearLayout>
 </ScrollView>

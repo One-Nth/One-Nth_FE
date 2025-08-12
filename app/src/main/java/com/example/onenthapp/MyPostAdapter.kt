@@ -18,6 +18,14 @@ class MyPostAdapter : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
             override fun areContentsTheSame(oldItem: MyPostItem, newItem: MyPostItem) =
                 oldItem == newItem
         }
+
+        // postType → 한글 라벨 매핑
+        private fun labelFor(type: String?): String = when (type?.uppercase()) {
+            "LIFE_TIP"   -> "생활꿀팁"
+            "DISCOUNT"   -> "할인 정보"
+            "RESTAURANT" -> "우리동네 맛집/카페"
+            else         -> "기타"
+        }
     }
 
     inner class VH(v: View) : RecyclerView.ViewHolder(v) {
@@ -30,12 +38,21 @@ class MyPostAdapter : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
         private val tvTime = v.findViewById<TextView>(R.id.tvTime)
 
         fun bind(it: MyPostItem) {
-            tvCategory.text = it.postType // 필요하면 "TIP"→"꿀팁" 등 매핑
+            // ▸ 카테고리 라벨
+            tvCategory.text = labelFor(it.postType)
+
+            // ▸ 제목
             tvTitle.text = it.postTitle
+
+            // ▸ 보조 텍스트(장소/지역)
             tvContent.text = it.placeName ?: (it.regionName ?: "")
+
+            // ▸ 카운트들
             tvComment.text = it.commentCount.toString()
             tvLike.text = it.likeCount.toString()
             tvViews.text = "조회수 ${it.viewCount}"
+
+            // ▸ 시간
             tvTime.text = formatTime(it.createdTime)
         }
     }

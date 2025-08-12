@@ -141,18 +141,43 @@
             android:paddingEnd="20dp">
 
             <!-- + 버튼만 고정 -->
-            <ImageView
+            <FrameLayout
                 android:id="@+id/addImageButton"
                 android:layout_width="98dp"
                 android:layout_height="93dp"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/rectangle_32"
-                android:scaleType="centerCrop"
-                android:background="@color/image_placeholder"
-                android:contentDescription="이미지 추가 버튼" />
+                android:layout_marginStart="0dp"
+                android:background="@drawable/rectangle_32"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginEnd="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:paddingTop="12dp">
+
+                    <ImageView
+                        android:id="@+id/ivCamera"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/camera_vector" />
+
+                    <TextView
+                        android:id="@+id/tvImageCount"
+                        style="@style/PretendardSubtitle2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="0/5"
+                        android:textColor="#9E9E9E"/>
+                </LinearLayout>
+            </FrameLayout>
+
         </LinearLayout>
     </HorizontalScrollView>
-
 
     <!-- 수정 버튼 -->
     <ImageView

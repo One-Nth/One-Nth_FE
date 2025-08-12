@@ -28,10 +28,10 @@ class MyPostFragment : Fragment(R.layout.fragment_mypost) {
         // VM 생성 (postTypeFilter는 필요 시 "TIP")
         val api = RetrofitInstance.memberApi
         val repo = PostRepository(api)
+        val filter = arguments?.getString("filter")
         vm = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MyPostsViewModel(repo, postTypeFilter = "TIP") as T
+                return MyPostsViewModel(repo, postTypeFilter = filter) as T
             }
         })[MyPostsViewModel::class.java]
 

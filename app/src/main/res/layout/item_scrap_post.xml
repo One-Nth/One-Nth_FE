@@ -11,12 +11,17 @@
         android:id="@+id/tvCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_category_tag"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="2dp"
+        android:minWidth="73dp"
+        android:minHeight="24dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp"
+        android:background="@drawable/post_category_border"
+        android:gravity="center"
         android:text="생활 정보"
         android:textSize="12sp"
-        android:textColor="@color/main_green" />
+        android:textColor="#419461"
+        android:includeFontPadding="false"/>
+
 
     <!-- 제목 + 시간 -->
     <LinearLayout
@@ -101,4 +106,12 @@
             android:textColor="@color/light_gray"
             android:layout_marginStart="12dp"/>
     </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/back_gray"/>
+
 </LinearLayout>

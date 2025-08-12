@@ -29,8 +29,8 @@ class ScrapPostFragment : Fragment(R.layout.fragment_scrap_ntip) {
         vm = ViewModelProvider(this, object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                // 꿀팁(게시글)만: postTypeFilter="TIP"
-                return MyScrapsViewModel(repo, postTypeFilter = "TIP") as T
+                // ✅ 게시판 구분 없이 전체 null
+                return MyScrapsViewModel(repo, postTypeFilter = null) as T
             }
         })[MyScrapsViewModel::class.java]
 

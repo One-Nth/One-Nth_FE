@@ -22,68 +22,44 @@ class TipFragment : Fragment() {
     private var _binding: FragmentTipBinding? = null
     private val binding get() = _binding!!
 
-    // 현재 보드 타입을 ViewPager2에 맞춰 저장
+    // 검색용
     private var currentBoardType: String = "discount"
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentTipBinding.inflate(inflater, container, false)
         return binding.root
     }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val tabLayout = binding.tabLayoutTips
-        val viewPager = binding.viewPagerTips
-        val ivArrow = binding.ivArrow
-
-        val fragments = listOf(
-            DiscountTipsFragment(),
-            LifeTipsFragment(),
-            CafeTipsFragment()
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
+        val fragments = listOf(DiscountTipsFragment(), LifeTipsFragment(), CafeTipsFragment())
         val titles = listOf("할인 정보", "생활꿀팁", "우리동네 맛집/카페")
 
-        viewPager.adapter = object : FragmentStateAdapter(this@TipFragment) {
+        viewPagerTips.adapter = object : FragmentStateAdapter(this@TipFragment) {
             override fun getItemCount() = fragments.size
             override fun createFragment(position: Int) = fragments[position]
         }
-        viewPager.offscreenPageLimit = fragments.size
+        viewPagerTips.offscreenPageLimit = fragments.size
 
-        // (옵션) 기본 탭을 생활꿀팁으로 시작하고 싶으면 주석 해제
-        // viewPager.setCurrentItem(1, false)
+        TabLayoutMediator(tabLayoutTips, viewPagerTips) { tab, pos -> tab.text = titles[pos] }.attach()
 
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = titles[position]
-        }.attach()
-
-        // ✅ ViewPager2 기준으로 현재 보드 타입 갱신
-        fun updateBoardType(pos: Int) {
-            currentBoardType = when (pos) {
-                0 -> "discount"
-                1 -> "life_tip"
-                else -> "cafe"
-            }
+        fun updateForPosition(pos: Int) {
+            // 검색용 타입
+            currentBoardType = when (pos) { 0 -> "discount"; 1 -> "life_tip"; else -> "cafe" }
+            // ✅ FAB에 보낼 postType
+            val postType = when (pos) { 0 -> "DISCOUNT"; 1 -> "LIFE_TIP"; else -> "RESTAURANT" }
+            parentFragmentManager.setFragmentResult("board_tab", bundleOf("postType" to postType))
         }
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) = updateBoardType(position)
-        })
-        // 초기값 세팅 (attach 직후 값 보장)
-        view.post { updateBoardType(viewPager.currentItem) }
 
-        // ▼ 드롭다운은 기존 로직 유지
-        val popup = PopupMenu(
-            ContextThemeWrapper(requireContext(), R.style.Theme_OneNthApp),
-            ivArrow,
-            Gravity.END
-        ).apply {
+        viewPagerTips.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) = updateForPosition(position)
+        })
+
+        // attach 직후 초기 1회 전송
+        view.post { updateForPosition(viewPagerTips.currentItem) }
+
+        // ▼ 드롭다운 & 검색 (기존 유지)
+        val popup = PopupMenu(ContextThemeWrapper(requireContext(), R.style.Theme_OneNthApp), ivArrow, Gravity.END).apply {
             menuInflater.inflate(R.menu.menu_title_dropdown, menu)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -96,22 +72,18 @@ class TipFragment : Fragment() {
         }
         ivArrow.setOnClickListener { ivArrow.animate().rotation(180f).start(); popup.show() }
 
-        // ✅ 검색은 currentBoardType 사용
-        binding.searchBarEt.setOnEditorActionListener { et, actionId, _ ->
+        searchBarEt.setOnEditorActionListener { et, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                performSearch(et.text.toString(), currentBoardType)
-                true
+                performSearch(et.text.toString(), currentBoardType); true
             } else false
         }
     }
 
     private fun performSearch(query: String, boardType: String) {
-        val intent = Intent(requireContext(), LifeTipsSearchActivity::class.java).apply {
+        startActivity(Intent(requireContext(), LifeTipsSearchActivity::class.java).apply {
             putExtra("query", query)
-            putExtra("boardType", boardType) // "discount" | "life_tip" | "cafe"
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
-        startActivity(intent)
+            putExtra("boardType", boardType)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        })
     }
 }
-
