@@ -1,7 +1,6 @@
 package com.example.onenthapp.data
 
 import com.example.onenthapp.RetrofitInstance
-import com.example.onenthapp.model.Region
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -40,7 +39,7 @@ class MyRegionRepository {
     suspend fun searchRegions(keyword: String, page: Int, size: Int): Pair<List<SimpleRegion>, Pagination?> = withContext(Dispatchers.IO) {
 
         //allRegions.filter { it.name.contains(query) }
-        val resp = api.searchRegions(keyword = keyword, page = 0, size = 3)
+        val resp = api.searchRegions(keyword = keyword, page = page, size = size)
         if (resp.isSuccess && resp.result != null) resp.result.regions to resp.result.pagination
         else emptyList<SimpleRegion>() to null
     }

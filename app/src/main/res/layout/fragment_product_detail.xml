@@ -48,6 +48,7 @@
                         android:id="@+id/btn_bookmark"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
+
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_bookmark_off" />
                     <ImageButton
@@ -82,8 +83,8 @@
                     android:id="@+id/layout_product_info"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:gravity="center_vertical"
->
+
+                    >
                     <TextView
                         android:id="@+id/tvTitle"
                         android:layout_width="0dp"
@@ -91,6 +92,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/pretendard_bold"
                         android:text="두루마리 휴지"
+                        android:layout_marginTop="25dp"
                         android:textColor="@color/main_black"
                         android:textSize="23sp"
                         app:layout_constraintTop_toTopOf="parent"
@@ -232,7 +234,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/pretendard_semibold"
-                        android:text="OO동 인증"
+                        android:text="지역 인증 완료"
                         android:textColor="@color/text_cost"
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="@id/tv_seller_name"
@@ -376,42 +378,42 @@
                         app:layout_constrainedWidth="true"
                         app:layout_constraintHorizontal_bias="0"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_product_store_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="36dp">
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/layout_product_store_info"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="36dp">-->
 
-                    <TextView
-                        android:id="@+id/label_product_store"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp"
-                        android:fontFamily="@font/pretendard_semibold"
-                        android:text="보관 방법"
-                        android:textColor="@color/main_black"
-                        android:textSize="15sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+<!--                    <TextView-->
+<!--                        android:id="@+id/label_product_store"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:layout_marginBottom="3dp"-->
+<!--                        android:fontFamily="@font/pretendard_semibold"-->
+<!--                        android:text="보관 방법"-->
+<!--                        android:textColor="@color/main_black"-->
+<!--                        android:textSize="15sp"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-                    <TextView
-                        android:id="@+id/tv_product_store"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="114dp"
-                        android:fontFamily="@font/pretendard_semibold"
-                        android:text="X"
-                        android:textColor="@color/main_green"
-                        android:textSize="15sp"
-                        android:layout_width="150dp"
-                        android:layout_marginEnd="24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/label_product_store"
-                        app:layout_constraintBottom_toBottomOf="@id/label_product_store"
-                        app:layout_constrainedWidth="true"
-                        app:layout_constraintHorizontal_bias="0"/>
-                </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_product_store"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="114dp"-->
+<!--                        android:fontFamily="@font/pretendard_semibold"-->
+<!--                        android:text="X"-->
+<!--                        android:textColor="@color/main_green"-->
+<!--                        android:textSize="15sp"-->
+<!--                        android:layout_width="150dp"-->
+<!--                        android:layout_marginEnd="24dp"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="@id/label_product_store"-->
+<!--                        app:layout_constraintBottom_toBottomOf="@id/label_product_store"-->
+<!--                        app:layout_constrainedWidth="true"-->
+<!--                        app:layout_constraintHorizontal_bias="0"/>-->
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
 
                 <View
                     android:id="@+id/group_divider_bottom"
