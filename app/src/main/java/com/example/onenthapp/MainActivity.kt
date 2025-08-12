@@ -42,6 +42,11 @@ class MainActivity : AppCompatActivity() {
                     false
                 }
 
+                R.id.statsFragment -> {
+                    startActivity(Intent(this, NwonSavedActivity::class.java))
+                    false
+                }
+
                 else -> {
                     NavigationUI.onNavDestinationSelected(item, navController)
                     true

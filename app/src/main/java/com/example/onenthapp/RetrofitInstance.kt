@@ -8,12 +8,14 @@ import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
 import com.example.onenthapp.data.notificationboard.NotificationboardApi
+import com.example.onenthapp.data.nwonsaved.NwonSavedApi
 import com.example.onenthapp.data.transaction.TransactionApi
 import com.example.onenthapp.util.TokenManager
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import kotlin.getValue
 
 object RetrofitInstance {
     private val logging = HttpLoggingInterceptor().apply {
@@ -82,6 +84,10 @@ object RetrofitInstance {
 
     val notificationboardApi: NotificationboardApi by lazy {
         retrofit.create(NotificationboardApi::class.java)
+    }
+
+    val nwonSavedApi: NwonSavedApi by lazy {
+        retrofit.create(NwonSavedApi::class.java)
     }
 
 }
