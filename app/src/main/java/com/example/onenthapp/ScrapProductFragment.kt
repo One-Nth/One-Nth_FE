@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class ScrapTipNFragment : Fragment(R.layout.fragment_scrap_ntip) {
+class ScrapProductFragment : Fragment(R.layout.fragment_scrap_ntip) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

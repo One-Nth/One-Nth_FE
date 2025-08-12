@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMyPostTip"
+        android:id="@+id/recyclerViewMyPostProduct"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"

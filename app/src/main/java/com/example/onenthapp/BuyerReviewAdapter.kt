@@ -17,18 +17,10 @@ data class ProfileLite(val nickname: String?, val imageUrl: String?)
 class BuyerReviewAdapter : RecyclerView.Adapter<BuyerReviewAdapter.BuyerReviewViewHolder>() {
 
     private val reviewList = mutableListOf<MyReview>()
-    private var profileMap: Map<Long, ProfileLite> = emptyMap() // reviewerId -> 프로필
 
-    /** 리뷰 목록 갱신 */
     fun updateList(newList: List<MyReview>) {
         reviewList.clear()
         reviewList.addAll(newList)
-        notifyDataSetChanged()
-    }
-
-    /** 프로필 맵 주입 (키: reviewerId) */
-    fun setProfiles(map: Map<Long, ProfileLite>) {
-        profileMap = map
         notifyDataSetChanged()
     }
 
@@ -42,57 +34,43 @@ class BuyerReviewAdapter : RecyclerView.Adapter<BuyerReviewAdapter.BuyerReviewVi
         private val reviewImage3: ImageView = itemView.findViewById(R.id.reviewImage3)
 
         fun bind(review: MyReview) {
-            // ✅ "내가 받은 리뷰" 화면 → 작성자(reviewerId) 정보를 표시
-            val p = profileMap[review.reviewerId]
-            nicknameText.text = p?.nickname ?: "익명"
+            nicknameText.text = review.reviewerNickName.ifBlank { "익명" }
 
-            if (!p?.imageUrl.isNullOrBlank()) {
-                Glide.with(itemView.context)
-                    .load(p!!.imageUrl)
+            val url = review.reviewerProfileImageUrl
+            if (!url.isNullOrBlank()) {
+                Glide.with(itemView.context).load(url)
                     .placeholder(R.drawable.profile_base)
                     .error(R.drawable.profile_base)
                     .circleCrop()
                     .into(avatar)
-            } else {
-                avatar.setImageResource(R.drawable.profile_base)
-            }
+            } else avatar.setImageResource(R.drawable.profile_base)
 
+            ratingBar.setIsIndicator(true)
+            ratingBar.stepSize = 0.5f          // ✅ 반개 별
             ratingBar.rating = review.rate.toFloat()
+
             reviewContentText.text = review.content
 
             val imageViews = listOf(reviewImage1, reviewImage2, reviewImage3)
             imageViews.forEach { it.visibility = View.GONE }
-            review.reviewImageList.take(3).forEachIndexed { index, url ->
-                imageViews[index].visibility = View.VISIBLE
-                Glide.with(itemView.context).load(url).into(imageViews[index])
+            review.reviewImageList.take(3).forEachIndexed { idx, imgUrl ->
+                imageViews[idx].visibility = View.VISIBLE
+                Glide.with(itemView.context).load(imgUrl).into(imageViews[idx])
             }
 
-            // (선택) 상세 열기: 읽기 전용으로
-            itemView.setOnClickListener {
-                val ctx = itemView.context
-                val intent = Intent(ctx, ReviewEditActivity::class.java).apply {
-                    putExtra("reviewId", review.reviewId)
-                    putExtra("itemType", review.itemType)
-                    putExtra("canEdit", false) // 구매자쪽은 수정 불가
-                    // 상세 헤더에서 바로 쓰고 싶으면 아래 표시용 값도 전달
-                    putExtra("displayNickname", p?.nickname)
-                    putExtra("displayProfileUrl", p?.imageUrl)
-                }
-                ctx.startActivity(intent)
-            }
+            // ✅ 미리보기는 클릭 금지
+            itemView.setOnClickListener(null)
+            itemView.isClickable = false
+            itemView.isFocusable = false
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BuyerReviewViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_buyer_review, parent, false)
-        return BuyerReviewViewHolder(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        BuyerReviewViewHolder(LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_buyer_review, parent, false))
 
-    override fun onBindViewHolder(holder: BuyerReviewViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BuyerReviewViewHolder, position: Int) =
         holder.bind(reviewList[position])
-    }
 
     override fun getItemCount(): Int = reviewList.size
 }
-
