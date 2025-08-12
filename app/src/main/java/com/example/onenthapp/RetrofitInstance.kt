@@ -10,6 +10,7 @@ import com.example.onenthapp.data.ReviewApi
 import com.example.onenthapp.data.post.PostApi
 import com.example.onenthapp.util.TokenManager
 import com.example.onenthapp.data.MyRegionApi
+import com.example.onenthapp.data.MapMarkerApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
@@ -75,5 +76,8 @@ object RetrofitInstance {
 
     val postApi: PostApi by lazy{
         retrofit.create(PostApi::class.java) }
+    val mapMarkerApi: MapMarkerApi by lazy {
+        retrofit.create(MapMarkerApi::class.java)
+    }
 
 }
