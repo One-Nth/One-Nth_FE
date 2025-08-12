@@ -28,13 +28,12 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
+            style="@style/PretendardSubtitle2"
             android:id="@+id/settingTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="마이페이지"
             android:textColor="@color/main_black"
-            android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/backButton"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

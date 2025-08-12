@@ -15,10 +15,15 @@ class PlusRepository {
     ): Response<BuyResponse> =
         api.createGroupPurchase(data, images)
 
+    suspend fun fetchGroupPurchaseDetail(id: Long) =
+        api.getGroupPurchaseDetail(id)
     /** 함께 나눠요 */
     suspend fun createSharingItem(
         data: RequestBody,
         images: List<MultipartBody.Part>
     ): Response<ShareResponse> =
         api.createSharingItem(data, images)
+
+    suspend fun fetchSharingItemDetail(id: Long) =
+        api.getSharingItemDetail(id)
 }

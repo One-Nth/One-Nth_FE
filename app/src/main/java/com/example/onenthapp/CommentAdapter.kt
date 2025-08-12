@@ -1,45 +1,80 @@
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.ImageButton
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onenthapp.Comment
 import com.example.onenthapp.R
-import com.example.onenthapp.data.notificationboard.CommentItem
 
 class CommentAdapter(
-    private var comments: MutableList<Comment>
+    private val onAction: (Action, Comment) -> Unit
 ) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
-    inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val ivProfile: ImageView = itemView.findViewById(R.id.ivProfile)
-        val tvNickname: TextView = itemView.findViewById(R.id.tvCommentNickname)
-        val tvContent: TextView = itemView.findViewById(R.id.tvCommentContent)
-        val tvLike: TextView = itemView.findViewById(R.id.tvLike)
+    enum class Action { Chat, Block }
+
+    private val items = mutableListOf<Comment>()
+
+    fun submitList(list: List<Comment>) {
+        items.clear()
+        items.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    inner class CommentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val tvNickname: TextView = view.findViewById(R.id.tvCommentNickname)
+        private val tvContent: TextView = view.findViewById(R.id.tvCommentContent)
+        private val tvLike: TextView = view.findViewById(R.id.tvLike)
+        private val btnMore: ImageButton = view.findViewById(R.id.btnMore)
 
         fun bind(comment: Comment) {
             tvNickname.text = comment.nickname
             tvContent.text = comment.content
             tvLike.text = "좋아요 ${comment.likeCount}"
+
+            btnMore.setOnClickListener {
+                showUserActionsPopup(it, comment)
+            }
+        }
+
+        private fun showUserActionsPopup(anchor: View, item: Comment) {
+            val context = anchor.context
+            val view = LayoutInflater.from(context).inflate(R.layout.comment_popup_box, null)
+            val popup = PopupWindow(
+                view,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true
+            )
+            popup.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+
+            view.findViewById<TextView>(R.id.tvChat).setOnClickListener {
+                popup.dismiss()
+                onAction(Action.Chat, item)
+            }
+            view.findViewById<TextView>(R.id.tvBlock).setOnClickListener {
+                popup.dismiss()
+                onAction(Action.Block, item)
+            }
+
+            popup.showAsDropDown(anchor, dp(anchor.context, -8), dp(anchor.context, 0))
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_comment, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
         return CommentViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        holder.bind(comments[position])
+        holder.bind(items[position])
     }
 
-    override fun getItemCount(): Int = comments.size
+    override fun getItemCount(): Int = items.size
+}
 
-    fun updateComments(comments: List<Comment>) {
-        this.comments = comments.toMutableList()
-        notifyDataSetChanged()
-    }
-
+private fun dp(context: Context, value: Int): Int {
+    return (value * context.resources.displayMetrics.density).toInt()
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingHorizontal="18dp"
+    android:layout_width="match_parent"
+    android:layout_height="47dp"
+    android:id="@+id/clRegionName">
+
+    <TextView
+        android:id="@+id/tvRegionName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="서울특별시 동작구 상도동"
+        android:textSize="15sp"
+        android:fontFamily="@style/PretendardBody8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <View
+        android:id="@+id/group_divider_mid"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border_upperbar"
+        app:layout_constraintStart_toStartOf="@id/tvRegionName"
+        app:layout_constraintEnd_toEndOf="@id/tvRegionName"
+        app:layout_constraintBottom_toBottomOf="@id/clRegionName"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

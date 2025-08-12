@@ -188,9 +188,45 @@
         <item name="android:fontFamily">@font/pretendard_medium</item>
     </style>
 
-    //프로필 규격
     <style name="CircularShapeAppearance">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+    <!-- res/values/styles.xml -->
+    <style name="Widget.OneNth.RegionChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="checkedIconVisible">false</item>
+        <item name="chipBackgroundColor">@color/region_chip_bg</item>
+        <item name="android:textColor">@color/region_chip_text</item>
+        <item name="chipStrokeColor">@color/region_chip_stroke</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="shapeAppearanceOverlay">@style/RoundXl</item>
+    </style>
+    <style name="RoundXl">
+        <item name="cornerFamily">rounded</item>
+        <item name="android:height">40dp</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+    <!-- res/values/styles.xml -->
+    <style name="Widget.App.TagChip" parent="Widget.MaterialComponents.Chip.Entry">
+        <!-- 배경 색 -->
+        <item name="chipBackgroundColor">@color/main_green_4</item>
+        <!-- stroke 색 & 두께 -->
+        <item name="chipStrokeColor">@color/transparent</item>
+        <!-- 모서리 반경 -->
+        <item name="chipCornerRadius">@dimen/tag_chip_corner_radius</item>
+        <!-- 최소 높이 -->
+        <item name="chipMinHeight">@dimen/tag_chip_min_height</item>
+        <!-- 텍스트 스타일 -->
+        <item name="android:textColor">@color/main_green</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.App.TagChip</item>
+        <!-- close 아이콘 -->
+        <item name="closeIcon">@drawable/ic_cancel_gray</item>
+        <item name="closeIconTint">@color/search_gray</item>
+    </style>
+
+    <style name="TextAppearance.App.TagChip" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
+
 </resources>

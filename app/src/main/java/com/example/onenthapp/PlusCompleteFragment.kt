@@ -3,6 +3,7 @@ package com.example.onenthapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.onenthapp.databinding.FragmentPlusCompleteBinding
@@ -23,7 +24,9 @@ class PlusCompleteFragment : Fragment() {
         // 1) 인자 꺼내기
         val name = requireArguments().getString("productName", "")
         val price = requireArguments().getString("productPrice", "")
-        val imageUri = requireArguments().getString("productImageUri", "")
+        //val imageUri = requireArguments().getString("productImageUri", "")
+        val productId = requireArguments().getLong("productId")
+        val isGroup   = requireArguments().getBoolean("isGroup", false)
 
         // 2) 텍스트 뷰에 설정
         binding.tvProductName.text = name
@@ -34,6 +37,19 @@ class PlusCompleteFragment : Fragment() {
         // 닫기(X) 누르면 홈으로
         binding.btnCloseComplete.setOnClickListener {
             findNavController().popBackStack(R.id.homeFragment, false)
+        }
+        binding.previewContainer.setOnClickListener {
+            if (isGroup) {
+                findNavController().navigate(
+                    R.id.groupPurchaseDetailFragment,
+                    bundleOf("productId" to productId)
+                )
+            } else {
+                findNavController().navigate(
+                    R.id.groupPurchaseDetailFragment,
+                    bundleOf("productId" to productId)
+                )
+            }
         }
 
 //        // 공유하기

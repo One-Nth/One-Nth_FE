@@ -48,6 +48,7 @@
                         android:id="@+id/btn_bookmark"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
+
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_bookmark_off" />
                     <ImageButton
@@ -78,49 +79,66 @@
                 android:layout_marginHorizontal="30dp"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_product_info"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_height="80dp"
 
+                    >
                     <TextView
-                        android:id="@+id/r36h8q2u0dqd"
+                        android:id="@+id/tvTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginBottom="22dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/pretendard_bold"
                         android:text="두루마리 휴지"
+                        android:layout_marginTop="25dp"
                         android:textColor="@color/main_black"
-                        android:textSize="23sp" />
+                        android:textSize="23sp"
+                        app:layout_constraintTop_toTopOf="parent"
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_category"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        app:layout_constraintStart_toStartOf="parent"/>
+                    <TextView
+                        android:id="@+id/tvStatus"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/pretendard_medium"
+                        android:layout_height="24dp"
+                        android:textColor="@color/main_green"
+                        android:layout_marginEnd="4dp"
+                        android:paddingVertical="2dp"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/pretendard_regular"
+                        android:text="판매중"
+                        android:background="@drawable/bg_status_tag"
+                        app:layout_constraintRight_toLeftOf="@id/tvCategory"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tvCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="4dp"
+                        android:paddingVertical="2dp"
+                        android:textColor="@color/main_white"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/pretendard_regular"
                         android:text="생활용품"
-                        android:textColor="@color/main_white"
-                        android:textSize="13sp"
-                        app:chipBackgroundColor="@color/main_green_2" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_trade_type"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:background="@drawable/bg_category_tag"
+                        app:layout_constraintRight_toLeftOf="@id/tvMethod"
+                        app:layout_constraintTop_toTopOf="parent"/>
+                    <TextView
+                        android:id="@+id/tvMethod"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:fontFamily="@font/pretendard_medium"
-                        android:text="직거래"
+                        android:layout_height="24dp"
                         android:textColor="@color/main_white"
                         android:textSize="13sp"
-                        app:chipBackgroundColor="@color/main_black" />
-                </LinearLayout>
+                        android:paddingVertical="2dp"
+                        android:fontFamily="@font/pretendard_regular"
+                        android:text="직거래"
+                        android:background="@drawable/bg_category_method"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     android:id="@+id/group_divider"
@@ -216,7 +234,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/pretendard_semibold"
-                        android:text="본인 인증 완료"
+                        android:text="지역 인증 완료"
                         android:textColor="@color/text_cost"
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="@id/tv_seller_name"
@@ -360,42 +378,42 @@
                         app:layout_constrainedWidth="true"
                         app:layout_constraintHorizontal_bias="0"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_product_store_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="36dp">
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/layout_product_store_info"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="36dp">-->
 
-                    <TextView
-                        android:id="@+id/label_product_store"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp"
-                        android:fontFamily="@font/pretendard_semibold"
-                        android:text="보관 방법"
-                        android:textColor="@color/main_black"
-                        android:textSize="15sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+<!--                    <TextView-->
+<!--                        android:id="@+id/label_product_store"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:layout_marginBottom="3dp"-->
+<!--                        android:fontFamily="@font/pretendard_semibold"-->
+<!--                        android:text="보관 방법"-->
+<!--                        android:textColor="@color/main_black"-->
+<!--                        android:textSize="15sp"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-                    <TextView
-                        android:id="@+id/tv_product_store"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="114dp"
-                        android:fontFamily="@font/pretendard_semibold"
-                        android:text="X"
-                        android:textColor="@color/main_green"
-                        android:textSize="15sp"
-                        android:layout_width="150dp"
-                        android:layout_marginEnd="24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/label_product_store"
-                        app:layout_constraintBottom_toBottomOf="@id/label_product_store"
-                        app:layout_constrainedWidth="true"
-                        app:layout_constraintHorizontal_bias="0"/>
-                </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_product_store"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="114dp"-->
+<!--                        android:fontFamily="@font/pretendard_semibold"-->
+<!--                        android:text="X"-->
+<!--                        android:textColor="@color/main_green"-->
+<!--                        android:textSize="15sp"-->
+<!--                        android:layout_width="150dp"-->
+<!--                        android:layout_marginEnd="24dp"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="@id/label_product_store"-->
+<!--                        app:layout_constraintBottom_toBottomOf="@id/label_product_store"-->
+<!--                        app:layout_constrainedWidth="true"-->
+<!--                        app:layout_constraintHorizontal_bias="0"/>-->
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
 
                 <View
                     android:id="@+id/group_divider_bottom"
@@ -411,7 +429,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:fontFamily="@font/pretendard_semibold"
-                    android:text="거래 장소"
+                    android:text="거래 희망 장소"
                     android:textColor="@color/main_black"
                     android:textSize="20sp" />
 
@@ -432,24 +450,26 @@
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="@color/main_white"
         android:baselineAligned="false"
-        android:elevation="20dp"
+        android:elevation="40dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingVertical="20dp"
-        android:paddingStart="60dp">
-
+>
         <LinearLayout
             android:id="@+id/layout_price_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="31dp"
+>
             <TextView
                 android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
@@ -460,44 +480,46 @@
                 android:textColor="#000000"
                 android:textSize="18sp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:orientation="horizontal">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pretendard_semibold"
-                    android:text="원가 : "
-                    android:textColor="@color/text_search"
-                    android:textSize="15sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/pretendard_semibold"-->
+<!--                    android:text="원가 : "-->
+<!--                    android:textColor="@color/text_search"-->
+<!--                    android:textSize="15sp" />-->
 
 
-                <TextView
-                    android:id="@+id/tv_origin_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pretendard_semibold"
-                    android:text="20개 0000원"
-                    android:textColor="@color/text_search"
-                    android:textSize="15sp" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_origin_price"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/pretendard_semibold"-->
+<!--                    android:text="20개 0000원"-->
+<!--                    android:textColor="@color/text_search"-->
+<!--                    android:textSize="15sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
         </LinearLayout>
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="98dp"
             android:layout_height="40dp"
-            android:layout_marginStart="86dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="27dp"
             android:id="@+id/btn_chat"
             android:fontFamily="@font/pretendard_regular"
             android:text="채팅하기"
             android:textColor="@color/main_white"
             android:textSize="17sp"
             android:background="@drawable/btn_rounded_green_background"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             />
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

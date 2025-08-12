@@ -9,9 +9,10 @@ class ScrapPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(acti
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> ScrapNFragment() // 첫 번째 탭 Fragment
-            1 -> ScrapTipNFragment()  // 두 번째 탭 Fragment
-            else -> ScrapNFragment()
+            0 -> ScrapProductFragment() // ✅ N분의 1 = 상품 스크랩
+            1 -> ScrapPostFragment()    // ✅ 꿀팁 N분의 1 = 게시글 스크랩
+            else -> ScrapProductFragment()
         }
     }
 }
+

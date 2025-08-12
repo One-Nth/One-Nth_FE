@@ -8,7 +8,7 @@ import retrofit2.http.*
 
 interface ReviewApi {
     @Multipart
-    @POST("/api/reviews/purchases/{purchaseItemId}")
+    @POST("reviews/purchases/{purchaseItemId}")
     fun submitPurchaseReview(
         @Path("purchaseItemId") purchaseItemId: Long,
         @Part("review") review: RequestBody,
@@ -16,7 +16,7 @@ interface ReviewApi {
     ): Call<ReviewResponse>
 
     @Multipart
-    @POST("/api/reviews/sharings/{sharingItemId}")
+    @POST("reviews/sharings/{sharingItemId}")
     fun submitSharingReview(
         @Path("sharingItemId") sharingItemId: Long,
         @Part("review") review: RequestBody,
@@ -24,31 +24,31 @@ interface ReviewApi {
     ): Call<ReviewResponse>
 
 
-    @GET("/api/reviews/mine")
+    @GET("reviews/mine")
     suspend fun getMyReviews(): Response<MyReviewResponse>
 
-    @GET("/api/reviews/{reviewId}")
+    @GET("reviews/{reviewId}")
     suspend fun getReviewDetail(
         @Path("reviewId") reviewId: Long,
         @Query("itemType") itemType: String
     ): Response<ReviewDetailResponse>
 
     @Multipart
-    @POST("/api/reviews/{reviewId}/images")
+    @POST("reviews/{reviewId}/images")
     suspend fun uploadReviewImages(
         @Path("reviewId") reviewId: Long,
         @Query("itemType") itemType: String,
         @Part images: List<MultipartBody.Part>
     ): Response<CommonResponse<String>>
 
-    @HTTP(method = "DELETE", path = "/api/reviews/{reviewId}/images", hasBody = true)
+    @HTTP(method = "DELETE", path = "reviews/{reviewId}/images", hasBody = true)
     suspend fun deleteReviewImages(
         @Path("reviewId") reviewId: Long,
         @Query("itemType") itemType: String,
         @Body request: DeleteReviewImageRequest
     ): Response<CommonResponse<String>>
 
-    @PATCH("/api/reviews/{reviewId}")
+    @PATCH("reviews/{reviewId}")
     suspend fun updateReviewContentAndRate(
         @Path("reviewId") reviewId: Long,
         @Query("itemType") itemType: String,
@@ -56,7 +56,7 @@ interface ReviewApi {
     ): Response<CommonResponse<String>>
 
 
-    @GET("/api/reviews/user/{userId}")
+    @GET("reviews/user/{userId}")
     suspend fun getUserReviews(
         @Path("userId") userId: Long,
         @Header("Authorization") token: String

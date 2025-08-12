@@ -2,6 +2,7 @@ package com.example.onenthapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -16,7 +17,7 @@ import com.example.onenthapp.model.SignupViewModelFactory
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var viewModel: SignupViewModel
-
+    private var codeTimer: CountDownTimer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
@@ -38,7 +39,12 @@ class SignupActivity : AppCompatActivity() {
         val edtPasswordConfirm = findViewById<EditText>(R.id.passwordConfirmEditText)
         val tvPasswordError = findViewById<TextView>(R.id.tvPasswordError)
         val tvPasswordConfirmError = findViewById<TextView>(R.id.tvPasswordConfirmError)
+        val backBtn = findViewById<ImageButton>(R.id.backButton) // 뒤로가기 버튼
 
+        // 🔙 뒤로가기 버튼 클릭 시
+        backBtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         // ✅ SignupActivity2 가기 위한 버튼 참조
         val nextButton = findViewById<ImageButton>(R.id.nextButton)
 
@@ -48,8 +54,12 @@ class SignupActivity : AppCompatActivity() {
             val password = edtPassword.text.toString()
             val passwordConfirm = edtPasswordConfirm.text.toString()
 
+            // ✅ 문자열 비교 대신 불리언 사용
+            val emailOk = viewModel.emailOk.value == true
+            val codeOk  = viewModel.codeOk.value == true
+
             // 1️⃣ 이메일 인증 여부 체크
-            if (emailMessage.isNullOrEmpty() || !emailMessage.contains("사용 가능한 아이디")) {
+            if (!emailOk) {
                 tvEmailError.text = "이메일 인증을 완료해주세요."
                 tvEmailError.setTextColor(getColor(R.color.error_text))
                 tvEmailError.visibility = View.VISIBLE
@@ -57,7 +67,7 @@ class SignupActivity : AppCompatActivity() {
             }
 
             // 2️⃣ 인증 코드 확인 여부 체크
-            if (codeMessage.isNullOrEmpty() || !codeMessage.contains("인증 완료")) {
+            if (!codeOk) {
                 tvCodeResult.text = "인증 코드를 확인해주세요."
                 tvCodeResult.setTextColor(getColor(R.color.error_text))
                 tvCodeResult.visibility = View.VISIBLE
@@ -94,25 +104,40 @@ class SignupActivity : AppCompatActivity() {
 
         // ✅ 이메일 인증 코드 요청
         btnCheck.setOnClickListener {
+            tvCodeResult.visibility = View.GONE
+            edtCode.apply {
+                text.clear()
+                setBackgroundResource(R.drawable.edittext_border2)
+                isEnabled = true
+            }
+
+            // 🔁 새로 요청하면 코드 인증은 다시 해야 하니까 false로 리셋
+            viewModel.codeOk.value = false
             viewModel.email.value = edtEmail.text.toString()
             viewModel.requestCode()
         }
 
-        // ✅ 이메일 발송 결과 메시지
-        viewModel.emailStatus.observe(this) { message ->
-            if (message.isNullOrEmpty()) {
-                tvEmailError.visibility = View.GONE
-            } else {
-                tvEmailError.text = message
-                tvEmailError.visibility = View.VISIBLE
 
-                if (message.contains("사용 가능한 아이디")) {
-                    tvEmailError.setTextColor(getColor(R.color.main_green))
-                } else {
-                    tvEmailError.setTextColor(getColor(R.color.error_text))
-                }
+
+        viewModel.emailStatus.observe(this) { message ->
+            tvEmailError.text = message
+            tvEmailError.visibility = if (message.isNullOrEmpty()) View.GONE else View.VISIBLE
+        }
+
+        viewModel.emailOk.observe(this) { ok ->
+            if (ok == true) {
+                tvEmailError.setTextColor(getColor(R.color.main_green))
+                edtEmail.setBackgroundResource(R.drawable.edittext_border2) // 초록 테두리 or 기본
+
+                // ✅ 5분 타이머 시작
+                startCodeTimer()
+            } else {
+                tvEmailError.setTextColor(getColor(R.color.error_text))
+                edtEmail.setBackgroundResource(R.drawable.edittext_border_error) // 빨간 테두리
             }
         }
+
+
 
         // ✅ 인증코드 입력 → 6자리 입력 시 자동 검증
         edtCode.addTextChangedListener(object : TextWatcher {
@@ -125,21 +150,29 @@ class SignupActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // ✅ 인증 코드 검증 결과 메시지
         viewModel.codeStatus.observe(this) { message ->
             if (message.isNullOrEmpty()) {
                 tvCodeResult.visibility = View.GONE
-            } else {
-                tvCodeResult.text = message
-                tvCodeResult.visibility = View.VISIBLE
+                edtCode.setBackgroundResource(R.drawable.edittext_border2) // 기본 테두리
+                return@observe
+            }
 
-                if (message.contains("인증") && message.contains("완료")) {
-                    tvCodeResult.setTextColor(getColor(R.color.main_green))
-                } else {
-                    tvCodeResult.setTextColor(getColor(R.color.error_text))
-                }
+            tvCodeResult.text = message
+            tvCodeResult.visibility = View.VISIBLE
+
+            val ok = message.contains("인증") && message.contains("완료")
+            if (ok) {
+                tvCodeResult.setTextColor(getColor(R.color.main_green))
+                edtCode.setBackgroundResource(R.drawable.edittext_border2) // ✅ 정상
+                // 인증 성공 → 타이머 멈춤
+                stopCodeTimer()
+                edtCode.isEnabled = false
+            } else {
+                tvCodeResult.setTextColor(getColor(R.color.error_text))
+                edtCode.setBackgroundResource(R.drawable.edittext_border_error) // 🔴 에러
             }
         }
+
 
         // ✅ 비밀번호 유효성 검사
         edtPassword.addTextChangedListener(object : TextWatcher {
@@ -169,10 +202,12 @@ class SignupActivity : AppCompatActivity() {
                     tvPasswordConfirmError.text = "비밀번호 확인 완료되었습니다."
                     tvPasswordConfirmError.setTextColor(getColor(R.color.main_green))
                     tvPasswordConfirmError.visibility = View.VISIBLE
+                    edtPasswordConfirm.setBackgroundResource(R.drawable.edittext_border2) // ✅ 정상 테두리
                 } else {
                     tvPasswordConfirmError.text = "비밀번호가 동일하지 않습니다."
                     tvPasswordConfirmError.setTextColor(getColor(R.color.error_text))
                     tvPasswordConfirmError.visibility = View.VISIBLE
+                    edtPasswordConfirm.setBackgroundResource(R.drawable.edittext_border_error) // 🔴 빨간 테두리
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -185,4 +220,48 @@ class SignupActivity : AppCompatActivity() {
         val regex = Regex("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{10,}$")
         return regex.matches(password)
     }
+
+    private fun startCodeTimer(totalMillis: Long = 5 * 60 * 1000L) {
+        val timerTv = findViewById<TextView>(R.id.timerTextView)
+
+        // 이미 돌고 있으면 종료
+        codeTimer?.cancel()
+
+        codeTimer = object : CountDownTimer(totalMillis, 1000L) {
+            override fun onTick(millisUntilFinished: Long) {
+                val m = (millisUntilFinished / 1000) / 60
+                val s = (millisUntilFinished / 1000) % 60
+                timerTv.text = String.format("%02d:%02d", m, s)
+                timerTv.setTextColor(getColor(R.color.error_text)) // 빨간색
+            }
+
+            override fun onFinish() {
+                timerTv.text = "00:00"
+                // 만료 안내
+                val tvCodeResult = findViewById<TextView>(R.id.tvCodeResult)
+                val edtCode = findViewById<EditText>(R.id.verificationCodeEditText)
+
+                tvCodeResult.text = "인증번호가 만료되었습니다. 다시 요청해주세요."
+                tvCodeResult.visibility = View.VISIBLE
+                tvCodeResult.setTextColor(getColor(R.color.error_text))
+                edtCode.setBackgroundResource(R.drawable.edittext_border_error)
+
+                // ⛔ 만료 → 인증 실패 상태로 표시
+                viewModel.codeOk.value = false
+            }
+        }.start()
+    }
+
+    private fun stopCodeTimer() {
+        codeTimer?.cancel()
+        codeTimer = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopCodeTimer()
+    }
+
+
+
 }

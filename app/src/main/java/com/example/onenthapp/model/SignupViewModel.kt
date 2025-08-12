@@ -12,7 +12,9 @@ import kotlinx.coroutines.launch
 class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
     val email = MutableLiveData<String>()
     val emailStatus = MutableLiveData<String?>() // 이메일 발송 상태
+    val emailOk = MutableLiveData<Boolean>()
     val codeStatus = MutableLiveData<String?>()  // 인증 코드 검증 상태
+    val codeOk = MutableLiveData<Boolean>()
     val signupStatus = MutableLiveData<String?>() // ✅ 회원가입 결과 저장
     val signupSuccess = MutableLiveData<Boolean?>()
 
@@ -20,6 +22,7 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
         val emailValue = email.value ?: ""
         if (!isValidEmail(emailValue)) {
             emailStatus.postValue("올바른 형식의 이메일을 입력해주세요.")
+            emailOk.postValue(false)
             return@launch
         }
 
@@ -28,17 +31,22 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body?.isSuccess == true) {
-                    emailStatus.postValue("사용 가능한 아이디입니다.") // ✅ 여기서 메시지 변경
+                    emailStatus.postValue(body.result ?: "사용 가능한 아이디입니다.")
+                    emailOk.postValue(true)
                 } else {
-                    emailStatus.postValue(body?.message ?: "요청 실패")
+                    emailStatus.postValue(body?.result ?: body?.message ?: "요청 실패")
+                    emailOk.postValue(false)
                 }
 
             } else {
-                emailStatus.postValue("API 요청 실패 (${response.code()})")
+                // ❗ 비정상 코드(500 등) → errorBody에서 result/message 추출
+                val msg = extractServerMsg(response.errorBody()?.string())
+                emailStatus.postValue(msg)
             }
         } catch (e: Exception) {
             Log.e("API_DEBUG", "네트워크 오류", e)
             emailStatus.postValue("네트워크 오류가 발생했습니다.")
+            emailOk.postValue(false)
         }
     }
 
@@ -58,16 +66,22 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body?.isSuccess == true) {
-                    codeStatus.postValue("인증 완료되었습니다.") // ✅ 메시지 고정
+                    codeStatus.postValue(body.result ?: "인증 완료되었습니다.") // ✅ result 표시
+                    codeOk.postValue(true)
+
                 } else {
-                    codeStatus.postValue(body?.message ?: "인증번호를 다시 입력해주세요.")
+                    codeStatus.postValue(body?.result ?: body?.message ?: "인증번호를 다시 입력해주세요.")
+                    codeOk.postValue(false)
                 }
 
             } else {
-                codeStatus.postValue("서버 오류 (${response.code()})")
+//                codeStatus.postValue("서버 오류 (${response.code()})")
+                val msg = extractServerMsg(response.errorBody()?.string())
+                codeStatus.postValue(msg)
             }
         } catch (e: Exception) {
-            codeStatus.postValue("네트워크 오류가 발생했습니다.")
+            codeStatus.postValue("인증번호를 다시 입력해주세요.")
+            codeOk.postValue(false)
         }
     }
 
@@ -98,7 +112,7 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
             )
             if (r.isSuccess) {
                 val data = r.getOrNull()!!
-                data.accessToken?.let { TokenManager.saveToken(it) }
+                data.accessToken?.let { TokenManager.saveAccessToken(it) }
                 data.refreshToken?.let { if (it.isNotEmpty()) TokenManager.saveRefreshToken(it) }
                 signupStatus.postValue("회원가입 성공")
                 signupSuccess.postValue(true)
@@ -122,4 +136,20 @@ class SignupViewModel(private val repo: AuthRepository) : ViewModel() {
         }
         return sb.toString().trim()
     }
+
+    private fun extractServerMsg(errorBody: String?): String {
+        return try {
+            val json = org.json.JSONObject(errorBody ?: "")
+            // result가 문자열이면 그걸 우선 사용
+            when {
+                json.has("result") && json.get("result") is String ->
+                    json.optString("result")
+                else ->
+                    json.optString("message", "요청 실패")
+            }
+        } catch (_: Exception) {
+            "요청 실패"
+        }
+    }
+
 }

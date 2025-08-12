@@ -125,6 +125,7 @@
             android:stepSize="1"
             android:rating="0"
             android:layout_marginStart="30dp"
+            android:progressTint="@color/star_yellow"
             android:isIndicator="false"
             style="?android:attr/ratingBarStyleSmall" />
 
@@ -169,7 +170,7 @@
                             android:layout_marginEnd="8dp"
                             android:src="@drawable/group_150"
                             android:scaleType="center"
-                            android:layout_marginStart="20dp"
+                            android:layout_marginStart="0dp"
                             android:padding="12dp"
                             android:contentDescription="사진 추가" />
 
@@ -177,20 +178,22 @@
                 </HorizontalScrollView>
 
             <!-- 후기 입력칸 -->
-            <EditText
-                android:id="@+id/reviewEditText"
-                style="@style/PretendardBody4"
-                android:layout_width="335dp"
-                android:layout_height="124dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="20dp"
-                android:hint="남겨주신 후기는 더 나은 거래 환경을 만드는 데 도움이 돼요. (선택사항)"
-                android:background="@color/main_gray"
-                android:padding="8dp"
-                android:gravity="top|start"
-                android:inputType="textMultiLine"
-                android:textColor="#9D9D9D" />
+                <EditText
+                    android:id="@+id/reviewEditText"
+                    style="@style/PretendardBody4"
+                    android:layout_width="335dp"
+                    android:layout_height="124dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/main_gray"
+                    android:padding="8dp"
 
+                    android:gravity="top|start"
+                    android:textAlignment="viewStart"
+                    android:layout_gravity="start"
+
+                    android:inputType="textMultiLine"
+                    android:hint="남겨주신 후기는 더 나은 거래 환경을 만드는 데 도움이 돼요. (선택사항)"
+                    android:textColor="#9D9D9D"/>
         </LinearLayout>
 
 

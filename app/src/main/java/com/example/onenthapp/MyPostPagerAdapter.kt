@@ -9,9 +9,9 @@ class MyPostPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(act
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> MyPostNFragment() // 첫 번째 탭 Fragment
-            1 -> MyPostTipNFragment()  // 두 번째 탭 Fragment
-            else -> ScrapNFragment()
+            0 -> MyPostProductFragment() // 첫 번째 탭 Fragment
+            1 -> MyPostFragment()  // 두 번째 탭 Fragment
+            else -> ScrapPostFragment()
         }
     }
 }
