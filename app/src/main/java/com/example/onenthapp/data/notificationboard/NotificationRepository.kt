@@ -12,22 +12,22 @@ class NotificationboardRepository(
         api.getPostComments(postId)
 
     // 3. 게시글 댓글 삭제
-    suspend fun deleteCommentFromPost(postId: Long, commentId: Long) =
+    suspend fun deleteCommentFromPost(postId: Int, commentId: Int) =
         api.deleteCommentFromPost(postId, commentId)
 
     // 4. 스크랩 등록
-    suspend fun scrapPost(postId: Long) =
+    suspend fun scrapPost(postId: Int) =
         api.scrapPost(postId)
 
     // 5. 스크랩 삭제
-    suspend fun unscrapPost(postId: Long) =
+    suspend fun unscrapPost(postId: Int) =
         api.unscrapPost(postId)
 
     // 6. 공감 등록
-    suspend fun likePost(postId: Long) =
+    suspend fun likePost(postId: Int) =
         api.likepost(postId)
 
     // 7. 공감 삭제
-    suspend fun unlikePost(postId: Long) =
+    suspend fun unlikePost(postId: Int) =
         api.unlikepost(postId)
 }

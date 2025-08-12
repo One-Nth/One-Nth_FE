@@ -28,31 +28,31 @@ interface NotificationboardApi {
     // 3. 게시글 댓글 삭제
     @DELETE("post/{postId}/comment/{commentId}")
     suspend fun deleteCommentFromPost(
-        @Path("postId") postId: Long,
-        @Path("commentId") commentId: Long
+        @Path("postId") postId: Int,
+        @Path("commentId") commentId: Int
     ): Response<CommonResponse<String>>
 
     // 4. 스크랩 등록
     @POST("post/{postId}/scrap")
     suspend fun scrapPost(
-        @Path("postId") postId: Long,
+        @Path("postId") postId: Int,
     ): Response<ScrapPostResponse>
 
     // 5. 스크랩 삭제
     @DELETE("post/{postId}/scrap")
     suspend fun unscrapPost(
-        @Path("postId") postId: Long,
+        @Path("postId") postId: Int,
     ): Response<ScrapPostResponse>
 
     // 6. 공감 등록
     @POST("post/{postId}/like")
     suspend fun likepost(
-        @Path("postId") postId: Long,
+        @Path("postId") postId: Int,
     ): Response<ScrapPostResponse>
 
     // 7. 공감 삭제
     @DELETE("post/{postId}/like")
     suspend fun unlikepost(
-        @Path("postId") postId: Long,
+        @Path("postId") postId: Int,
     ): Response<ScrapPostResponse>
 }
