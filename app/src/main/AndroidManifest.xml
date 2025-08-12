@@ -94,6 +94,7 @@
         <activity android:name=".MyPostActivity" />
         <activity android:name=".LoginActivity2" />
         <activity android:name=".FindAccountActivity" />
+        <activity android:name=".NwonSavedActivity" />
 
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
