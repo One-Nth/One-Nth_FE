@@ -42,25 +42,22 @@ class LifeTipsSearchAdapter(
             tvLike.text = item.likeCount.toString()
             tvViews.text = "조회수 ${item.viewCount}"
 
-            // 썸네일 처리
-            val hasImage = item.imageUrls.isNotEmpty()
-            ivThumb?.let { img ->
-                img.visibility = if (hasImage) View.VISIBLE else View.GONE
-                if (hasImage) {
-                    Glide.with(img.context)
-                        .load(item.imageUrls[0])
-                        .into(img)
-                }
-            }
+            val count = item.imageUrls.size
+            if (count == 0) {
+                // 첨부 없음 → 썸네일 영역 숨김
+                ivThumb.visibility = View.GONE
+            } else {
+                ivThumb.visibility = View.VISIBLE
+                Glide.with(ivThumb.context).load(item.imageUrls[0]).centerCrop().into(ivThumb)
 
-            // 첨부 이미지 개수 마크 처리
-            tvImageCount?.let { countView ->
-                if (hasImage && item.imageUrls.size > 1) {
-                    countView.visibility = View.VISIBLE
-                    countView.text = "+${item.imageUrls.size - 1}"
+                // 이미지가 2장 이상이면 배지 표시
+                if (count > 1) {                 // 2장 이상일 때만 배지 노출
+                    tvImageCount.visibility = View.VISIBLE
+                    tvImageCount.text = count.toString()
                 } else {
-                    countView.visibility = View.GONE
+                    tvImageCount.visibility = View.GONE
                 }
+
             }
 
             itemView.setOnClickListener { onItemClick(item) }

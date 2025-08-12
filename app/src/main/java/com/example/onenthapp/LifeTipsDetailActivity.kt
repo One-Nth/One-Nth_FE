@@ -8,14 +8,18 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.onenthapp.data.post.PostDetailResponse
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
@@ -141,24 +145,36 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         binding.tvCommentCount.text = "댓글 ${d.commentCount}"
 
         // 이미지 0~2장 처리
-        val urls = d.imageUrls.orEmpty()
-        when (urls.size) {
-            0 -> binding.photoRow.visibility = View.GONE
-            1 -> {
-                binding.photoRow.visibility = View.VISIBLE
-                binding.ivPhoto1.visibility = View.VISIBLE
-                binding.ivPhoto2.visibility = View.GONE
-                Glide.with(this).load(urls[0]).centerCrop().into(binding.ivPhoto1)
-            }
-            else -> {
-                binding.photoRow.visibility = View.VISIBLE
-                binding.ivPhoto1.visibility = View.VISIBLE
-                binding.ivPhoto2.visibility = View.VISIBLE
-                Glide.with(this).load(urls[0]).centerCrop().into(binding.ivPhoto1)
-                Glide.with(this).load(urls[1]).centerCrop().into(binding.ivPhoto2)
+
+        val urls = d.imageUrls.orEmpty().filter { it.isNotBlank() }.take(5)
+
+        if (urls.isEmpty()) {
+            binding.photoScroll.visibility = View.GONE
+        } else {
+            binding.photoScroll.visibility = View.VISIBLE
+            val strip = binding.photoStrip
+            strip.removeAllViews()
+
+            val tileSize = dp(155)          // 카드 높이와 동일(정사각형 느낌). 필요시 수정
+            val gap = dp(10)                // 카드 사이 간격
+
+            urls.forEachIndexed { idx, url ->
+                val iv = ImageView(this).apply {
+                    layoutParams = LinearLayout.LayoutParams(tileSize, ViewGroup.LayoutParams.MATCH_PARENT).apply {
+                        if (idx != urls.lastIndex) marginEnd = gap
+                    }
+                    scaleType = ImageView.ScaleType.CENTER_CROP   // 카드 내부는 꽉 채움(화면 전체X)
+                    setBackgroundResource(R.drawable.rectangle_tips) // 기존 둥근 모서리 배경
+                }
+                Glide.with(this).load(url).into(iv)
+                strip.addView(iv)
             }
         }
     }
+
+    private fun dp(v: Int): Int =
+        (v * resources.displayMetrics.density).toInt()
+
 
     private fun setLoading(loading: Boolean) {
         // 필요시 ProgressBar 제어
