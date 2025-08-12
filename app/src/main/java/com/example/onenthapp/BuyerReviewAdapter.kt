@@ -34,24 +34,21 @@ class BuyerReviewAdapter : RecyclerView.Adapter<BuyerReviewAdapter.BuyerReviewVi
         private val reviewImage3: ImageView = itemView.findViewById(R.id.reviewImage3)
 
         fun bind(review: MyReview) {
-            // 🔹 작성자 표시
             nicknameText.text = review.reviewerNickName.ifBlank { "익명" }
 
             val url = review.reviewerProfileImageUrl
             if (!url.isNullOrBlank()) {
-                Glide.with(itemView.context)
-                    .load(url)
+                Glide.with(itemView.context).load(url)
                     .placeholder(R.drawable.profile_base)
                     .error(R.drawable.profile_base)
                     .circleCrop()
                     .into(avatar)
-            } else {
-                avatar.setImageResource(R.drawable.profile_base)
-            }
+            } else avatar.setImageResource(R.drawable.profile_base)
 
-            // 🔹 본문/평점/이미지
-            ratingBar.setIsIndicator(true) // ✅ 터치/드래그로 별점 못 바꾸게
+            ratingBar.setIsIndicator(true)
+            ratingBar.stepSize = 0.5f          // ✅ 반개 별
             ratingBar.rating = review.rate.toFloat()
+
             reviewContentText.text = review.content
 
             val imageViews = listOf(reviewImage1, reviewImage2, reviewImage3)
@@ -61,18 +58,10 @@ class BuyerReviewAdapter : RecyclerView.Adapter<BuyerReviewAdapter.BuyerReviewVi
                 Glide.with(itemView.context).load(imgUrl).into(imageViews[idx])
             }
 
-            itemView.setOnClickListener {
-                val ctx = itemView.context
-                ctx.startActivity(
-                    Intent(ctx, ReviewEditActivity::class.java).apply {
-                        putExtra("reviewId", review.reviewId)
-                        putExtra("itemType", review.itemType)
-                        putExtra("canEdit", false)
-                        putExtra("displayNickname", review.reviewerNickName)
-                        putExtra("displayProfileUrl", review.reviewerProfileImageUrl)
-                    }
-                )
-            }
+            // ✅ 미리보기는 클릭 금지
+            itemView.setOnClickListener(null)
+            itemView.isClickable = false
+            itemView.isFocusable = false
         }
     }
 

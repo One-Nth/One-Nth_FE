@@ -89,5 +89,7 @@
         <activity android:name=".MyPageReviewsActivity" />
         <activity android:name=".MyRegionActivity" />
         <activity android:name=".CreateLifePostActivity" />
+        <activity android:name=".BuyerReviewDetailActivity"
+            android:exported="false" />
     </application>
 </manifest>

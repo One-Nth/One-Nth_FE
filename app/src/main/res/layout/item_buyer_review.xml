@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="250dp"
-    android:layout_height="wrap_content"
+    android:layout_height="150dp"
     android:paddingEnd="5dp"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="0dp"
@@ -84,7 +84,7 @@
         <!-- 후기 이미지들 -->
         <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:scrollbars="none">
 
             <LinearLayout

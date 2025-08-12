@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -55,6 +56,14 @@ class MyPageReviewsActivity : AppCompatActivity() {
                 scrollBarView.translationX = maxScrollX * proportion
             }
         })
+
+        binding.btnGoAllReviews.setOnClickListener {
+            val userId = TokenManager.getMemberId() ?: return@setOnClickListener
+            startActivity(Intent(this, BuyerReviewDetailActivity::class.java).apply {
+                putExtra("userId", userId)
+            })
+        }
+
 
         // 뒤로가기
         binding.topAppBar.setNavigationOnClickListener {
