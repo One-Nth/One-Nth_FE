@@ -95,4 +95,10 @@ interface MemberApi {
         @Header("Authorization") bearerToken: String,
         @Path("sharingItemId") id: Long
     ): BaseResponse
+
+    @DELETE("members/mypage/likes/{postId}")
+    suspend fun cancelMyLikedPost(
+        @Header("Authorization") bearer: String,
+        @Path("postId") postId: Long
+    ): Response<CommonResponse<LikeActionResult>>
 }

@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.util.Log
 import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.MemberApi
 import com.example.onenthapp.data.PlusApi
