@@ -109,7 +109,9 @@
 
         <!-- 제목 -->
         <TextView
-            android:id="@+id/tvTitle"
+
+            android:id="@+id/tv_Title"
+     
             android:gravity="start|center_vertical"
             android:textAlignment="viewStart"
             style="@style/PretendardSubtitle1"
@@ -122,7 +124,8 @@
 
         <!-- 내용 -->
         <TextView
-            android:id="@+id/tvContent"
+            android:id="@+id/tv_Content"
+
             android:gravity="start|center_vertical"
             android:textAlignment="viewStart"
             style="@style/PretendardBody5"
@@ -180,6 +183,7 @@
                 android:layout_marginStart="4dp" />
 
             <ImageView
+                android:id="@+id/postlikeicon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="16dp"
