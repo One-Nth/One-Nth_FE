@@ -101,4 +101,10 @@ interface MemberApi {
         @Header("Authorization") bearer: String,
         @Path("postId") postId: Long
     ): Response<CommonResponse<LikeActionResult>>
+
+    @DELETE("members/mypage/scraps/{postId}")
+    suspend fun cancelMyScrapPost(
+        @Header("Authorization") bearer: String,
+        @Path("postId") postId: Long
+    ): Response<CommonResponse<LikeActionResult>>
 }

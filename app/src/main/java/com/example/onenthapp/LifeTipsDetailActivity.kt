@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide
 import com.example.onenthapp.chat.ChatRoomActivity
 import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
 import com.example.onenthapp.data.post.PostDetailResponse
+import com.example.onenthapp.data.post.PostRepository
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
@@ -52,6 +53,10 @@ class LifeTipsDetailActivity : AppCompatActivity() {
             finish(); return
         }
         renderLike(isLiked)
+
+        // ✅ 스크랩 목록에서 들어오면 true로 넘어옴
+        isScrapped = intent.getBooleanExtra("scrapped", false)
+        renderScrap(isScrapped)
 
         setupCommentsRv()
         loadComments()
@@ -153,6 +158,56 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
+    // ✅ 북마크 아이콘 렌더
+    private fun renderScrap(scrapped: Boolean) {
+        binding.ivBookmark.setImageResource(
+            if (scrapped) R.drawable.ic_bookmark_on else R.drawable.ic_bookmark_off
+        )
+    }
+
+    // ✅ 스크랩 토글: 취소는 MyPage API(DELETE /members/mypage/scraps/{postId}), 등록은 게시판 API(POST /post/{postId}/scrap)
+    private fun toggleScrap() {
+        lifecycleScope.launch {
+            try {
+                binding.ivBookmark.isEnabled = false
+
+                if (isScrapped) {
+                    // 🔴 취소: 마이페이지 취소 API
+                    val bearer = TokenManager.getAccessToken()?.let { "Bearer $it" } ?: run {
+                        Toast.makeText(this@LifeTipsDetailActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
+                    val res = RetrofitInstance.memberApi.cancelMyScrapPost(bearer, postId)
+                    if (res.isSuccessful && res.body()?.isSuccess == true && res.body()?.result?.isSuccess == true) {
+                        isScrapped = false
+                        renderScrap(false)
+                        Toast.makeText(this@LifeTipsDetailActivity, "스크랩 취소했어요.", Toast.LENGTH_SHORT).show()
+                        // 목록 쪽 새로고침 신호
+                        setResult(RESULT_OK, Intent().putExtra("needRefresh", true))
+                    } else {
+                        Toast.makeText(this@LifeTipsDetailActivity, res.body()?.message ?: "스크랩 취소 실패", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // 🟢 등록: 게시판 API (NotificationboardApi)
+                    // ※ 시그니처가 Int라면 toInt()로 변환하세요.
+                    val res = RetrofitInstance.notificationboardApi.scrapPost(postId.toInt())
+                    if (res.isSuccessful && res.body()?.isSuccess == true) {
+                        isScrapped = true
+                        renderScrap(true)
+                        Toast.makeText(this@LifeTipsDetailActivity, "스크랩했어요.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@LifeTipsDetailActivity, res.body()?.message ?: "스크랩 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@LifeTipsDetailActivity, "오류: ${e.message}", Toast.LENGTH_SHORT).show()
+            } finally {
+                binding.ivBookmark.isEnabled = true
+            }
+        }
+    }
+
+
     /** 댓글 리스트 RecyclerView */
     private fun setupCommentsRv() {
         commentAdapter = CommentAdapter { action, c ->
@@ -228,25 +283,25 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun toggleScrap() {
-        lifecycleScope.launch {
-            try {
-                if (isScrapped) {
-                    val res = RetrofitInstance.notificationboardApi.unscrapPost(postId.toInt())
-                    if (res.isSuccessful) {
-                        isScrapped = false
-                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_off)
-                    }
-                } else {
-                    val res = RetrofitInstance.notificationboardApi.scrapPost(postId.toInt())
-                    if (res.isSuccessful) {
-                        isScrapped = true
-                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_on)
-                    }
-                }
-            } catch (_: Exception) { }
-        }
-    }
+//    private fun toggleScrap() {
+//        lifecycleScope.launch {
+//            try {
+//                if (isScrapped) {
+//                    val res = RetrofitInstance.notificationboardApi.unscrapPost(postId.toInt())
+//                    if (res.isSuccessful) {
+//                        isScrapped = false
+//                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_off)
+//                    }
+//                } else {
+//                    val res = RetrofitInstance.notificationboardApi.scrapPost(postId.toInt())
+//                    if (res.isSuccessful) {
+//                        isScrapped = true
+//                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_on)
+//                    }
+//                }
+//            } catch (_: Exception) { }
+//        }
+//    }
 
     private fun showSharePopup() {
         val dialog = Dialog(this)
