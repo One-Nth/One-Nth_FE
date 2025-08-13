@@ -6,14 +6,14 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.onenthapp.BottomChatActionDialogFragment
+import com.example.onenthapp.chat.BottomChatActionDialogFragment
 import com.example.onenthapp.R
 import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.chat.ChatMessage
 import com.example.onenthapp.databinding.ActivityChatRoomBinding
-import com.example.onenthapp.databinding.BottomChatMenuBinding
 import com.example.onenthapp.databinding.ChatTopToolbarBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
@@ -44,62 +44,28 @@ class ChatRoomActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@ChatRoomActivity)
         }
     }
-
     private fun setupToolbar() {
         val toolbarBinding = ChatTopToolbarBinding.bind(binding.chatTopToolbar.getChildAt(0))
         toolbarBinding.btnLeft.setOnClickListener { finish() }
 
         toolbarBinding.btnMenu.setOnClickListener {
-            val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetTheme)
-            val bottomSheetBinding = BottomChatMenuBinding.inflate(layoutInflater)
-
-            bottomSheetDialog.setContentView(bottomSheetBinding.root)
-
-            bottomSheetBinding.root.post {
-                //val bottomSheet = bottomSheetDialog.delegate.findViewById<View>(
-                //   com.google.android.material.R.id.design_bottom_sheet
-                //) as FrameLayout
-
-                val displayMetrics = resources.displayMetrics
-                val halfHeight = (displayMetrics.heightPixels * 0.5).toInt()
-                //bottomSheet.layoutParams.height = halfHeight
-
-                //bottomSheet.setBackgroundResource(R.drawable.bg_bottom_sheet)
-            }
-
-            bottomSheetBinding.chatMenuAlarm.setOnClickListener {
-                bottomSheetDialog.dismiss()
-                BottomChatActionDialogFragment(BottomChatActionDialogFragment.ActionType.MUTE)
-                    .show(supportFragmentManager, "MuteDialog")
-            }
-
-            bottomSheetBinding.chatMenuCheck.setOnClickListener {
-                bottomSheetDialog.dismiss()
-                val intent = Intent(this@ChatRoomActivity, ChatCheckActivity::class.java)
-                startActivity(intent)
-            }
-
-            bottomSheetBinding.chatMenuBlock.setOnClickListener {
-                bottomSheetDialog.dismiss()
-                BottomChatActionDialogFragment(BottomChatActionDialogFragment.ActionType.BLOCK)
-                    .show(supportFragmentManager, "BlockDialog")
-            }
-
-            bottomSheetBinding.chatMenuDeclare.setOnClickListener {
-                bottomSheetDialog.dismiss()
-                BottomChatActionDialogFragment(BottomChatActionDialogFragment.ActionType.REPORT)
-                    .show(supportFragmentManager, "DeclareDialog")
-            }
-
-            bottomSheetBinding.chatMenuExit.setOnClickListener {
-                bottomSheetDialog.dismiss()
-                BottomChatActionDialogFragment(BottomChatActionDialogFragment.ActionType.EXIT)
-                    .show(supportFragmentManager, "ExitDialog")
-            }
-
-            bottomSheetDialog.show()
+            showChatMenu() // <-- 여기로 단순화
         }
     }
+    private fun showChatMenu() {
+        // 1. 입력창 숨기기
+        binding.inputLayout.visibility = View.GONE
+        binding.inputLayoutGone.visibility = View.VISIBLE
+
+        // 2. 메뉴 Fragment 보이기
+        binding.chatMenuContainer.visibility = View.VISIBLE
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.chatMenuContainer, ChatMenuFragment())
+            .commit()
+    }
+
+
 
     private fun loadMessages() {
         lifecycleScope.launch {

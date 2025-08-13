@@ -1,5 +1,6 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,8 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.graphics.Color
-
+import com.example.onenthapp.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomChatActionDialogFragment(
