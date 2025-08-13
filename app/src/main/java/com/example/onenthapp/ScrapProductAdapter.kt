@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.onenthapp.data.MyPostItem
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -52,7 +53,17 @@ class ScrapProductAdapter(
         // 스크랩 화면에서는 기본적으로 배지 없음
 //        h.tvBadge?.visibility = View.GONE
 
-        h.ivProduct.setImageResource(R.drawable.rectangle_11)
+        val url = it.imageUrl
+        if (!url.isNullOrBlank()) {
+            Glide.with(h.itemView)
+                .load(url)
+                .centerCrop()
+                .placeholder(R.drawable.rectangle_11) // 적절한 플레이스홀더
+                .error(R.drawable.rectangle_11)
+                .into(h.ivProduct)
+        } else {
+            h.ivProduct.setImageResource(R.drawable.rectangle_11)
+        }
     }
 
     override fun getItemCount(): Int = items.size

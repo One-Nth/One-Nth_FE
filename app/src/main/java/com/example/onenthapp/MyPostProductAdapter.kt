@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.onenthapp.data.MyPostItem
 import java.text.NumberFormat
 import java.time.Duration
@@ -51,7 +52,17 @@ class MyPostProductAdapter(
 //            text = "내 게시글"
 //            visibility = View.VISIBLE // '내가 쓴 글' 목록이므로 항상 표시 원하면 유지, 아니면 GONE 처리
 //        }
-        h.ivProduct.setImageResource(R.drawable.rectangle_11)
+        val url = it.imageUrl
+        if (!url.isNullOrBlank()) {
+            Glide.with(h.itemView)
+                .load(url)
+                .centerCrop()
+                .placeholder(R.drawable.rectangle_11) // 적절한 플레이스홀더
+                .error(R.drawable.rectangle_11)
+                .into(h.ivProduct)
+        } else {
+            h.ivProduct.setImageResource(R.drawable.rectangle_11)
+        }
     }
 
     override fun getItemCount(): Int = items.size

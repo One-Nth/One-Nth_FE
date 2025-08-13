@@ -22,5 +22,6 @@ data class MyPostItem(
     val price: Long,
     val quantity: Int,
     val originalPrice: Long,
-    val createdTime: String    // e.g. "2025-08-10T21:07:28.303820"
+    val createdTime: String,    // e.g. "2025-08-10T21:07:28.303820"
+    val imageUrl: String?
 )
