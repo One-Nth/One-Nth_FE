@@ -10,6 +10,7 @@ data class ReviewDetailResult(
     val reviewId: Long,
     val itemType: String,
     val itemId: Long,
+    val itemTitle: String,
     val content: String,
     val rate: Int,
     val reviewImageList: List<ReviewImageDto>  // 수정!

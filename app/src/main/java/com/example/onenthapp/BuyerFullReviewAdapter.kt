@@ -39,9 +39,7 @@ class BuyerFullReviewAdapter : ListAdapter<MyReview, BuyerFullReviewAdapter.VH>(
                     .into(ivProfile)
             } else ivProfile.setImageResource(R.drawable.profile_base)
 
-            // 상품명 (배치 필요하면 itemId→제목 매핑 나중에 추가)
-            tvItemTitle.text = "상품 ID: ${it.itemId}"
-
+            tvItemTitle.text = it.itemTitle.ifBlank { "상품명 없음" }
             // 별점
             ratingBar.setIsIndicator(true)
             ratingBar.stepSize = 0.5f

@@ -95,6 +95,7 @@ class MyPageReviewsActivity : AppCompatActivity() {
                             reviewId = review.reviewId,
                             itemType = review.itemType,
                             itemId = review.itemId,
+                            itemTitle = review.itemTitle,
                             createdAt = review.createdAt,
                             reviewerId = review.reviewerId,
                             reviewerNickName = review.reviewerNickName,
