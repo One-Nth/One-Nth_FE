@@ -6,15 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.animation.with
-import androidx.compose.ui.semantics.error
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.onenthapp.data.BookmarkRepository
 import com.example.onenthapp.data.GroupPurchaseDetailResult
 import com.example.onenthapp.data.PlusRepository
 import com.example.onenthapp.databinding.FragmentProductDetailBinding
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
+import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.MapView
+import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextBuilder
 import kotlinx.coroutines.launch
 
 class GroupPurchaseDetailFragment : Fragment() {
@@ -22,6 +31,11 @@ class GroupPurchaseDetailFragment : Fragment() {
     private val binding get() = _binding!!
     private val repo = PlusRepository()
     private lateinit var imageSliderAdapter: ImageSliderAdapter
+    private var mapView: MapView? = null
+    private var kakaoMapInstance: KakaoMap? = null
+    private var targetLatLng: LatLng? = null
+    private var bookmarkRepo = BookmarkRepository()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -32,7 +46,24 @@ class GroupPurchaseDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
+        var currentScraped = requireArguments().getBoolean("initalScraped")
+        fun renderIcon() {
+            binding.btnBookmark.setImageResource(
+                if (currentScraped) R.drawable.ic_bookmark_on else R.drawable.ic_bookmark_off
+            )
+        }
+        renderIcon()
+        binding.btnBookmark.setOnClickListener {
+            val before = currentScraped
+            currentScraped = !before
+            renderIcon()
 
+            viewLifecycleOwner.lifecycleScope.launch {
+                val ok = if (before) bookmarkRepo.removePurchase(productId) else bookmarkRepo.addPurchase(productId)
+                if (!ok) { currentScraped = before; renderIcon(); Toast.makeText(requireContext(), "북마크 실패", Toast.LENGTH_SHORT).show() }
+                // 성공 시 상세 API 재조회가 필요하면 여기서 호출해 최신 상태로 동기화
+            }
+        }
         lifecycleScope.launch {
             try {
                 val resp = repo.fetchGroupPurchaseDetail(productId)
@@ -43,6 +74,7 @@ class GroupPurchaseDetailFragment : Fragment() {
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
             }
         }
 
@@ -102,8 +134,48 @@ class GroupPurchaseDetailFragment : Fragment() {
                 // binding.ivProductDefaultImage.visibility = View.VISIBLE (별도의 ImageView 필요)
             }
         }
+        val offline = d?.purchaseMethod == "OFFLINE"
+        //val hasCoord = d?.latitude != null
+
+        if (offline) {
+            binding.offlinePlace.visibility = View.VISIBLE
+            //targetLatLng = LatLng.from(d.latitude, d.longitude)
+            startMap(d.latitude, d.longitude) // ↓ 아래 함수
+        } else {
+            // 온라인이면 지도 전체 숨김
+            binding.offlinePlace.visibility = View.GONE
+        }
+
+    }
+    private fun startMap(latitude: Double, longitude: Double) {
+        val mapView = binding.locationMap
+        mapView.start(object : MapLifeCycleCallback() {
+            override fun onMapDestroy() {}
+            override fun onMapError(e: Exception) {}
+        }, object : KakaoMapReadyCallback() {
+            override fun onMapReady(map: KakaoMap) {
+                kakaoMapInstance = map
+                val pos = LatLng.from(latitude, longitude)
+                map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 18))
+
+                val lm = map.labelManager ?: return
+                val styles = lm.addLabelStyles(
+                    LabelStyles.from(
+                        LabelStyle.from(R.drawable.marker_green_72)
+                            .setAnchorPoint(0.5f, 1.0f)
+                            .setApplyDpScale(false)
+                    )
+                )
+                val opts = LabelOptions.from(pos).setStyles(styles)
+                lm.layer?.addLabel(opts)
+            }
+
+            override fun getZoomLevel() = 18
+        })
     }
 
+    override fun onResume() { super.onResume(); mapView?.resume() }
+    override fun onPause()  { mapView?.pause(); super.onPause() }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

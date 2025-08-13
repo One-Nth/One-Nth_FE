@@ -1,6 +1,5 @@
 package com.example.onenthapp
 
-import android.util.Log
 import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.MemberApi
 import com.example.onenthapp.data.PlusApi
@@ -17,6 +16,7 @@ import com.example.onenthapp.data.post.PostApi
 import com.example.onenthapp.util.TokenManager
 import com.example.onenthapp.data.MyRegionApi
 import com.example.onenthapp.data.MapMarkerApi
+import com.example.onenthapp.data.BookmarkApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
@@ -104,9 +104,13 @@ object RetrofitInstance {
     }
     val postApi: PostApi by lazy{
         retrofit.create(PostApi::class.java) }
+
     val mapMarkerApi: MapMarkerApi by lazy {
         retrofit.create(MapMarkerApi::class.java)
 
+    }
+    val bookmarkApi: BookmarkApi by lazy {
+        retrofit.create(BookmarkApi::class.java)
     }
 
 }

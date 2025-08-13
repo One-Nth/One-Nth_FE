@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -27,6 +28,7 @@ import com.google.android.material.tabs.TabLayout
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.onenthapp.alarm.AlarmActivity
+import com.example.onenthapp.data.BookmarkRepository
 import com.example.onenthapp.data.GroupedMarker
 import com.example.onenthapp.data.MapItemPreview
 import com.example.onenthapp.data.MapRepository
@@ -59,17 +61,26 @@ class HomeFragment : Fragment() {
     private val mapRepo = MapRepository()
     private val myRegionRepo = MyRegionRepository()
     private var markersLayer: LabelLayer? = null
-    private var selectedLabel: com.kakao.vectormap.label.Label? = null
-    private val label2Group = mutableMapOf<com.kakao.vectormap.label.Label, GroupedMarker>()
+    private var selectedLabel: Label? = null
+    private val label2Group = mutableMapOf<Label, GroupedMarker>()
     private var lastGroups: List<GroupedMarker> = emptyList()
+    private var defaultStyles: LabelStyles? = null
+    private var selectedStyles: LabelStyles? = null
     private var isMidPreviewVisible = false
-    // 멤버
-    private val previewListAdapter by lazy { MarkerItemPreviewAdapter { onPreviewItemClick(it) } }
+    private val scrapState = mutableMapOf<Long, Boolean>()
 
+    // 멤버
+    private val previewListAdapter by lazy {
+        MarkerItemPreviewAdapter(
+            onItemClick = { onPreviewItemClick(it) },
+            onBookmarkClick = { id, before, onDone -> toggleBookmark(id, before, onDone) }
+        )
+    }
 
     // private var lastResults: List<SearchResult> = emptyList()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var currentMarkerType: String = "PURCHASEITEM"
+    private var bookmarkRepo = BookmarkRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -113,7 +124,7 @@ class HomeFragment : Fragment() {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
                 Log.d("KakaoMap", "onMapReady")
                 kakaoMapInstance = kakaoMap
-                // 여기에 지도 준비 완료 후 초기 설정 (예: 카메라 위치, 마커 표시 등)
+                // 지도 준비 완료 후 초기 설정 (카메라 위치, 마커 표시 등)
                 markersLayer = kakaoMapInstance?.labelManager?.layer
                 kakaoMapInstance?.moveCamera(
                     CameraUpdateFactory.newCenterPosition(
@@ -123,21 +134,45 @@ class HomeFragment : Fragment() {
                         ), 17
                     )
                 )
+                kakaoMapInstance?.labelManager?.let { lm ->
+                    defaultStyles = lm.addLabelStyles(
+                        LabelStyles.from(
+                            LabelStyle.from(R.drawable.marker_gray_64)
+                                .setAnchorPoint(0.5f, 1.0f)
+                                .setApplyDpScale(false)
+                        )
+                    )
+                    selectedStyles = lm.addLabelStyles(
+                        LabelStyles.from(
+                            LabelStyle.from(R.drawable.marker_green_72)
+                                .setAnchorPoint(0.5f, 1.0f)
+                                .setTextStyles(32, Color.BLACK, 2, Color.WHITE)
+                                .setApplyDpScale(false)
+                        )
+                    )
+                }
                 // 라벨 클릭 리스너
                 kakaoMapInstance?.setOnLabelClickListener { map, layer, label ->
                     handleLabelClick(label)
                     true
                 }
 
-                // 3) SharedViewModel 의 탭 변경 감지 → 마커 다시 불러오기
+                // SharedViewModel 의 탭 변경 감지 → 마커 다시 불러오기
                 sharedViewModel.currentHomeTab.observe(viewLifecycleOwner) { tab ->
                     loadMarkersByTab(tab)
+                    currentMarkerType =
+                        if (tab == HomeTabType.BUY) "PURCHASEITEM" else "SHARINGITEM"
                 }
             }
 
             private fun handleLabelClick(label: Label) {
                 val g = label2Group[label] ?: return
+                val currentSelectedTab = sharedViewModel.currentHomeTab.value
 
+                // currentMarkerType 설정 (loadMarkersByTab의 로직과 유사하게)
+//                currentMarkerType = if (currentSelectedTab == HomeTabType.BUY) {
+//                    "PURCHASEITEM"
+//                } else "SHARINGITEM"
                 // 1) 선택 표시: 이전 선택 복원, 현재 선택 하이라이트 + 텍스트(첫 제목)
                 highlightSelectedLabel(label, g)
 
@@ -164,21 +199,22 @@ class HomeFragment : Fragment() {
                 label: Label,
                 group: GroupedMarker
             ) {
-                val title = group.markers.firstOrNull()?.title ?: ""
-                val sel = LabelStyle.from(R.drawable.marker_green_72)
-                    .setAnchorPoint(0.5f, 1.0f)
-                    .setTextStyles(32, Color.BLACK, 2, Color.WHITE)
+                // 이전 선택 라벨 원복
+                selectedLabel?.let { prev ->
+                    defaultStyles?.let { prev.changeStyles(it) }
+                    prev.changeText(LabelTextBuilder()) // 텍스트 제거
+                }
+                val title = group.markers.firstOrNull()?.title.orEmpty()
                 val builder = LabelTextBuilder()
                     .addTextLine(title, 0)
-                label.setStyles(LabelStyles.from(sel))
-                label.setTexts(builder)
+                selectedStyles?.let { styles -> label.changeStylesAndText(styles, builder) }
                 selectedLabel = label
                 halfExpandBottomSheet()
             }
 
             private fun loadMarkersByTab(tab: HomeTabType) {
                 val markerType = if (tab == HomeTabType.BUY) "PURCHASEITEM" else "SHARINGITEM"
-
+                //currentMarkerType = markerType
                 viewLifecycleOwner.lifecycleScope.launch {
                     // 1) 메인 지역 가져와 TV 업데이트
                     val myRegions =
@@ -198,6 +234,11 @@ class HomeFragment : Fragment() {
 
                     // 3) 지도 표시
                     markersLayer?.removeAll()
+                    label2Group.clear()
+                    selectedLabel = null
+                    isMidPreviewVisible = false
+                    binding.midContainer.isVisible = false
+
                     if (groups.isNotEmpty()) {
                         val first = groups.first()
                         kakaoMapInstance?.moveCamera(
@@ -208,16 +249,15 @@ class HomeFragment : Fragment() {
                                 ), 16
                             )
                         )
-                        val style =
-                            LabelStyle.from(R.drawable.marker_gray_64).setAnchorPoint(0.5f, 1.0f)
-                        val styles = LabelStyles.from(style)
                         groups.forEach { g ->
                             val pos = LatLng.from(g.latitude, g.longitude)
-                            val label = markersLayer?.addLabel(
-                                LabelOptions.from(pos).setStyles(styles).setRank(0)
-                            )
+                            val opts = LabelOptions.from(pos).setRank(0)
+                            defaultStyles?.let { opts.setStyles(it) }
+                            val label = markersLayer?.addLabel(opts)
                             if (label != null) label2Group[label] = g
                         }
+                        collapseSheet()
+                        return@launch
                     }
                 }
             }
@@ -325,32 +365,6 @@ class HomeFragment : Fragment() {
         kakaoMapView?.pause() // MapView 의 pause 호출
         Log.d("KakaoMap", "onPause called, map paused")
     }
-//
-//    private fun performSearch(query: String) {
-//        // TODO: 실제 API 연동 대신 더미 데이터 생성
-//        val results = dummySearchData(query)
-//        lastResults = results
-//        // mid 상태: 첫 번째 아이템만 preview_card 에 바인딩
-//        val previewBinding: ItemSearchResultBinding = binding.previewCard
-//        results.firstOrNull()?.let {
-////            searchResult ->
-////            fun bind(item: SearchResult) {
-////            }
-//            previewBinding.bind(it)
-//        }
-//        previewBinding.root.setOnClickListener { onItemClicked(results.first()) }
-//
-//        // 지도 마커 갱신
-//        // showMarkers(results)
-//        // 검색 결과 리스트 갱신
-//        // searchAdapter.submitList(results)
-//        // BottomSheet 펼치기
-//        if(results.isNotEmpty()) {
-//            binding.bottomSheet.visibility = View.VISIBLE
-//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-//        } else
-//            binding.bottomSheet.visibility = View.GONE
-//    }
 
     fun collapseSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -362,69 +376,24 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun dummySearchData(query: String): List<SearchResult> {
-        return listOf(
-            SearchResult(
-                id = "1",
-                title = "$query 상품 A",
-                price = 1000,
-                "개",
-                category = "생활용품",
-                type = SearchType.BUY,
-                imageUrls = listOf(
-                    android.R.drawable.btn_plus,
-                    android.R.drawable.btn_plus,
-                    android.R.drawable.btn_plus
-                )
-            ),
-            SearchResult(
-                id = "2",
-                title = "$query 상품 B",
-                price = 2000,
-                "개",
-                category = "생활용품",
-                type = SearchType.BUY,
-                imageUrls = listOf(android.R.drawable.btn_plus, android.R.drawable.btn_plus)
-            ),
-            SearchResult(
-                id = "3",
-                title = "$query 상품 C",
-                price = 3000,
-                "개",
-                category = "생활용품",
-                type = SearchType.BUY,
-                imageUrls = listOf(android.R.drawable.btn_plus, android.R.drawable.btn_plus)
-            )
-//            SearchResult(id = "1", title = "$query 상품 A", price = 1000, image = android.R.drawable.btn_plus),
-//            SearchResult(id = "2", title = "$query 상품 B", price = 2000, image = null),
-//            SearchResult(id = "3", title = "$query 상품 C", price = 3000, image = android.R.drawable.btn_plus)
-        )
-    }
-
     // 바텀시트 리스트 아이템 클릭 처리
     fun onSearchItemSelected(result: MapItemPreview) {
-//        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-//            // 완전 확장 상태 → 상세로 이동
-            val productId = result.id
-            val action = HomeFragmentDirections.actionHomeToBuydetail(productId)
-            findNavController().navigate(action)
-//        } else {
-//            // mid 상태 → preview
-//            // showMidPreview(result)
-//
-//        }
+        val productId = result.id
+        val initialScraped = result.scraped
+        val action = HomeFragmentDirections.actionHomeToBuydetail(productId, initialScraped)
+        findNavController().navigate(action)
     }
 
     fun showMidPreview(item: MapItemPreview) {
         // ① preview_card(include된 item_search_result.xml) 바인딩
         val previewBinding = binding.previewCard
-        previewBinding.bind(item)
+        previewBinding.bind(item) { itemId, before, onDone -> toggleBookmark(itemId, before, onDone) }
         previewBinding.root.setOnClickListener {
             onSearchItemSelected(item)
         }
         binding.midContainer.visibility = View.VISIBLE
         isMidPreviewVisible = true // 상태 변수 초기화
-
+        bottomSheetBehavior.isDraggable = true
         // ② bottom sheet을 half Expanded 로
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
@@ -438,6 +407,7 @@ class HomeFragment : Fragment() {
             isHideable = false
             skipCollapsed = false
             state = BottomSheetBehavior.STATE_COLLAPSED // 초기에 341 중간 높이
+            isDraggable = false
         }
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
@@ -448,12 +418,14 @@ class HomeFragment : Fragment() {
                         binding.scrollBar.isVisible = true
                         binding.midContainer.isVisible = false
                         binding.expandedContainerFragment.isVisible = false
+                        isMidPreviewVisible = false
+                        bottomSheetBehavior.isDraggable = false
                     }
 
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
                         // mid: 카드 1장
                         binding.scrollBar.isVisible = true
-                        if(isMidPreviewVisible) binding.midContainer.isVisible = true
+                        if (isMidPreviewVisible) binding.midContainer.isVisible = true
                         binding.expandedContainerFragment.isVisible = false
                     }
 
@@ -476,18 +448,37 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (!isMidPreviewVisible && bottomSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
+            }
         })
     }
 
     private fun onPreviewItemClick(it: MapItemPreview) {
-        val action = HomeFragmentDirections.actionHomeToBuydetail(it.id)
+        val action = HomeFragmentDirections.actionHomeToBuydetail(it.id, it.scraped)
         findNavController().navigate(action)
+    }
+
+    private fun toggleBookmark(itemId: Long, current: Boolean, onDone: (success: Boolean) -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val ok = if (current) bookmarkRepo.removePurchase(itemId) else bookmarkRepo.addPurchase(
+                itemId
+            )
+            if (!ok) {
+                Toast.makeText(requireContext(), "북마크 실패", Toast.LENGTH_SHORT).show()
+            }
+            onDone(ok)
+        }
     }
 }
 
 
-fun ItemSearchResultBinding.bind(item: MapItemPreview) {
+fun ItemSearchResultBinding.bind(
+    item: MapItemPreview,
+    onBookmarkClick: (itemId: Long, current: Boolean, onDone: (success: Boolean) -> Unit) -> Unit
+) {
     // 이미지 1~3
     ivPreview1.loadUrl(item.imageUrls.getOrNull(0))
     ivPreview2.isVisible = item.imageUrls.size >= 2
@@ -515,7 +506,7 @@ fun ItemSearchResultBinding.bind(item: MapItemPreview) {
     }
     tvMethod.text = when (item.purchaseMethod) {
         "OFFLINE" -> "직거래"
-        "ONLINE" -> "택배"
+        "ONLINE" -> "택배거래"
         else -> item.purchaseMethod
     }
 
@@ -525,9 +516,26 @@ fun ItemSearchResultBinding.bind(item: MapItemPreview) {
     tvUnit.text = "/ 개"  // 필요 시 서버 값으로 대체
 
     // 스크랩 아이콘
-    btnBookmark.setImageResource(
-        if (item.scraped) R.drawable.ic_bookmark_on else R.drawable.ic_bookmark_off
-    )
+    var current = item.scraped
+    fun renderIcon() {
+        btnBookmark.setImageResource(
+            if (current) R.drawable.ic_bookmark_on else R.drawable.ic_bookmark_off
+        )
+    }
+    renderIcon()
+    btnBookmark.setOnClickListener {
+        val before = current
+        current = !before               // 1) 낙관적 토글
+        renderIcon()
+
+        // 2) 서버 호출 후 결과에 따라 확정/롤백
+        onBookmarkClick(item.id, before) { ok ->
+            if (!ok) {
+                current = before        // 롤백
+                renderIcon()
+            }
+        }
+    }
 }
 
 fun ImageView.loadUrl(url: String?) {
