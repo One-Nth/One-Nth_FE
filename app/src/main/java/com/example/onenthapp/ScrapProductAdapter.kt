@@ -8,16 +8,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.onenthapp.data.MyPostItem
+import com.example.onenthapp.data.MyPostProductItem
 import java.time.Duration
 import java.time.OffsetDateTime
 import com.example.onenthapp.R
 
 class ScrapProductAdapter(
-    private var items: List<MyPostItem>
+    private var items: List<MyPostProductItem>
 ) : RecyclerView.Adapter<ScrapProductAdapter.VH>() {
 
-    fun submitList(newItems: List<MyPostItem>) {
+    fun submitList(newItems: List<MyPostProductItem>) {
         items = newItems
         notifyDataSetChanged()
     }
@@ -46,7 +46,7 @@ class ScrapProductAdapter(
 //            else -> it.itemType
 //        }
         h.tvName.text = it.productName
-        h.tvInfo.text = "가격 ${it.price.formatWon()} / ${it.quantity}개 / 원래 ${it.originalPrice.formatWon()}"
+        h.tvInfo.text = "가격 ${it.price.formatWon()}"
 //        h.tvViews.text = "조회수 -"
 //        h.tvTime.text = it.createdTime.toRelative()
 
@@ -69,8 +69,8 @@ class ScrapProductAdapter(
     override fun getItemCount(): Int = items.size
 }
 
-private fun Long.formatWon(): String =
-    NumberFormat.getInstance().format(this) + "원"
+    fun Long.formatWon(): String =
+        NumberFormat.getInstance().format(this) + "원"
 
 private fun String.toRelative(): String = try {
     val odt = OffsetDateTime.parse(this)

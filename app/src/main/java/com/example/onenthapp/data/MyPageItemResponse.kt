@@ -8,14 +8,14 @@ data class MyPageItemsResponse(
 )
 
 data class MyPageItemsResult(
-    val items: List<MyPostItem>,
+    val items: List<MyPostProductItem>,
     val page: Int,
     val size: Int,
     val totalCount: Int,
     val hasNext: Boolean
 )
 
-data class MyPostItem(
+data class MyPostProductItem(
     val itemId: Long,
     val itemType: String,      // "PURCHASE" | "SHARE"
     val productName: String,
