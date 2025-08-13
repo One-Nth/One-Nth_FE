@@ -138,12 +138,11 @@ class ProductDetailFragment : Fragment() {
 
             // --- 지도 초기화 시 다양한 설정 (공식 문서 참고) ---
             override fun getPosition(): LatLng {
-                // 지도 시작 시 위치 좌표를 설정
+                // 지도 시작 시 위치 좌표
                 return LatLng.from(PRODUCT_LATITUDE, PRODUCT_LONGITUDE)
             }
 
             override fun getZoomLevel(): Int {
-                // 지도 시작 시 확대/축소 줌 레벨 설정 (7 ~ 21 사이 권장, 숫자가 클수록 확대)
                 return 18 // 예시로 16 레벨 (상세보기에 적절한 수준)
             }
 

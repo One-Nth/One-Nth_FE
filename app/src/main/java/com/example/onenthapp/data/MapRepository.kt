@@ -18,7 +18,7 @@ class MapRepository {
         val resp = api.getMarkerItemDetails(markerType, itemIds)
         if (resp.isSuccess && resp.result != null) {
             val dtos = resp.result.itemMarkerDetails
-            // ⚠️ 응답에 id가 없으니 요청 순서대로 zip
+            // 응답에 id가 없으니 요청 순서대로 zip
             dtos.mapIndexedNotNull { idx, d ->
                 val id = itemIds.getOrNull(idx) ?: return@mapIndexedNotNull null
                 MapItemPreview(

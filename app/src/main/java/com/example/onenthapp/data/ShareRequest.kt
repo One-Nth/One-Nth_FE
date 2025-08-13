@@ -1,13 +1,13 @@
 package com.example.onenthapp.data
 
 class ShareRequest (
-    val title: String,
-    val quantity: Int,
-    val price: Int?,
-    val itemCategory: String,
-    val expirationDate: String,
-    val isAvailable: Boolean,
     val purchaseMethod: String,
+    val price: Int?,
+    val quantity: Int,
     val sharingLocation: String,
-    val tags: List<String>
+    val itemCategory: String,
+    val title: String,
+    val tags: List<String>,
+    val expirationDate: String,
+    val isAvailable: Boolean
 )

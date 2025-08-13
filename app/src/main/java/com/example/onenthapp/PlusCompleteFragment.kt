@@ -2,10 +2,12 @@ package com.example.onenthapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.onenthapp.databinding.FragmentPlusCompleteBinding
 
 class PlusCompleteFragment : Fragment() {
@@ -26,27 +28,41 @@ class PlusCompleteFragment : Fragment() {
         val price = requireArguments().getString("productPrice", "")
         //val imageUri = requireArguments().getString("productImageUri", "")
         val productId = requireArguments().getLong("productId")
-        val isGroup   = requireArguments().getBoolean("isGroup", false)
+        val isBuy = requireArguments().getBoolean("isBuy", true)
+        val firstImageUrl = requireArguments().getString("firstImageUrl", "")
 
         // 2) 텍스트 뷰에 설정
         binding.tvProductName.text = name
         binding.tvProductPrice.text = "${price}원"
-//        if (imageUri.isEmpty()) {
-//            binding.previewImageBox.background = "@drawable/image_tissue_1"
-//        }
+
+        
+        // 4) 첫 번째 이미지 바인딩
+        if (firstImageUrl.isNotEmpty()) {
+            try {
+                // Glide를 사용하여 이미지 로딩
+                Glide.with(this)
+                    .load(firstImageUrl)
+                    .placeholder(R.drawable.image_placeholder_bg) // 로딩 중 기본 이미지
+                    .error(R.drawable.image_placeholder_bg) // 에러 시 기본 이미지
+                    .into(binding.previewImageBox)
+            } catch (e: Exception) {
+                // 이미지 로딩 실패 시 아무것도 하지 않음
+                Log.e("PlusComplete", "이미지 로딩 실패: ${e.message}")
+            }
+        }
         // 닫기(X) 누르면 홈으로
         binding.btnCloseComplete.setOnClickListener {
             findNavController().popBackStack(R.id.homeFragment, false)
         }
         binding.previewContainer.setOnClickListener {
-            if (isGroup) {
+            if (isBuy) {
                 findNavController().navigate(
                     R.id.groupPurchaseDetailFragment,
                     bundleOf("productId" to productId)
                 )
             } else {
                 findNavController().navigate(
-                    R.id.groupPurchaseDetailFragment,
+                    R.id.sharingItemDetailFragment,
                     bundleOf("productId" to productId)
                 )
             }
