@@ -14,6 +14,10 @@ import com.example.onenthapp.databinding.ActivityMyReviewBinding
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.*
+import android.util.TypedValue
+import com.example.onenthapp.RetrofitInstance.reviewApi
+import com.example.onenthapp.data.MyReview
+import com.example.onenthapp.util.TokenManager
 
 class MyReviewActivity : AppCompatActivity() {
 
@@ -24,6 +28,9 @@ class MyReviewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMyReviewBinding
     private lateinit var pendingReviewAdapter: NwonSavedItemAdapter
     private val repository = NwonSavedRepository()
+
+    // 구매자 거래 후기(가로)
+    private lateinit var buyerAdapter: BuyerReviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +45,10 @@ class MyReviewActivity : AppCompatActivity() {
             setupToolbar()
             setupRecyclerViews()
             setupClickListeners()
+
             fetchPendingReviews()
             fetchNwonSavedDate()
-
+            fetchBuyerReviews()
             Log.d(TAG, "onCreate 정상 종료")
         } catch (e: Exception) {
             Log.e(TAG, "onCreate 오류: ${e.message}", e)
@@ -54,58 +62,113 @@ class MyReviewActivity : AppCompatActivity() {
         }
     }
 
-private fun setupRecyclerViews() {
-    try {
-        // 기존 작성된 후기 RecyclerView
-        val reviewRecyclerView = findViewById<RecyclerView>(R.id.reviewRecyclerView)
-        reviewRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    /** RecyclerView들 초기화 */
+    private fun setupRecyclerViews() {
+        // 1) 구매자 거래 후기 (가로)
+        buyerAdapter = BuyerReviewAdapter()
+        binding.buyerReviewRecyclerView.apply {
+            layoutManager = LinearLayoutManager(
+                this@MyReviewActivity, LinearLayoutManager.HORIZONTAL, false
+            )
+            adapter = buyerAdapter
+            setHasFixedSize(true)
+        }
 
-        // 예시 데이터 (기존 후기)
-        val reviews = listOf(
-            ReviewData("abced", 5, "정말 친절했어요!"),
-            ReviewData("dfsfg", 4, "빠른 거래 감사합니다"),
-            ReviewData("jeongmin", 3, "상품이랑 조금 달랐어요"),
-        )
+        // 스크롤바 연동 (레이아웃의 FrameLayout=350dp 폭 기준)
+        val scrollContainerWidthPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, 350f, resources.displayMetrics
+        ).toInt()
+        val scrollBarView = binding.scrollBar
 
-        reviewRecyclerView.adapter = ReviewAdapter(reviews)
+        binding.buyerReviewRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(rv, dx, dy)
+                val offset = rv.computeHorizontalScrollOffset()
+                val extent = rv.computeHorizontalScrollExtent()
+                val range = rv.computeHorizontalScrollRange()
 
+                val proportion = offset.toFloat() / (range - extent).coerceAtLeast(1).toFloat()
+                val maxScrollX = scrollContainerWidthPx - scrollBarView.width
+                scrollBarView.translationX = maxScrollX * proportion
+            }
+        })
 
-        // 작성 대기 중인 후기 RecyclerView 설정
-        val editReviewRecyclerView = findViewById<RecyclerView>(R.id.editReviewRecyclerView)
+        // 2) 작성 대기 후기 (세로)
         pendingReviewAdapter = NwonSavedItemAdapter()
-        editReviewRecyclerView.layoutManager = LinearLayoutManager(this)
-        editReviewRecyclerView.adapter = pendingReviewAdapter
-
-        // ✅ 어댑터 연결
-//         recyclerView.adapter = ReviewAdapter()
-
-
-
-        Log.d(TAG, "RecyclerView 초기화 완료")
-    } catch (e: Exception) {
-        Log.e(TAG, "RecyclerView 설정 오류: ${e.message}", e)
+        binding.editReviewRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MyReviewActivity)
+            adapter = pendingReviewAdapter
+            setHasFixedSize(true)
+        }
     }
-}
 
-private fun setupClickListeners() {
-    // 거래 후기 제목 클릭 시 BuyerReview 페이지로 이동
-    val titleText = findViewById<TextView>(R.id.buyerReviewTitle)
-    titleText.setOnClickListener {
-        val intent = Intent(this, BuyerReview::class.java)
-        // 예시로 첫 번째 리뷰 데이터 전송 (실제로는 동적 데이터 사용)
-        intent.putExtra("name", "abced")
-        intent.putExtra("rating", 5)
-        intent.putExtra("text", "정말 친절했어요!")
-        startActivity(intent)
+    /** 클릭 리스너들 */
+    private fun setupClickListeners() {
+        // → 전체 후기 보기로 이동 (두 화면 모두 같은 곳으로 이동)
+        binding.btnGoAllReviews.setOnClickListener {
+            val userId = TokenManager.getMemberId() ?: return@setOnClickListener
+            startActivity(
+                Intent(this, BuyerReviewDetailActivity::class.java).apply {
+                    putExtra("userId", userId)
+                }
+            )
+        }
     }
+
+    /** 구매자 거래 후기 로드 */
+    private fun fetchBuyerReviews() {
+        val userId = TokenManager.getMemberId()
+        val token = TokenManager.getAccessToken()
+
+        if (userId == null || token.isNullOrEmpty()) {
+            Toast.makeText(this, "로그인이 필요합니다", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val response = reviewApi.getUserReviews(userId, "Bearer $token")
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    val reviewList = response.body()!!.result.reviewList.map { r ->
+                        MyReview(
+                            reviewId = r.reviewId,
+                            itemType = r.itemType,
+                            itemId = r.itemId,
+                            createdAt = r.createdAt,
+                            reviewerId = r.reviewerId,
+                            reviewerNickName = r.reviewerNickName,
+                            reviewerProfileImageUrl = r.reviewerProfileImageUrl,
+                            reviewTargetId = r.reviewTargetId,
+                            content = r.content,
+                            rate = r.rate,
+                            reviewImageList = r.reviewImageList
+                        )
+                    }
+                    buyerAdapter.updateList(reviewList)
+                } else {
+                    Log.e(TAG, "구매자 후기 응답 실패: ${response.errorBody()?.string()}")
+                    Toast.makeText(
+                        this@MyReviewActivity,
+                        "구매자 거래 후기를 불러오지 못했습니다",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "fetchBuyerReviews 오류: ${e.message}", e)
+                Toast.makeText(this@MyReviewActivity, "네트워크 오류", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
     // 후기를 작성할래요 클릭 시 EditMyReviewActivity로 이동
-    val editMyReviewText = findViewById<TextView>(R.id.editMyReviewText)
-    editMyReviewText.setOnClickListener {
-        val intent = Intent(this, EditMyReviewActivity::class.java)
-        startActivity(intent)
-    }
-}
+//    val editMyReviewText = findViewById<TextView>(R.id.editMyReviewText)
+//    editMyReviewText.setOnClickListener {
+//        val intent = Intent(this, EditMyReviewActivity::class.java)
+//        startActivity(intent)
+//    }
+//}
 
     private fun fetchNwonSavedDate() {
         lifecycleScope.launch {
@@ -136,11 +199,16 @@ private fun setupClickListeners() {
                 } else {
                     val errorMsg = response.body()?.message ?: "알 수 없는 오류"
                     Log.e(TAG, "거래 요약 정보 응답 실패: $errorMsg")
-                    Toast.makeText(this@MyReviewActivity, "거래 정보 불러오기 실패: $errorMsg", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MyReviewActivity,
+                        "거래 정보 불러오기 실패: $errorMsg",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "fetchNwonSavedData 예외 발생", e)
-                Toast.makeText(this@MyReviewActivity, "서버 오류: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@MyReviewActivity, "서버 오류: ${e.message}", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
@@ -157,11 +225,15 @@ private fun setupClickListeners() {
                     Log.d(TAG, "작성 대기 후기 ${pendingItems.size}개 수신")
 
                     pendingItems.forEachIndexed { index, item ->
-                        Log.d(TAG, "대기 후기 $index: ID=${item.itemId}, 이름=${item.itemName}, 타입=${item.itemType}")
+                        Log.d(
+                            TAG,
+                            "대기 후기 $index: ID=${item.itemId}, 이름=${item.itemName}, 타입=${item.itemType}"
+                        )
                     }
 
                     if (pendingItems.isEmpty()) {
-                        Toast.makeText(this@MyReviewActivity, "작성할 후기가 없습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MyReviewActivity, "작성할 후기가 없습니다.", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
                         pendingReviewAdapter.submitList(pendingItems)
                         Log.d(TAG, "대기 후기 어댑터에 데이터 전달 완료")
@@ -169,12 +241,17 @@ private fun setupClickListeners() {
                 } else {
                     val errorMsg = pendingResponse.body()?.message ?: "알 수 없는 오류"
                     Log.e(TAG, "작성 대기 후기 응답 실패: $errorMsg")
-                    Toast.makeText(this@MyReviewActivity, "작성 대기 후기 불러오기 실패: $errorMsg", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MyReviewActivity,
+                        "작성 대기 후기 불러오기 실패: $errorMsg",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             } catch (e: Exception) {
                 Log.e(TAG, "fetchPendingReviews 예외 발생", e)
-                Toast.makeText(this@MyReviewActivity, "서버 오류: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@MyReviewActivity, "서버 오류: ${e.message}", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
