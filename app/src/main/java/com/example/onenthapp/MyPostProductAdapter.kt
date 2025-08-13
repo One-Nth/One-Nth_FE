@@ -1,6 +1,5 @@
 package com.example.onenthapp
 
-import android.icu.text.NumberFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onenthapp.data.MyPostItem
+import java.text.NumberFormat
 import java.time.Duration
 import java.time.OffsetDateTime
-import com.example.onenthapp.R
 
-class ScrapProductAdapter(
+class MyPostProductAdapter(
     private var items: List<MyPostItem>
-) : RecyclerView.Adapter<ScrapProductAdapter.VH>() {
+) : RecyclerView.Adapter<MyPostProductAdapter.VH>() {
 
     fun submitList(newItems: List<MyPostItem>) {
         items = newItems
@@ -46,12 +45,12 @@ class ScrapProductAdapter(
 //        }
         h.tvName.text = it.productName
         h.tvInfo.text = "가격 ${it.price.formatWon()} / ${it.quantity}개 / 원래 ${it.originalPrice.formatWon()}"
-//        h.tvViews.text = "조회수 -"
+//        h.tvViews.text = "조회수 -" // 스펙에 없음
 //        h.tvTime.text = it.createdTime.toRelative()
-
-        // 스크랩 화면에서는 기본적으로 배지 없음
-//        h.tvBadge?.visibility = View.GONE
-
+//        h.tvBadge?.apply {
+//            text = "내 게시글"
+//            visibility = View.VISIBLE // '내가 쓴 글' 목록이므로 항상 표시 원하면 유지, 아니면 GONE 처리
+//        }
         h.ivProduct.setImageResource(R.drawable.rectangle_11)
     }
 

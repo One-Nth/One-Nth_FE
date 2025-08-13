@@ -6,35 +6,35 @@
     android:padding="12dp">
 
     <!-- 태그 -->
-    <TextView
-        android:id="@+id/tvTag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="73dp"
-        android:minHeight="24dp"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="4dp"
-        android:background="@drawable/post_category_border"
-        android:gravity="center"
-        android:text="생활 정보"
-        android:textSize="12sp"
-        android:textColor="#419461"
-        android:includeFontPadding="false"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tvTag"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:minWidth="73dp"-->
+<!--        android:minHeight="24dp"-->
+<!--        android:paddingHorizontal="10dp"-->
+<!--        android:paddingVertical="4dp"-->
+<!--        android:background="@drawable/post_category_border"-->
+<!--        android:gravity="center"-->
+<!--        android:text="생활 정보"-->
+<!--        android:textSize="12sp"-->
+<!--        android:textColor="#419461"-->
+<!--        android:includeFontPadding="false"/>-->
 
     <!-- 상품 카드 -->
     <LinearLayout
         android:layout_width="347dp"
-        android:layout_height="88dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/scrap_border"
-        android:padding="5dp"
+        android:padding="1dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="15dp">
 
         <ImageView
             android:id="@+id/ivProduct"
-            android:layout_width="79dp"
-            android:layout_height="81dp"
+            android:layout_width="86dp"
+            android:layout_height="88dp"
             android:layout_marginTop="0dp"
             android:layout_gravity="top"
             android:src="@drawable/rectangle_11"
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="12dp">
 
             <TextView
@@ -66,34 +66,34 @@
     </LinearLayout>
 
     <!-- 조회수 + 시간 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="6dp">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:layout_marginStart="0dp"-->
+<!--        android:layout_marginTop="6dp">-->
 
-        <TextView
-            android:id="@+id/tvViews"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="조회수 24"
-            android:textSize="12sp"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tvViews"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="조회수 24"-->
+<!--            android:textSize="12sp"/>-->
 
-        <TextView
-            android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="250dp"
-            android:text="3분전"
-            android:textSize="12sp"
-            android:textColor="@color/light_gray"/>
-    </LinearLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/tvTime"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:paddingStart="250dp"-->
+<!--            android:text="3분전"-->
+<!--            android:textSize="12sp"-->
+<!--            android:textColor="@color/light_gray"/>-->
+<!--    </LinearLayout>-->
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="#E0E0E0" />
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:background="#E0E0E0" />-->
 </LinearLayout>

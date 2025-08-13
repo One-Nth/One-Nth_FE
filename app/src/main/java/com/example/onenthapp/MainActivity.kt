@@ -20,9 +20,10 @@ import com.example.onenthapp.model.SharedViewModel
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private var tipPostType: String = "LIFE_TIP" // 기본값
-
     private val sharedViewModel: SharedViewModel by viewModels()
+
+    // Tip 탭의 현재 게시판 타입 (LIFE_TIP/DISCOUNT/RESTAURANT)
+    private var tipPostType: String = "LIFE_TIP"
 
     /** 생활꿀팁 글쓰기 vs 상품 등록 */
     private enum class FabMode { TIP_POST_WRITE, PRODUCT_REGISTER }
@@ -33,74 +34,42 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navController = (supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+        val navController =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
 
         // BottomNavigationView
         binding.bottomNavigationView.setupWithNavController(navController)
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
+                // 플러스는 FAB가 담당
                 R.id.plusFragment -> false
-                R.id.chatFragment -> { startActivity(Intent(this, ChatActivity::class.java)); false }
-                else -> { NavigationUI.onNavDestinationSelected(item, navController); true }
-            }
-        }
 
-        // ✅ TipFragment에서 현재 탭의 postType 수신
-        supportFragmentManager.setFragmentResultListener("board_tab", this) { _, b ->
-            tipPostType = b.getString("postType") ?: "LIFE_TIP"
-            setFabAsTip() // Tip 화면일 땐 항상 글쓰기 모드
-        }
+                // 채팅 아이콘은 Activity로
+                R.id.chatFragment -> {
+                    startActivity(Intent(this, ChatActivity::class.java))
+                    false
+                }
 
-
+                // 통계 화면 Activity
                 R.id.statsFragment -> {
                     startActivity(Intent(this, NwonSavedActivity::class.java))
                     false
                 }
 
+                // 그 외는 NavController가 처리
                 else -> {
                     NavigationUI.onNavDestinationSelected(item, navController)
                     true
                 }
             }
-
-        // 화면 이동 시 FAB 표시/모드
-        navController.addOnDestinationChangedListener { _, dest, _ ->
-            val hideOn = setOf(
-                R.id.action_search_to_productdetail, R.id.action_global_complete,
-                R.id.groupPurchaseDetailFragment, R.id.action_home_to_buydetail,
-                R.id.productDetailFragment, R.id.plusBuyFragment, R.id.plusShareFragment,
-                R.id.statsFragment, R.id.chatFragment
-            ).contains(dest.id)
-
-            binding.bottomNavigationView.isVisible = !hideOn
-            binding.fabAdd.isVisible = !hideOn
-
-            // Tip이 아닐 땐 상품 등록 모드로
-            if (dest.id != R.id.tipFragment) setFabAsProduct()
-            else setFabAsTip()
-
         }
 
-        // ✅ FAB 클릭
-        binding.fabAdd.setOnClickListener {
-            val destId = navController.currentDestination?.id
-            if (destId == R.id.tipFragment && fabMode == FabMode.TIP_POST_WRITE) {
-                // 탭에 맞는 postType을 들고 "하나의 글쓰기 화면"으로 이동
-                startActivity(Intent(this, CreateLifePostActivity::class.java).apply {
-                    putExtra("postType", tipPostType) // "DISCOUNT" | "LIFE_TIP" | "RESTAURANT"
-                })
-            } else {
-                // 기존 상품 등록
-                val dest = when (sharedViewModel.currentHomeTab.value) {
-                    HomeTabType.BUY -> R.id.plusBuyFragment
-                    else -> R.id.plusShareFragment
-                }
-                navController.navigate(dest)
-            }
+        // ✅ TipFragment에서 현재 탭의 postType 받기
+        supportFragmentManager.setFragmentResultListener("board_tab", this) { _, b ->
+            tipPostType = b.getString("postType") ?: "LIFE_TIP"
         }
 
-        // 화면 바뀔 때 FAB 노출/모드 보정
+        // 화면 이동 시 하단바/FAB 노출 & FAB 모드 전환
         navController.addOnDestinationChangedListener { _, dest, _ ->
             val hideOn = setOf(
                 R.id.action_search_to_productdetail,
@@ -111,28 +80,31 @@ class MainActivity : AppCompatActivity() {
                 R.id.plusBuyFragment,
                 R.id.plusShareFragment,
                 R.id.statsFragment,
-                R.id.chatFragment,
-            ).contains(dest.id)
+                R.id.chatFragment
+            )
+            val shouldHide = dest.id in hideOn
 
-            binding.bottomNavigationView.isVisible = !hideOn
-            binding.fabAdd.isVisible = !hideOn
+            binding.bottomNavigationView.isVisible = !shouldHide
+            binding.fabAdd.isVisible = !shouldHide
 
-            // Tip 화면이 아니면 기본(상품 등록) 모드로 복귀
-            if (dest.id != R.id.tipFragment) setFabAsProduct()
+            // Tip 화면이면 글쓰기 모드, 아니면 상품 등록 모드
+            if (dest.id == R.id.tipFragment) setFabAsTip() else setFabAsProduct()
         }
 
-        // FAB 클릭
+        // ✅ FAB 클릭 (한 번만)
         binding.fabAdd.setOnClickListener {
-            if (fabMode == FabMode.TIP_POST_WRITE &&
-                navController.currentDestination?.id == R.id.tipFragment
-            ) {
-                // 생활꿀팁 글쓰기
-                startActivity(Intent(this, CreateLifePostActivity::class.java))
+            val onTipScreen = navController.currentDestination?.id == R.id.tipFragment
+            if (onTipScreen && fabMode == FabMode.TIP_POST_WRITE) {
+                // 생활꿀팁/할인정보/맛집 글쓰기 단일 화면
+                startActivity(
+                    Intent(this, CreateLifePostActivity::class.java)
+                        .putExtra("postType", tipPostType)
+                )
             } else {
-                // 상품 등록
+                // 상품 등록 (현재 홈 탭에 따라)
                 val dest = when (sharedViewModel.currentHomeTab.value) {
                     HomeTabType.BUY -> R.id.plusBuyFragment
-                    else            -> R.id.plusShareFragment
+                    else -> R.id.plusShareFragment
                 }
                 navController.navigate(dest)
             }
@@ -158,19 +130,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun setFabAsProduct() {
         fabMode = FabMode.PRODUCT_REGISTER
         binding.fabAdd.setImageResource(R.drawable.ic_navigation_plus)
         binding.fabAdd.contentDescription = "상품 등록"
     }
 
-    private fun setFabAsTip() {           // ★ 게시글 쓰기 모드
-        fabMode = FabMode.TIP_POST_WRITE      // ★ 여기서 모드 바꿈
+    private fun setFabAsTip() {
+        fabMode = FabMode.TIP_POST_WRITE
         binding.fabAdd.setImageResource(R.drawable.ic_navigation_plus)
         binding.fabAdd.contentDescription = "게시글 쓰기"
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

@@ -66,4 +66,18 @@ interface MemberApi {
     suspend fun getUserTradeHistory(
         @Path("userId") userId: Long
     ): Response<TradeHistoryResponse>
+
+    @GET("members/mypage/items")
+    suspend fun getMyItems(
+        @Header("Authorization") bearerToken: String,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 10
+    ): MyPageItemsResponse
+
+    @GET("members/mypage/scrapped-items")
+    suspend fun getScrappedItems(
+        @Header("Authorization") bearerToken: String,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 10
+    ): MyPageItemsResponse
 }
