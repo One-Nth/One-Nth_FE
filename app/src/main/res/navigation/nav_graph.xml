@@ -20,13 +20,16 @@
                 android:name="initialScraped"
                 app:argType="boolean" />
         </action>
-<!--        <action-->
-<!--            android:id="@+id/action_home_to_sharedetail"-->
-<!--            app:destination="@id/sharingItemDetailFragment">-->
-<!--            <argument-->
-<!--                android:name="productId"-->
-<!--                app:argType="long" />-->
-<!--        </action>-->
+        <action
+            android:id="@+id/action_home_to_sharedetail"
+            app:destination="@id/sharingItemDetailFragment">
+            <argument
+                android:name="productId"
+                app:argType="long" />
+            <argument
+                android:name="initialScraped"
+                app:argType="boolean" />
+        </action>
     </fragment>
 
     <fragment
@@ -91,15 +94,16 @@
             android:name="productId"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/sharingItemDetailFragment"
+        android:name="com.example.onenthapp.SharingItemDetailFragment"
+        android:label="공유상품 상세">
+        <argument
+            android:name="productId"
+            app:argType="long" />
+    </fragment>
 
-    <!--    <fragment-->
-    <!--        android:id="@+id/sharingItemDetailFragment"-->
-    <!--        android:name="com.example.onenthapp.SharingItemDetailFragment"-->
-    <!--        android:label="공유상품 상세">-->
-    <!--        <argument-->
-    <!--            android:name="productId"-->
-    <!--            app:argType="long" />-->
-    <!--    </fragment>-->
+
     <fragment
         android:id="@+id/tipFragment"
         android:name="com.example.onenthapp.TipFragment"

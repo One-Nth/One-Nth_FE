@@ -20,6 +20,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDirections
 import com.example.onenthapp.databinding.FragmentHomeBinding
 import com.example.onenthapp.databinding.ItemSearchResultBinding
 import com.example.onenthapp.model.SearchResult
@@ -380,7 +381,14 @@ class HomeFragment : Fragment() {
     fun onSearchItemSelected(result: MapItemPreview) {
         val productId = result.id
         val initialScraped = result.scraped
-        val action = HomeFragmentDirections.actionHomeToBuydetail(productId, initialScraped)
+        
+        // SharedViewModel의 현재 탭에 따라 적절한 경로 선택
+        val currentTab = sharedViewModel.currentHomeTab.value
+        val action = when (currentTab) {
+            HomeTabType.BUY -> HomeFragmentDirections.actionHomeToBuydetail(productId, initialScraped)
+            HomeTabType.SHARE -> HomeFragmentDirections.actionHomeToSharedetail(productId, initialScraped)
+            else -> HomeFragmentDirections.actionHomeToBuydetail(productId, initialScraped) // 기본값
+        }
         findNavController().navigate(action)
     }
 
@@ -457,15 +465,31 @@ class HomeFragment : Fragment() {
     }
 
     private fun onPreviewItemClick(it: MapItemPreview) {
-        val action = HomeFragmentDirections.actionHomeToBuydetail(it.id, it.scraped)
+        // SharedViewModel의 현재 탭에 따라 적절한 경로 선택
+        val currentTab = sharedViewModel.currentHomeTab.value
+        val action = when (currentTab) {
+            HomeTabType.BUY -> HomeFragmentDirections.actionHomeToBuydetail(it.id, it.scraped)
+            HomeTabType.SHARE -> HomeFragmentDirections.actionHomeToSharedetail(it.id, it.scraped)
+            else -> HomeFragmentDirections.actionHomeToBuydetail(it.id, it.scraped) // 기본값
+        }
         findNavController().navigate(action)
     }
 
     private fun toggleBookmark(itemId: Long, current: Boolean, onDone: (success: Boolean) -> Unit) {
         viewLifecycleOwner.lifecycleScope.launch {
-            val ok = if (current) bookmarkRepo.removePurchase(itemId) else bookmarkRepo.addPurchase(
-                itemId
-            )
+            // SharedViewModel의 현재 탭에 따라 적절한 북마크 API 호출
+            val currentTab = sharedViewModel.currentHomeTab.value
+            val ok = when (currentTab) {
+                HomeTabType.BUY -> {
+                    if (current) bookmarkRepo.removePurchase(itemId) else bookmarkRepo.addPurchase(itemId)
+                }
+                HomeTabType.SHARE -> {
+                    if (current) bookmarkRepo.removeSharing(itemId) else bookmarkRepo.addSharing(itemId)
+                }
+                else -> {
+                    if (current) bookmarkRepo.removePurchase(itemId) else bookmarkRepo.addPurchase(itemId) // 기본값
+                }
+            }
             if (!ok) {
                 Toast.makeText(requireContext(), "북마크 실패", Toast.LENGTH_SHORT).show()
             }

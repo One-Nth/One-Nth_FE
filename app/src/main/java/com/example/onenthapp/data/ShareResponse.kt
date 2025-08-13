@@ -22,8 +22,14 @@ data class SharingItemDetailResult(
     val expirationDate: String?,
     val isAvailable: Boolean,
     val purchaseMethod: String,
-    val sharingLocation: String?,
+    val regionName: String?,
     val imageUrls: List<String>,
     val tags: List<String>,
-    val writerNickname: String
+    val writerNickname: String,
+    val writerProfileImageUrl: String?,
+    val writerVerified: Boolean,
+    val latitude: Double,
+    val longitude: Double,
+    val status: String,
+    val statusLabel: String
 )

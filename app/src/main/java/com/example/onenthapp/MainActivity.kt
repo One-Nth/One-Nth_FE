@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_global_complete,
                 R.id.groupPurchaseDetailFragment,
                 R.id.action_home_to_buydetail,
+                R.id.action_home_to_sharedetail,
                 R.id.productDetailFragment,
                 R.id.plusBuyFragment,
                 R.id.plusShareFragment,
