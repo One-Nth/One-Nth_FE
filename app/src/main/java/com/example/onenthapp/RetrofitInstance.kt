@@ -34,7 +34,7 @@ object RetrofitInstance {
             val originalUrl = originalRequest.url.toString()
 
             // 토큰 가져오기 (로그 추가)
-            val token = TokenManager.getToken()
+            val token = TokenManager.getAccessToken()
             Log.d("토큰확인", "TokenManager.getToken(): $token")
             Log.d("Retrofit", "Calling $originalUrl with token: Bearer $token")
 
@@ -101,7 +101,7 @@ object RetrofitInstance {
 
     val nwonSavedApi: NwonSavedApi by lazy {
         retrofit.create(NwonSavedApi::class.java)
-
+    }
     val postApi: PostApi by lazy{
         retrofit.create(PostApi::class.java) }
     val mapMarkerApi: MapMarkerApi by lazy {
