@@ -7,13 +7,21 @@ import com.example.onenthapp.data.PlusApi
 import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
+
+import com.example.onenthapp.data.notificationboard.NotificationboardApi
+import com.example.onenthapp.data.nwonsaved.NwonSavedApi
+import com.example.onenthapp.data.transaction.TransactionApi
+
 import com.example.onenthapp.data.post.PostApi
+
 import com.example.onenthapp.util.TokenManager
 import com.example.onenthapp.data.MyRegionApi
+import com.example.onenthapp.data.MapMarkerApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import kotlin.getValue
 
 object RetrofitInstance {
     private val logging = HttpLoggingInterceptor().apply {
@@ -25,10 +33,18 @@ object RetrofitInstance {
             val originalRequest = chain.request()
             val originalUrl = originalRequest.url.toString()
 
-            // 로그인 또는 소셜 회원가입 요청이 아닌 경우에만 Authorization 헤더 추가
+            // 토큰 가져오기 (로그 추가)
+            val token = TokenManager.getToken()
+            Log.d("토큰확인", "TokenManager.getToken(): $token")
+            Log.d("Retrofit", "Calling $originalUrl with token: Bearer $token")
+
             val requestBuilder = originalRequest.newBuilder()
+
+            // 로그인/회원가입 제외하고 Authorization 헤더 추가
             if (!originalUrl.contains("/auth/kakao/login") && !originalUrl.contains("/auth/kakao/signup")) {
+
                 val token = TokenManager.getAccessToken()
+
                 requestBuilder.addHeader("Authorization", "Bearer $token")
             }
 
@@ -37,6 +53,7 @@ object RetrofitInstance {
         }
         .addInterceptor(logging)
         .build()
+
 
     private val retrofit by lazy {
         Retrofit.Builder()
@@ -73,7 +90,23 @@ object RetrofitInstance {
         retrofit.create(ReviewApi::class.java)
     }
 
+
+    val transactionApi: TransactionApi by lazy {
+        retrofit.create(TransactionApi::class.java)
+    }
+
+    val notificationboardApi: NotificationboardApi by lazy {
+        retrofit.create(NotificationboardApi::class.java)
+    }
+
+    val nwonSavedApi: NwonSavedApi by lazy {
+        retrofit.create(NwonSavedApi::class.java)
+
     val postApi: PostApi by lazy{
         retrofit.create(PostApi::class.java) }
+    val mapMarkerApi: MapMarkerApi by lazy {
+        retrofit.create(MapMarkerApi::class.java)
+
+    }
 
 }

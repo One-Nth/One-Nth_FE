@@ -28,10 +28,11 @@
                 <ImageView
                     android:id="@+id/ivPreview1"
                     android:layout_width="235dp"
-                    android:layout_height="140dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="#EEEEEE"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/image_tissue_1" />
+                    />
 
                 <LinearLayout
                     android:layout_width="92dp"
@@ -43,8 +44,8 @@
                         android:id="@+id/ivPreview2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/image_tissue_3"
                         android:layout_marginStart="2dp"
+                        android:background="#EEEEEE"
                         android:layout_weight="1"
                         android:scaleType="centerCrop"/>
                     <ImageView
@@ -119,6 +120,7 @@
                 android:layout_height="24dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_bookmark_off"
+                android:elevation="5dp"
                 app:tint="@color/main_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -131,7 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="두루마리 휴지"
+                android:text=""
                 android:textSize="16sp"
                 android:fontFamily="@font/pretendard_semibold"
                 android:textColor="@color/main_black"
@@ -152,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:layout_marginStart="17dp"
-                    android:text="200원"
+                    android:text="원"
                     android:textColor="@color/main_black" />
                 <!-- 가격 + 단위 -->
                 <TextView

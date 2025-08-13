@@ -10,8 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.setMargins
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.onenthapp.data.MapRepository
 import com.example.onenthapp.data.MyRegion
 import com.example.onenthapp.model.MyRegionViewModel
 import com.example.onenthapp.databinding.ActivityMyRegionBinding
@@ -26,6 +28,10 @@ import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextStyle
+import kotlinx.coroutines.launch
+import android.graphics.Color
+import com.kakao.vectormap.label.LabelTextBuilder
 
 
 class MyRegionActivity : AppCompatActivity() {
@@ -37,7 +43,7 @@ class MyRegionActivity : AppCompatActivity() {
     private var kakaoMap: KakaoMap? = null
     private var markerLabelLayer: LabelLayer? = null // 마커를 관리할 레이어
 
-
+    private var mapRepo = MapRepository()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivityMyRegionBinding.inflate(layoutInflater)
@@ -114,39 +120,49 @@ class MyRegionActivity : AppCompatActivity() {
     }
 
     private fun observeMainRegion() {
-        vm.mainRegion.observe(this) { region ->
-            region?.let {
-                if (kakaoMap != null) { // 지도가 준비되었는지 확인
-                    updateMapWithRegion(it)
+        vm.mainRegion.observe(this)  { main ->
+            if (main == null || kakaoMap == null) return@observe
+
+            lifecycleScope.launch {
+                try {
+                    // 서버가 이해하는 enum 형태로 요청
+                    val groups = mapRepo.fetchItemMarker(markerType = "PURCHASEITEM", regionId = main.regionId)
+                    if (groups.isNotEmpty()) {
+                        val lat = groups.first().latitude
+                        val lng = groups.first().longitude
+                        updateMapCenterAndMarker(lat, lng)
+                    } else {
+                        // 해당 지역에 그룹 마커 없음: 유지 or 기본값
+                    }
+                } catch (e: Exception) {
+                    // 400 등 네트워크 예외가 여기로 들어옴
+                    android.util.Log.e("MyRegionActivity", "markers fetch failed", e)
+                    Toast.makeText(this@MyRegionActivity, "지도를 불러오지 못했어요.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    private fun updateMapWithRegion(region: MyRegion) {
-        kakaoMap?.let { map ->
-            val position = LatLng.from(127.077488598779, 37.6525550467646)
+    private fun updateMapCenterAndMarker(latitude: Double, longitude: Double) {
+        val map = kakaoMap ?: return
+        val pos = LatLng.from(latitude, longitude)
+        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 15))
+        val dong = vm.mainRegion.value?.regionName?.let { extractDong(it) } ?: "OO동"
 
-            // 1. 지도 중심 이동
-            map.moveCamera(CameraUpdateFactory.newCenterPosition(position, 15)) // 줌 레벨은 적절히 조절
-
-            // 2. 기존 마커 제거 (하나의 메인 마커만 표시한다고 가정)
-            markerLabelLayer?.removeAll() // 또는 특정 ID로 마커를 관리하고 해당 마커만 제거
-
-            // 3. 새 마커 추가
-            // 마커 스타일 정의 (선택적)
-            val iconStyle = LabelStyle.from(R.drawable.marker_green_72) // 커스텀 마커 아이콘 drawable
-                .setAnchorPoint(0.5f, 1.0f) // 아이콘의 하단 중앙을 위치 기준으로 설정
-
-            val styles = LabelStyles.from(iconStyle) // 단일 스타일 또는 여러 스타일 세트
-
-            val options = LabelOptions.from(position)
-                .setStyles(styles)
-                // .setTexts(region.regionName) // 마커에 텍스트 표시 (선택적)
-                .setRank(0) // 마커 우선순위
-
-            markerLabelLayer?.addLabel(options)
-        }
+        // 센터 마커 하나만 유지
+        markerLabelLayer?.removeAll()
+        val style = LabelStyle.from(R.drawable.marker_green_72).setAnchorPoint(0.5f, 1.0f)
+            .setTextStyles(
+                25,
+                Color.BLACK,
+                1,
+                Color.WHITE
+            )
+        val builder = LabelTextBuilder()
+            .addTextLine(dong, 0)
+        val options = LabelOptions.from(pos).setStyles(LabelStyles.from(style)).setRank(0)
+            .setTexts(builder)
+        markerLabelLayer?.addLabel(options)
     }
 
     // MapView의 생명주기 관리
@@ -162,7 +178,6 @@ class MyRegionActivity : AppCompatActivity() {
 
     private fun renderChips(list: List<MyRegion>) {
         b.flexSelected.removeAllViews()
-
         list.forEachIndexed { index, mr ->
             val chip = Chip(this, null, com.google.android.material.R.attr.chipStyle).apply {
                 setChipDrawable(
@@ -198,9 +213,8 @@ class MyRegionActivity : AppCompatActivity() {
             )
             val marginInDp = 18 // dp 단위의 마진 값
             val marginInPx = (marginInDp * resources.displayMetrics.density).toInt()
-            layoutParams.setMargins(0, 0, marginInPx, marginInPx) // 오른쪽, 아래 마진 설정
+            layoutParams.setMargins(0, 0, marginInPx, 0) // 오른쪽 마진 설정
             chip.layoutParams = layoutParams
-
             b.flexSelected.addView(chip)
         }
     }
