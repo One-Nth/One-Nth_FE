@@ -3,11 +3,11 @@ package com.example.onenthapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 
 class BlockedUsersAdapter(
     private val userList: List<BlockedUser>,
@@ -20,12 +20,8 @@ class BlockedUsersAdapter(
         val btnUnblock: ImageButton = view.findViewById(R.id.btnUnblock)
 
         fun bind(user: BlockedUser) {
+            userImage.setImageResource(user.profileResId)
             userName.text = user.username
-            Glide.with(itemView.context)
-                .load(user.profileImageUrl)
-                .placeholder(R.drawable.avatar)
-                .into(userImage)
-
             btnUnblock.setOnClickListener {
                 onUnblockClick(user)
             }
