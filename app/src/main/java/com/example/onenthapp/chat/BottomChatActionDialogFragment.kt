@@ -36,6 +36,7 @@ class BottomChatActionDialogFragment(
                 description.visibility = View.GONE
                 view.findViewById<View>(R.id.reportOptionsGroup).visibility = View.VISIBLE
                 button.text = "차단하기"
+                button.setBackgroundColor(Color.parseColor("#FF8383"))
             }
             ActionType.MUTE -> {
                 title.text = "채팅 알람을 해제하시겠습니까?"
