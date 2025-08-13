@@ -25,6 +25,7 @@
             android:layout_centerVertical="true"
             android:src="@drawable/humbleicons_arrow_up"
             android:layout_marginTop="7.75dp"
+
             android:contentDescription="뒤로가기" />
 
         <TextView
@@ -37,7 +38,7 @@
             android:textStyle="bold"
             android:textColor="@color/main_black"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="10dp"/>
+           android:layout_marginTop="10dp"/>
     </RelativeLayout>
 
     <!-- 탭 -->
@@ -54,14 +55,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <!-- 뷰페이저 -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/tabLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

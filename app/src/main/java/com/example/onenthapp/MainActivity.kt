@@ -52,18 +52,6 @@ class MainActivity : AppCompatActivity() {
             setFabAsTip() // Tip 화면일 땐 항상 글쓰기 모드
         }
 
-
-                R.id.statsFragment -> {
-                    startActivity(Intent(this, NwonSavedActivity::class.java))
-                    false
-                }
-
-                else -> {
-                    NavigationUI.onNavDestinationSelected(item, navController)
-                    true
-                }
-            }
-
         // 화면 이동 시 FAB 표시/모드
         navController.addOnDestinationChangedListener { _, dest, _ ->
             val hideOn = setOf(
@@ -79,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             // Tip이 아닐 땐 상품 등록 모드로
             if (dest.id != R.id.tipFragment) setFabAsProduct()
             else setFabAsTip()
-
         }
 
         // ✅ FAB 클릭
