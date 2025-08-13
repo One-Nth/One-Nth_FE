@@ -2,14 +2,10 @@ package com.example.onenthapp
 
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RatingBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -17,34 +13,387 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.onenthapp.data.DeleteReviewImageRequest
 import com.example.onenthapp.data.ReviewBody
-import com.example.onenthapp.data.ReviewDetailResult
 import com.example.onenthapp.data.ReviewImage
 import com.example.onenthapp.databinding.EditMyReviewBinding
+import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
+
+
+//class ReviewEditActivity : AppCompatActivity() {
+//
+//    private lateinit var binding: EditMyReviewBinding
+//    private val api = RetrofitInstance.reviewApi
+//
+//    private val selectedImageUris = mutableListOf<Uri>()
+//    private val existingImageList = mutableListOf<ReviewImage>() // 이미지 ID 포함
+//    private val deletedImageIds = mutableListOf<Long>()          // 삭제할 이미지 ID들
+//
+//    private var isEditMode = false
+//    private var canEdit = true  // ✅ 인텐트로 받아서 읽기전용/수정가능 분기
+//
+//    private val pickImagesLauncher =
+//        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+//            if (!uris.isNullOrEmpty()) {
+//                selectedImageUris.clear()
+//                selectedImageUris.addAll(uris)
+//                showAllImages()
+//            }
+//        }
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        binding = EditMyReviewBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+//
+//        val reviewId = intent.getLongExtra("reviewId", -1)
+//        val itemType = intent.getStringExtra("itemType") ?: ""
+//        canEdit = intent.getBooleanExtra("canEdit", true) // ✅ BuyerReviewAdapter에서는 false로 넘김
+//
+//        // 목록에서 표시용 닉네임/이미지를 넘겨줄 수 있음(없으면 null)
+//        val displayNickname = intent.getStringExtra("displayNickname")
+//        val displayProfileUrl = intent.getStringExtra("displayProfileUrl")
+//
+//        // 내 후기(수정 가능)일 때만 내 프로필 주입해 헤더 채움
+//        if (canEdit) {
+//            setMyProfile()
+//        } else {
+//            // 읽기 전용이면 목록에서 넘어온 표시용 값 우선 사용
+//            displayNickname?.let { binding.reviewerNameDetail2.text = it }
+//            val iv = runCatching { binding.root.findViewById<ImageView>(R.id.profileImage2) }.getOrNull()
+//            if (!displayProfileUrl.isNullOrBlank()) {
+//                iv?.let {
+//                    Glide.with(this)
+//                        .load(displayProfileUrl)
+//                        .placeholder(R.drawable.profile_base)
+//                        .error(R.drawable.profile_base)
+//                        .circleCrop()
+//                        .into(it)
+//                }
+//            }
+//        }
+//
+//        if (reviewId == -1L || itemType.isBlank()) {
+//            Toast.makeText(this, "잘못된 접근입니다", Toast.LENGTH_SHORT).show()
+//            finish()
+//            return
+//        }
+//
+//        binding.topAppBar.setNavigationOnClickListener { finish() }
+//
+//        // ✅ 읽기 전용이면 편집 UI 비활성화
+//        if (!canEdit) {
+//            binding.editButton.visibility = View.GONE
+//            binding.addImageButton.visibility = View.GONE
+//            binding.addImageButton.isEnabled = false
+//            binding.ratingBar.setIsIndicator(true)
+//            binding.reviewTextDetail2.isEnabled = false
+//            setEditMode(false)
+//        }
+//
+//        binding.editButton.setOnClickListener {
+//            if (!canEdit) return@setOnClickListener
+//            if (isEditMode) {
+//                lifecycleScope.launch {
+//                    // 1) 삭제 먼저 반영
+//                    deleteSelectedImages(reviewId, itemType)
+//                    // 2) 이미지 추가 업로드
+//                    if (selectedImageUris.isNotEmpty()) {
+//                        uploadReviewImages(selectedImageUris)
+//                    }
+//                    // 3) 본문/별점 수정
+//                    updateReviewTextAndRate(reviewId, itemType)
+//
+//                    Toast.makeText(this@ReviewEditActivity, "수정 완료", Toast.LENGTH_SHORT).show()
+//                    finish()
+//                }
+//                setEditMode(false)
+//            } else {
+//                setEditMode(true)
+//            }
+//        }
+//
+//        // 후기 상세 조회
+//        lifecycleScope.launch {
+//            try {
+//                val response = api.getReviewDetail(reviewId, itemType)
+//                val body = response.body()
+//                if (response.isSuccessful && body != null && body.isSuccess) {
+//                    val review = body.result
+//
+//                    // 헤더 영역: 표시용 닉네임 우선 → 없으면 canEdit일 때 내 닉네임
+//                    if (!displayNickname.isNullOrBlank()) {
+//                        binding.reviewerNameDetail2.text = displayNickname
+//                    } else if (canEdit) {
+//                        binding.reviewerNameDetail2.text = TokenManager.getNickname() ?: "나"
+//                    }
+//                    binding.productNameText2.text = "상품 ID: ${review.itemId}"
+//                    binding.ratingBar.rating = review.rate.toFloat()
+//                    binding.reviewTextDetail2.setText(review.content)
+//
+//                    existingImageList.clear()
+//                    existingImageList.addAll(
+//                        review.reviewImageList.map {
+//                            ReviewImage(id = it.reviewImageId, url = it.imageUrl)
+//                        }
+//                    )
+//
+//                    showAllImages()
+//                    setEditMode(false)
+//                } else {
+//                    Toast.makeText(this@ReviewEditActivity, "리뷰 불러오기 실패", Toast.LENGTH_SHORT).show()
+//                    finish()
+//                }
+//            } catch (e: Exception) {
+//                Toast.makeText(this@ReviewEditActivity, "네트워크 오류", Toast.LENGTH_SHORT).show()
+//                finish()
+//            }
+//        }
+//    }
+//
+//    private fun setMyProfile() {
+//        // 1) 캐시 우선
+//        val cachedNick = TokenManager.getNickname()
+//        binding.reviewerNameDetail2.text = if (!cachedNick.isNullOrBlank()) cachedNick else "나"
+//
+//        // 2) 최신 프로필 보강 (토큰 있으면)
+//        val token = TokenManager.getAccessToken()
+//        if (token.isNullOrEmpty()) return
+//
+//        lifecycleScope.launch {
+//            try {
+//                val resp = RetrofitInstance.memberApi.getProfile()
+//                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+//                    val result = resp.body()!!.result
+//                    val nick = result.nickname ?: "나"
+//                    binding.reviewerNameDetail2.text = nick
+//                    TokenManager.saveNickname(nick)
+//
+//                    val url = result.profileImageUrl
+//                    val iv = runCatching { binding.root.findViewById<ImageView>(R.id.profileImage2) }.getOrNull()
+//                    iv?.let {
+//                        if (!url.isNullOrBlank()) {
+//                            Glide.with(this@ReviewEditActivity)
+//                                .load(url)
+//                                .placeholder(R.drawable.profile_base)
+//                                .error(R.drawable.profile_base)
+//                                .circleCrop()
+//                                .into(it)
+//                        } else {
+//                            it.setImageResource(R.drawable.profile_base)
+//                        }
+//                    }
+//                }
+//            } catch (_: Exception) {
+//                // 실패 시 캐시 유지
+//            }
+//        }
+//    }
+//
+//    private fun setEditMode(enabled: Boolean) {
+//        if (enabled && !canEdit) return
+//        isEditMode = enabled
+//        val buttonRes = if (enabled) R.drawable.completebtn_editreview else R.drawable.editbutton
+//        binding.editButton.setImageResource(buttonRes)
+//
+//        val editable = enabled && canEdit
+//        binding.reviewTextDetail2.isEnabled = editable
+//        binding.reviewTextDetail2.isFocusable = editable
+//        binding.reviewTextDetail2.isFocusableInTouchMode = editable
+//
+//        binding.addImageButton.isEnabled = editable
+//        binding.addImageButton.visibility = if (editable) View.VISIBLE else View.GONE
+//        binding.ratingBar.setIsIndicator(!editable)
+//
+//        showAllImages()
+//    }
+//
+//    private fun showAllImages() {
+//        val container = binding.imageContainer
+//        container.removeAllViews()
+//
+//        // 추가 버튼
+//        binding.addImageButton.apply {
+//            visibility = if (isEditMode && canEdit) View.VISIBLE else View.GONE
+//            setOnClickListener {
+//                if (isEditMode && canEdit) pickImagesLauncher.launch("image/*")
+//            }
+//        }
+//        container.addView(binding.addImageButton)
+//
+//        // 기존 이미지
+//        existingImageList.forEach { image ->
+//            val imageLayout = layoutInflater.inflate(R.layout.item_edit_review_image, container, false) as FrameLayout
+//            val imageView = imageLayout.findViewById<ImageView>(R.id.imageView)
+//            val removeButton = imageLayout.findViewById<ImageView>(R.id.deleteButton)
+//
+//            Glide.with(this).load(image.url).into(imageView)
+//
+//            removeButton.visibility = if (isEditMode && canEdit) View.VISIBLE else View.GONE
+//            removeButton.setOnClickListener {
+//                if (!canEdit) return@setOnClickListener
+//                deletedImageIds.add(image.id)
+//                existingImageList.remove(image)
+//                showAllImages()
+//            }
+//            container.addView(imageLayout)
+//        }
+//
+//        // 새로 추가된 이미지
+//        selectedImageUris.forEach { uri ->
+//            val imageLayout = layoutInflater.inflate(R.layout.item_edit_review_image, container, false) as FrameLayout
+//            val imageView = imageLayout.findViewById<ImageView>(R.id.imageView)
+//            val removeButton = imageLayout.findViewById<ImageView>(R.id.deleteButton)
+//
+//            imageView.setImageURI(uri)
+//
+//            removeButton.visibility = if (isEditMode && canEdit) View.VISIBLE else View.GONE
+//            removeButton.setOnClickListener {
+//                if (!canEdit) return@setOnClickListener
+//                selectedImageUris.remove(uri)
+//                showAllImages()
+//            }
+//            container.addView(imageLayout)
+//        }
+//    }
+//
+//    private suspend fun deleteSelectedImages(reviewId: Long, itemType: String) {
+//        if (!canEdit || deletedImageIds.isEmpty()) return
+//        try {
+//            val request = DeleteReviewImageRequest(imageIds = deletedImageIds)
+//            val response = api.deleteReviewImages(reviewId, itemType, request)
+//            if (response.isSuccessful && response.body()?.isSuccess == true) {
+//                Toast.makeText(this, "이미지 삭제 완료", Toast.LENGTH_SHORT).show()
+//                deletedImageIds.clear()
+//                refreshReviewDetail(reviewId, itemType) // 최신 상태 반영
+//            } else {
+//                Toast.makeText(this, "이미지 삭제 실패", Toast.LENGTH_SHORT).show()
+//            }
+//        } catch (e: Exception) {
+//            Toast.makeText(this, "이미지 삭제 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+//        }
+//    }
+//
+//    private suspend fun refreshReviewDetail(reviewId: Long, itemType: String) {
+//        try {
+//            val response = api.getReviewDetail(reviewId, itemType)
+//            val body = response.body()
+//            if (response.isSuccessful && body != null && body.isSuccess) {
+//                val review = body.result
+//                existingImageList.clear()
+//                existingImageList.addAll(
+//                    review.reviewImageList.map {
+//                        ReviewImage(id = it.reviewImageId, url = it.imageUrl)
+//                    }
+//                )
+//                showAllImages()
+//            }
+//        } catch (_: Exception) {
+//        }
+//    }
+//
+//    private fun uploadReviewImages(imageUris: List<Uri>) {
+//        if (!canEdit) return
+//        val reviewId = intent.getLongExtra("reviewId", -1)
+//        val itemType = intent.getStringExtra("itemType") ?: ""
+//        val imageParts = prepareImageParts(imageUris)
+//
+//        lifecycleScope.launch {
+//            try {
+//                val response = api.uploadReviewImages(
+//                    reviewId = reviewId,
+//                    itemType = itemType,
+//                    images = imageParts
+//                )
+//                if (response.isSuccessful && response.body()?.isSuccess == true) {
+//                    Toast.makeText(this@ReviewEditActivity, "수정 완료", Toast.LENGTH_SHORT).show()
+//                    finish()
+//                } else {
+//                    Toast.makeText(this@ReviewEditActivity, "업로드 실패", Toast.LENGTH_SHORT).show()
+//                }
+//            } catch (e: Exception) {
+//                Toast.makeText(this@ReviewEditActivity, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+//
+//    private fun prepareImageParts(imageUris: List<Uri>): List<MultipartBody.Part> {
+//        val parts = mutableListOf<MultipartBody.Part>()
+//        imageUris.forEachIndexed { index, uri ->
+//            try {
+//                val inputStream = contentResolver.openInputStream(uri)
+//                val fileBytes = inputStream?.readBytes()
+//                inputStream?.close()
+//                if (fileBytes != null) {
+//                    val requestBody = fileBytes.toRequestBody("image/*".toMediaTypeOrNull())
+//                    val fileName = "image_$index.jpg"
+//                    val part = MultipartBody.Part.createFormData("images", fileName, requestBody)
+//                    parts.add(part)
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//        return parts
+//    }
+//
+//    private suspend fun updateReviewTextAndRate(reviewId: Long, itemType: String) {
+//        if (!canEdit) return
+//        val content = binding.reviewTextDetail2.text.toString()
+//        val rate = binding.ratingBar.rating.toInt()
+//        val request = ReviewBody(content, rate)
+//
+//        try {
+//            val response = api.updateReviewContentAndRate(reviewId, itemType, request)
+//            if (response.isSuccessful && response.body()?.isSuccess == true) {
+//                Log.d("ReviewEdit", "본문/별점 수정 완료")
+//            } else {
+//                Toast.makeText(this, "리뷰 본문/별점 수정 실패", Toast.LENGTH_SHORT).show()
+//            }
+//        } catch (e: Exception) {
+//            Toast.makeText(this, "리뷰 수정 네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+//        }
+//    }
+//
+//    private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
+//}
+
 
 class ReviewEditActivity : AppCompatActivity() {
 
     private lateinit var binding: EditMyReviewBinding
     private val api = RetrofitInstance.reviewApi
 
-    private val selectedImageUris = mutableListOf<Uri>()
-    private val existingImageList = mutableListOf<ReviewImage>() // 이미지 ID 포함
-    private val deletedImageIds = mutableListOf<Long>() // 삭제할 이미지 ID들
+    private val selectedImageUris = mutableListOf<Uri>()   // 아직 서버에 안올린 신규
+    private val existingImageList = mutableListOf<ReviewImage>() // 서버에 있는 기존(삭제 가능)
+    private val deletedImageIds = mutableListOf<Long>()
 
     private var isEditMode = false
+    private var canEdit = true
 
+    private val MAX_IMAGES = 5
+
+    // 여러 장 선택
     private val pickImagesLauncher =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
-            if (!uris.isNullOrEmpty()) {
-                selectedImageUris.clear()
-                selectedImageUris.addAll(uris)
-                showAllImages()
+            if (uris.isNullOrEmpty()) return@registerForActivityResult
+
+            val available = (MAX_IMAGES - totalImageCount()).coerceAtLeast(0)
+            if (available <= 0) {
+                Toast.makeText(this, "이미지는 최대 ${MAX_IMAGES}장까지 첨부할 수 있어요.", Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult
             }
+
+            val toAdd = uris.take(available)
+            selectedImageUris.addAll(toAdd)
+
+            if (uris.size > available) {
+                Toast.makeText(this, "최대 ${MAX_IMAGES}장까지만 추가돼요. 일부 이미지는 제외됐어요.", Toast.LENGTH_SHORT).show()
+            }
+
+            showAllImages() // 내부에서 카운터/버튼상태 갱신됨
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,29 +403,60 @@ class ReviewEditActivity : AppCompatActivity() {
 
         val reviewId = intent.getLongExtra("reviewId", -1)
         val itemType = intent.getStringExtra("itemType") ?: ""
+        canEdit = intent.getBooleanExtra("canEdit", true)
+
+        val displayNickname = intent.getStringExtra("displayNickname")
+        val displayProfileUrl = intent.getStringExtra("displayProfileUrl")
+
+        if (canEdit) {
+            setMyProfile()
+        } else {
+            displayNickname?.let { binding.reviewerNameDetail2.text = it }
+            runCatching { binding.root.findViewById<ImageView>(R.id.profileImage2) }.getOrNull()?.let { iv ->
+                if (!displayProfileUrl.isNullOrBlank()) {
+                    Glide.with(this).load(displayProfileUrl)
+                        .placeholder(R.drawable.profile_base)
+                        .error(R.drawable.profile_base)
+                        .circleCrop()
+                        .into(iv)
+                }
+            }
+        }
 
         if (reviewId == -1L || itemType.isBlank()) {
             Toast.makeText(this, "잘못된 접근입니다", Toast.LENGTH_SHORT).show()
-            finish()
-            return
+            finish(); return
         }
 
         binding.topAppBar.setNavigationOnClickListener { finish() }
 
+        if (!canEdit) {
+            binding.editButton.visibility = View.GONE
+            binding.addImageButton.visibility = View.GONE
+            binding.addImageButton.isEnabled = false
+            binding.ratingBar.setIsIndicator(true)
+            binding.reviewTextDetail2.isEnabled = false
+            setEditMode(false)
+        }
+
+        // + 버튼 클릭 (항상 보이되, 초과면 토스트만)
+        binding.addImageButton.setOnClickListener {
+            if (!isEditMode || !canEdit) return@setOnClickListener
+            if (totalImageCount() >= MAX_IMAGES) {
+                Toast.makeText(this, "최대 ${MAX_IMAGES}장까지 가능해요.", Toast.LENGTH_SHORT).show()
+            } else {
+                pickImagesLauncher.launch("image/*")
+            }
+        }
+
+        // 편집 / 완료
         binding.editButton.setOnClickListener {
+            if (!canEdit) return@setOnClickListener
             if (isEditMode) {
                 lifecycleScope.launch {
-                    // 1. 삭제 먼저 반영
                     deleteSelectedImages(reviewId, itemType)
-
-                    // 2. 이미지 추가가 있다면 업로드
-                    if (selectedImageUris.isNotEmpty()) {
-                        uploadReviewImages(selectedImageUris)
-                    }
-
+                    if (selectedImageUris.isNotEmpty()) uploadReviewImages(selectedImageUris)
                     updateReviewTextAndRate(reviewId, itemType)
-
-                    // 3. 이미지 추가 없더라도 리뷰 내용 수정 포함될 수 있으니 성공 메시지
                     Toast.makeText(this@ReviewEditActivity, "수정 완료", Toast.LENGTH_SHORT).show()
                     finish()
                 }
@@ -86,26 +466,25 @@ class ReviewEditActivity : AppCompatActivity() {
             }
         }
 
-
-        // 후기 상세 조회 API 호출
+        // 상세 로드
         lifecycleScope.launch {
             try {
-                val response = api.getReviewDetail(reviewId, itemType)
-                val body = response.body()
-                if (response.isSuccessful && body != null && body.isSuccess) {
+                val resp = api.getReviewDetail(reviewId, itemType)
+                val body = resp.body()
+                if (resp.isSuccessful && body?.isSuccess == true) {
                     val review = body.result
 
-                    binding.reviewerNameDetail2.text = "나"
+                    if (!displayNickname.isNullOrBlank()) {
+                        binding.reviewerNameDetail2.text = displayNickname
+                    } else if (canEdit) {
+                        binding.reviewerNameDetail2.text = TokenManager.getNickname() ?: "나"
+                    }
                     binding.productNameText2.text = "상품 ID: ${review.itemId}"
                     binding.ratingBar.rating = review.rate.toFloat()
                     binding.reviewTextDetail2.setText(review.content)
 
                     existingImageList.clear()
-                    existingImageList.addAll(
-                        review.reviewImageList.map {
-                            ReviewImage(id = it.reviewImageId, url = it.imageUrl)
-                        }
-                    )
+                    existingImageList.addAll(review.reviewImageList.map { ReviewImage(it.reviewImageId, it.imageUrl) })
 
                     showAllImages()
                     setEditMode(false)
@@ -120,76 +499,119 @@ class ReviewEditActivity : AppCompatActivity() {
         }
     }
 
-    private fun setEditMode(enabled: Boolean) {
-        isEditMode = enabled
-        val buttonRes = if (enabled) R.drawable.completebtn_editreview else R.drawable.editbutton
-        binding.editButton.setImageResource(buttonRes)
+    private fun setMyProfile() {
+        val cachedNick = TokenManager.getNickname()
+        binding.reviewerNameDetail2.text = if (!cachedNick.isNullOrBlank()) cachedNick else "나"
 
-        binding.reviewTextDetail2.isEnabled = enabled
-        binding.reviewTextDetail2.isFocusable = enabled
-        binding.reviewTextDetail2.isFocusableInTouchMode = enabled
+        val token = TokenManager.getAccessToken() ?: return
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitInstance.memberApi.getProfile()
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                    val r = resp.body()!!.result
+                    val nick = r.nickname ?: "나"
+                    binding.reviewerNameDetail2.text = nick
+                    TokenManager.saveNickname(nick)
 
-        binding.addImageButton.isEnabled = enabled
-        binding.ratingBar.setIsIndicator(!enabled)
-
-        showAllImages()
+                    val url = r.profileImageUrl
+                    runCatching { binding.root.findViewById<ImageView>(R.id.profileImage2) }.getOrNull()?.let { iv ->
+                        if (!url.isNullOrBlank()) {
+                            Glide.with(this@ReviewEditActivity).load(url)
+                                .placeholder(R.drawable.profile_base).error(R.drawable.profile_base)
+                                .circleCrop().into(iv)
+                        } else iv.setImageResource(R.drawable.profile_base)
+                    }
+                }
+            } catch (_: Exception) { /* ignore */ }
+        }
     }
 
+    private fun setEditMode(enabled: Boolean) {
+        if (enabled && !canEdit) return
+        isEditMode = enabled
+        binding.editButton.setImageResource(
+            if (enabled) R.drawable.completebtn_editreview else R.drawable.editbutton
+        )
 
+        val editable = enabled && canEdit
+        binding.reviewTextDetail2.isEnabled = editable
+        binding.reviewTextDetail2.isFocusable = editable
+        binding.reviewTextDetail2.isFocusableInTouchMode = editable
+        binding.ratingBar.setIsIndicator(!editable)
+
+        // + 버튼은 항상 보이되, 편집 아닐 땐 숨김
+        binding.addImageButton.visibility = if (editable) View.VISIBLE else View.GONE
+
+        showAllImages() // 카운터/상태 재반영
+    }
+
+    /** 컨테이너 그리기 + 카운터 & 버튼 상태 갱신 */
     private fun showAllImages() {
         val container = binding.imageContainer
         container.removeAllViews()
 
-        // addImageButton 한 번만 설정 및 추가
-        binding.addImageButton.apply {
-            visibility = if (isEditMode) View.VISIBLE else View.GONE
-            setOnClickListener {
-                if (isEditMode) pickImagesLauncher.launch("image/*")
-            }
-        }
+        // 항상 맨 앞에 + 버튼
         container.addView(binding.addImageButton)
 
-        // 기존 이미지 표시
+        // 기존 이미지
         existingImageList.forEach { image ->
-            val imageLayout = layoutInflater.inflate(R.layout.item_edit_review_image, container, false) as FrameLayout
-            val imageView = imageLayout.findViewById<ImageView>(R.id.imageView)
-            val removeButton = imageLayout.findViewById<ImageView>(R.id.deleteButton)
-            Glide.with(this).load(image.url).into(imageView)
-            removeButton.visibility = if (isEditMode) View.VISIBLE else View.GONE
-            removeButton.setOnClickListener {
+            val item = layoutInflater.inflate(R.layout.item_edit_review_image, container, false) as FrameLayout
+            val iv = item.findViewById<ImageView>(R.id.imageView)
+            val del = item.findViewById<ImageView>(R.id.deleteButton)
+
+            Glide.with(this).load(image.url).into(iv)
+
+            del.visibility = if (isEditMode && canEdit) View.VISIBLE else View.GONE
+            del.setOnClickListener {
+                if (!canEdit) return@setOnClickListener
                 deletedImageIds.add(image.id)
                 existingImageList.remove(image)
                 showAllImages()
             }
-            container.addView(imageLayout)
+            container.addView(item)
         }
 
-        // 새로 추가된 이미지 표시
+        // 새 이미지
         selectedImageUris.forEach { uri ->
-            val imageLayout = layoutInflater.inflate(R.layout.item_edit_review_image, container, false) as FrameLayout
-            val imageView = imageLayout.findViewById<ImageView>(R.id.imageView)
-            val removeButton = imageLayout.findViewById<ImageView>(R.id.deleteButton)
-            imageView.setImageURI(uri)
-            removeButton.visibility = if (isEditMode) View.VISIBLE else View.GONE
-            removeButton.setOnClickListener {
+            val item = layoutInflater.inflate(R.layout.item_edit_review_image, container, false) as FrameLayout
+            val iv = item.findViewById<ImageView>(R.id.imageView)
+            val del = item.findViewById<ImageView>(R.id.deleteButton)
+
+            iv.setImageURI(uri)
+
+            del.visibility = if (isEditMode && canEdit) View.VISIBLE else View.GONE
+            del.setOnClickListener {
+                if (!canEdit) return@setOnClickListener
                 selectedImageUris.remove(uri)
                 showAllImages()
             }
-            container.addView(imageLayout)
+            container.addView(item)
         }
+
+        // ▼ 카운터/버튼 상태 업데이트
+        updateCounterAndButton()
     }
 
-    private suspend fun deleteSelectedImages(reviewId: Long, itemType: String) {
-        if (deletedImageIds.isEmpty()) return
-        try {
-            val request = DeleteReviewImageRequest(imageIds = deletedImageIds)
-            val response = api.deleteReviewImages(reviewId, itemType, request)
-            if (response.isSuccessful && response.body()?.isSuccess == true) {
-                Toast.makeText(this, "이미지 삭제 완료", Toast.LENGTH_SHORT).show()
-                // 삭제 목록 초기화
-                deletedImageIds.clear()
+    private fun updateCounterAndButton() {
+        val count = totalImageCount()
+        binding.tvImageCount.text = "$count/$MAX_IMAGES"
 
-                // ✅ 서버에서 최신 상태 가져와서 반영
+        // 꽉 찼을 때도 버튼은 보이되 클릭만 막고 흐리게
+        val canAddMore = (count < MAX_IMAGES) && isEditMode && canEdit
+        binding.addImageButton.isEnabled = canAddMore
+        binding.addImageButton.alpha = if (canAddMore) 1f else 0.5f
+    }
+
+    private fun totalImageCount(): Int = existingImageList.size + selectedImageUris.size
+
+    private suspend fun deleteSelectedImages(reviewId: Long, itemType: String) {
+        if (!canEdit || deletedImageIds.isEmpty()) return
+        try {
+            val req = DeleteReviewImageRequest(imageIds = deletedImageIds)
+            val resp = api.deleteReviewImages(reviewId, itemType, req)
+            if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                Toast.makeText(this, "이미지 삭제 완료", Toast.LENGTH_SHORT).show()
+                deletedImageIds.clear()
                 refreshReviewDetail(reviewId, itemType)
             } else {
                 Toast.makeText(this, "이미지 삭제 실패", Toast.LENGTH_SHORT).show()
@@ -201,37 +623,27 @@ class ReviewEditActivity : AppCompatActivity() {
 
     private suspend fun refreshReviewDetail(reviewId: Long, itemType: String) {
         try {
-            val response = api.getReviewDetail(reviewId, itemType)
-            val body = response.body()
-            if (response.isSuccessful && body != null && body.isSuccess) {
+            val resp = api.getReviewDetail(reviewId, itemType)
+            val body = resp.body()
+            if (resp.isSuccessful && body?.isSuccess == true) {
                 val review = body.result
                 existingImageList.clear()
-                existingImageList.addAll(
-                    review.reviewImageList.map {
-                        ReviewImage(id = it.reviewImageId, url = it.imageUrl)
-                    }
-                )
-
+                existingImageList.addAll(review.reviewImageList.map { ReviewImage(it.reviewImageId, it.imageUrl) })
                 showAllImages()
             }
-        } catch (_: Exception) {
-        }
+        } catch (_: Exception) { }
     }
 
-
     private fun uploadReviewImages(imageUris: List<Uri>) {
+        if (!canEdit) return
         val reviewId = intent.getLongExtra("reviewId", -1)
         val itemType = intent.getStringExtra("itemType") ?: ""
         val imageParts = prepareImageParts(imageUris)
 
         lifecycleScope.launch {
             try {
-                val response = api.uploadReviewImages(
-                    reviewId = reviewId,
-                    itemType = itemType,
-                    images = imageParts
-                )
-                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                val resp = api.uploadReviewImages(reviewId, itemType, imageParts)
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
                     Toast.makeText(this@ReviewEditActivity, "수정 완료", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
@@ -247,40 +659,30 @@ class ReviewEditActivity : AppCompatActivity() {
         val parts = mutableListOf<MultipartBody.Part>()
         imageUris.forEachIndexed { index, uri ->
             try {
-                val inputStream = contentResolver.openInputStream(uri)
-                val fileBytes = inputStream?.readBytes()
-                inputStream?.close()
-                if (fileBytes != null) {
-                    val requestBody = fileBytes.toRequestBody("image/*".toMediaTypeOrNull())
-                    val fileName = "image_$index.jpg"
-                    val part = MultipartBody.Part.createFormData("images", fileName, requestBody)
-                    parts.add(part)
+                contentResolver.openInputStream(uri)?.use { input ->
+                    val bytes = input.readBytes()
+                    val body = bytes.toRequestBody("image/*".toMediaTypeOrNull())
+                    parts += MultipartBody.Part.createFormData("images", "image_$index.jpg", body)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            } catch (e: Exception) { e.printStackTrace() }
         }
         return parts
     }
 
     private suspend fun updateReviewTextAndRate(reviewId: Long, itemType: String) {
+        if (!canEdit) return
         val content = binding.reviewTextDetail2.text.toString()
-        var rate = binding.ratingBar.rating.toInt()
-
-        val request = ReviewBody(content, rate)
-
+        val rate = binding.ratingBar.rating.toInt()
+        val req = ReviewBody(content, rate)
         try {
-            val response = api.updateReviewContentAndRate(reviewId, itemType, request)
-            if (response.isSuccessful && response.body()?.isSuccess == true) {
-                Log.d("ReviewEdit", "본문/별점 수정 완료")
-            } else {
+            val resp = api.updateReviewContentAndRate(reviewId, itemType, req)
+            if (!resp.isSuccessful || resp.body()?.isSuccess != true) {
                 Toast.makeText(this, "리뷰 본문/별점 수정 실패", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             Toast.makeText(this, "리뷰 수정 네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
 }

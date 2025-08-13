@@ -3,14 +3,18 @@ package com.example.onenthapp.data
 import NicknameResponse
 import ProfileImageResponse
 import ProfileResponse
+import com.example.onenthapp.data.post.MyPostsPage
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MemberApi {
     //✅ 탈퇴하기
@@ -39,4 +43,27 @@ interface MemberApi {
     suspend fun changeProfileImage(
         @Part image: MultipartBody.Part
     ): Response<ProfileImageResponse>
+
+    @GET("members/mypage/posts")
+    suspend fun getMyPosts(
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Response<CommonResponse<MyPostsPage>>
+
+    @GET("members/mypage/scraps")
+    suspend fun getMyScrapPosts(
+        @Query("page") page: Int,   // 1부터 시작
+        @Query("size") size: Int
+    ): Response<CommonResponse<MyPostsPage>>
+
+    @GET("members/mypage/likes")
+    suspend fun getMyLikedPosts(
+        @Query("page") page: Int,   // 1부터 시작
+        @Query("size") size: Int
+    ): Response<CommonResponse<MyPostsPage>>
+
+    @GET("users/trade-history/{userId}")
+    suspend fun getUserTradeHistory(
+        @Path("userId") userId: Long
+    ): Response<TradeHistoryResponse>
 }

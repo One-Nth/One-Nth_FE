@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -38,6 +39,7 @@ class AccountSettingsActivity : AppCompatActivity() {
 
         val nicknameInput = findViewById<EditText>(R.id.nicknameInput)
         val profileImageView = findViewById<ImageView>(R.id.profileImage) // 레이아웃의 프로필 이미지뷰 ID 맞춰야 함
+        val regionText = findViewById<TextView>(R.id.regionText)
 
         // 프로필 이미지 클릭 시 갤러리 열기
         profileImageView.setOnClickListener {
@@ -52,6 +54,8 @@ class AccountSettingsActivity : AppCompatActivity() {
                     val profile = response.body()?.result
                     nicknameInput.setText(profile?.nickname ?: "")
 
+                    TokenManager.saveNickname(profile?.nickname ?: "")
+
                     // ✅ 프로필 이미지가 있으면 Glide로 표시
                     if (!profile?.profileImageUrl.isNullOrEmpty()) {
                         Glide.with(this@AccountSettingsActivity)
@@ -60,6 +64,15 @@ class AccountSettingsActivity : AppCompatActivity() {
                             .into(profileImageView)
                     } else {
                         profileImageView.setImageResource(R.drawable.avatar)
+                    }
+                    val dong = profile?.verifiedRegionNames?.firstOrNull()
+                    if (!dong.isNullOrBlank()) {
+                        regionText.text = "$dong 인증 완료"
+                        regionText.setTextColor(getColor(R.color.main_green))
+                        regionText.visibility = View.VISIBLE
+                    } else {
+                        regionText.text = "인증된 지역 없음"
+                        // regionText.visibility = View.GONE // 숨기려면
                     }
                 }
             } catch (e: Exception) {
@@ -151,6 +164,7 @@ class AccountSettingsActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                         nicknameInput.setText(changedName) // 변경된 닉네임으로 입력창 업데이트
+                        TokenManager.saveNickname(changedName)
                     } else {
                         Toast.makeText(
                             this@AccountSettingsActivity,
@@ -212,7 +226,7 @@ class AccountSettingsActivity : AppCompatActivity() {
         // ✅ 팝업 내 로그아웃 버튼
         val confirmButton = dialogView.findViewById<ImageButton>(R.id.btnLogoutConfirm)
         confirmButton.setOnClickListener {
-            TokenManager.clearAll()// 토큰 삭제
+            TokenManager.clearToken()// 토큰 삭제
             Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
 
             // ✅ SplashActivity로 이동
@@ -260,6 +274,19 @@ class AccountSettingsActivity : AppCompatActivity() {
 
         alertDialog.show()
     }
+
+    private fun extractDong(full: String): String? {
+        // 구분자 통일 후 토큰화
+        val tokens = full.replace(",", " ")
+            .replace("·", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+
+        // 보통 가장 뒤에 위치 → 뒤에서부터 탐색
+        return tokens.asReversed().firstOrNull { it.endsWith("동") }
+            ?: tokens.asReversed().firstOrNull { it.endsWith("가") } // (옵션) 종로1가 같은 경우 대비
+    }
+
 }
 
 

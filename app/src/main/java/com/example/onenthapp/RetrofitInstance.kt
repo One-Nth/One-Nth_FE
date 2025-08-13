@@ -7,10 +7,16 @@ import com.example.onenthapp.data.PlusApi
 import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
+
 import com.example.onenthapp.data.notificationboard.NotificationboardApi
 import com.example.onenthapp.data.nwonsaved.NwonSavedApi
 import com.example.onenthapp.data.transaction.TransactionApi
+
+import com.example.onenthapp.data.post.PostApi
+
 import com.example.onenthapp.util.TokenManager
+import com.example.onenthapp.data.MyRegionApi
+import com.example.onenthapp.data.MapMarkerApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
@@ -36,6 +42,9 @@ object RetrofitInstance {
 
             // 로그인/회원가입 제외하고 Authorization 헤더 추가
             if (!originalUrl.contains("/auth/kakao/login") && !originalUrl.contains("/auth/kakao/signup")) {
+
+                val token = TokenManager.getAccessToken()
+
                 requestBuilder.addHeader("Authorization", "Bearer $token")
             }
 
@@ -53,7 +62,6 @@ object RetrofitInstance {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
     val authApi: AuthApi by lazy {
         retrofit.create(AuthApi::class.java)
     }
@@ -64,6 +72,10 @@ object RetrofitInstance {
 
     val messageApi: MessageApi by lazy {
         retrofit.create(MessageApi::class.java)
+    }
+
+    val myRegionApi: MyRegionApi by lazy {
+        retrofit.create(MyRegionApi::class.java)
     }
     
     val usersetApi: UserSetApi by lazy {
@@ -78,6 +90,7 @@ object RetrofitInstance {
         retrofit.create(ReviewApi::class.java)
     }
 
+
     val transactionApi: TransactionApi by lazy {
         retrofit.create(TransactionApi::class.java)
     }
@@ -88,6 +101,12 @@ object RetrofitInstance {
 
     val nwonSavedApi: NwonSavedApi by lazy {
         retrofit.create(NwonSavedApi::class.java)
+
+    val postApi: PostApi by lazy{
+        retrofit.create(PostApi::class.java) }
+    val mapMarkerApi: MapMarkerApi by lazy {
+        retrofit.create(MapMarkerApi::class.java)
+
     }
 
 }

@@ -13,33 +13,66 @@ import com.bumptech.glide.Glide
 import com.example.onenthapp.data.MyReview
 
 class MyReviewAdapter(
-    private val reviewList: List<MyReview>
+    private var reviewList: List<MyReview>  // ← updateList 위해 var
 ) : RecyclerView.Adapter<MyReviewAdapter.MyReviewViewHolder>() {
 
+    private var myNickname: String = "나"
+    private var myProfileUrl: String? = null
+
+    fun setNickname(nickname: String?) {
+        myNickname = if (!nickname.isNullOrBlank()) nickname else "나"
+        notifyDataSetChanged()
+    }
+
+    /** 닉네임 + 프로필을 한 번에 주입 */
+    fun setProfileData(nickname: String?, profileUrl: String?) {
+        myNickname = if (!nickname.isNullOrBlank()) nickname else "나"
+        myProfileUrl = profileUrl
+        notifyDataSetChanged()
+    }
+
+    /** 리스트 갱신 */
+    fun updateList(newList: List<MyReview>) {
+        reviewList = newList
+        notifyDataSetChanged()
+    }
+
     inner class MyReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nicknameText: TextView = itemView.findViewById(R.id.textNickname)
-        val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
-        val reviewContentText: TextView = itemView.findViewById(R.id.textReviewContent)
-        val reviewImage1: ImageView = itemView.findViewById(R.id.reviewImage1)
-        val reviewImage2: ImageView = itemView.findViewById(R.id.reviewImage2)
-        val reviewImage3: ImageView = itemView.findViewById(R.id.reviewImage3)
+        private val nicknameText: TextView = itemView.findViewById(R.id.textNickname)
+        private val profileImage: ImageView? = itemView.findViewById(R.id.profileImage) // 레이아웃에 있으면 세팅
+        private val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+        private val reviewContentText: TextView = itemView.findViewById(R.id.textReviewContent)
+        private val reviewImage1: ImageView = itemView.findViewById(R.id.reviewImage1)
+        private val reviewImage2: ImageView = itemView.findViewById(R.id.reviewImage2)
+        private val reviewImage3: ImageView = itemView.findViewById(R.id.reviewImage3)
 
         fun bind(review: MyReview) {
-            nicknameText.text = "나"
+            nicknameText.text = myNickname
+
+            // 프로필 이미지 (있을 때만)
+            profileImage?.let { iv ->
+                if (!myProfileUrl.isNullOrBlank()) {
+                    Glide.with(itemView.context)
+                        .load(myProfileUrl)
+                        .placeholder(R.drawable.profile_base)
+                        .error(R.drawable.profile_base)
+                        .circleCrop()
+                        .into(iv)
+                } else {
+                    iv.setImageResource(R.drawable.profile_base)
+                }
+            }
+
             ratingBar.rating = review.rate.toFloat()
             reviewContentText.text = review.content
 
-            val imageViews = listOf(reviewImage1, reviewImage2, reviewImage3)
-            imageViews.forEach { it.visibility = View.GONE }
-
+            val images = listOf(reviewImage1, reviewImage2, reviewImage3)
+            images.forEach { it.visibility = View.GONE }
             review.reviewImageList.take(3).forEachIndexed { index, url ->
-                imageViews[index].visibility = View.VISIBLE
-                Glide.with(itemView.context)
-                    .load(url)
-                    .into(imageViews[index])
+                images[index].visibility = View.VISIBLE
+                Glide.with(itemView.context).load(url).into(images[index])
             }
 
-            // ✅ 후기 클릭 시 수정 화면으로 이동
             itemView.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, ReviewEditActivity::class.java)
@@ -60,5 +93,5 @@ class MyReviewAdapter(
         holder.bind(reviewList[position])
     }
 
-    override fun getItemCount() = reviewList.size
+    override fun getItemCount(): Int = reviewList.size
 }

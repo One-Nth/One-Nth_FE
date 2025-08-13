@@ -9,9 +9,12 @@
         android:id="@+id/homeFragment"
         android:name="com.example.onenthapp.HomeFragment"
         android:label="홈">
+
         <action
-            android:id="@+id/action_home_to_productdetail"
-            app:destination="@id/productDetailFragment" />
+            android:id="@+id/action_home_to_buydetail"
+            app:destination="@id/groupPurchaseDetailFragment" >
+        <argument android:name="productId" app:argType="long" />
+        </action>
     </fragment>
 
     <fragment
@@ -55,6 +58,12 @@
         <argument
             android:name="productPrice"
             app:argType="string" />
+        <argument
+            android:name="productId"
+            app:argType="long" />
+        <argument
+            android:name="isBuy"
+            app:argType="boolean" />
     </action>
 
     <fragment
@@ -62,7 +71,23 @@
         android:name="com.example.onenthapp.PlusCompleteFragment"
         android:label="상품 등록 완료"
         tools:layout="@layout/fragment_plus_complete" />
+    <fragment
+        android:id="@+id/groupPurchaseDetailFragment"
+        android:name="com.example.onenthapp.GroupPurchaseDetailFragment"
+        android:label="같이사요 상세">
+        <argument
+            android:name="productId"
+            app:argType="long" />
+    </fragment>
 
+<!--    <fragment-->
+<!--        android:id="@+id/sharingItemDetailFragment"-->
+<!--        android:name="com.example.onenthapp.SharingItemDetailFragment"-->
+<!--        android:label="공유상품 상세">-->
+<!--        <argument-->
+<!--            android:name="productId"-->
+<!--            app:argType="long" />-->
+<!--    </fragment>-->
     <fragment
         android:id="@+id/tipFragment"
         android:name="com.example.onenthapp.TipFragment"

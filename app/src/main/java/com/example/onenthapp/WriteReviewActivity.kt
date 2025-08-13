@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -45,6 +47,15 @@ class WriteReviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write_review)
 
+        // ← 툴바 뒤로가기(있으면)
+        findViewById<com.google.android.material.appbar.MaterialToolbar?>(R.id.topAppBar)?.let { tb ->
+            // 만약 커스텀 툴바를 액션바로 쓰고 있다면 주석 해제
+            // setSupportActionBar(tb)
+            tb.setNavigationOnClickListener { finish() }
+        }
+        // ← 액션바 사용하는 레이아웃일 경우 홈버튼으로 뒤로가기 표시
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         apiService = RetrofitInstance.reviewApi
 
         val ratingBar = findViewById<RatingBar>(R.id.ratingBar)
@@ -59,23 +70,6 @@ class WriteReviewActivity : AppCompatActivity() {
         btnAddImage.setOnClickListener {
             imagePickerLauncher.launch("image/*")
         }
-
-//        submitButton.setOnClickListener {
-//            val content = reviewEditText.text.toString()
-//            val rate = ratingBar.rating.toInt()
-//
-//            if (purchaseItemId == -1L) {
-//                Toast.makeText(this, "물품 정보가 없습니다.", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
-//
-//            if (rate == 0) {
-//                Toast.makeText(this, "별점을 입력해주세요.", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
-//
-//            submitReview(purchaseItemId, content, rate, imageUris)
-//        }
 
         submitButton.setOnClickListener {
             val content = reviewEditText.text.toString()
@@ -97,23 +91,53 @@ class WriteReviewActivity : AppCompatActivity() {
 
     }
 
+    // 액션바 홈(뒤로가기) 아이콘 클릭 시
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == android.R.id.home) {
+            finish()
+            true
+        } else super.onOptionsItemSelected(item)
+    }
+
+    private fun Int.dp() = (this * resources.displayMetrics.density).toInt()
+
     private fun addImagePreview(uri: Uri) {
-        val wrapper = LinearLayout(this).apply {
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            orientation = LinearLayout.VERTICAL
-            setPadding(0, 0, 16, 0)
+        val thumb = 57.dp()          // 썸네일 한 칸 크기 (btnAddImage와 맞춤)
+        val gap   = 8.dp()
+        val xSize = 18.dp()
+        val xPad  = 2.dp()
+        val inset = 4.dp()           // 모서리에서 조금 띄우기
+
+        // 1) 썸네일 한 칸(정사각형)
+        val wrapper = FrameLayout(this).apply {
+            layoutParams = LinearLayout.LayoutParams(thumb, thumb).apply {
+                setMargins(0, 0, gap, 0)
+            }
         }
 
+        // 2) 이미지
         val imageView = ImageView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(150, 150)
-            setImageURI(uri)
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
             scaleType = ImageView.ScaleType.CENTER_CROP
-            setBackgroundResource(R.color.main_gray)
+            // 모서리 둥글게 하고 싶으면 썸네일 배경(shape) 사용
+            // background = ContextCompat.getDrawable(this@WriteReviewActivity, R.drawable.bg_thumb_8dp)
+            // clipToOutline = true
         }
+        imageView.setImageURI(uri) // Glide 쓰면 centerCrop().into(imageView)
 
+        // 3) 닫기 버튼 (오버레이)
         val closeBtn = ImageView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(30, 30)
-            setImageResource(R.drawable.proicons_cancel)
+            layoutParams = FrameLayout.LayoutParams(xSize, xSize, Gravity.TOP or Gravity.END).apply {
+                setMargins(0, inset, inset, 0)
+            }
+            setImageResource(R.drawable.proicons_cancel) // 있는 X 아이콘 그대로 사용
+//            setPadding(xPad)
+            // 배경 원(흰색 반투명)을 쓰고 싶으면 지정
+            // background = ContextCompat.getDrawable(this@WriteReviewActivity, R.drawable.bg_close_circle)
+            contentDescription = "이미지 삭제"
             setOnClickListener {
                 imageContainer.removeView(wrapper)
                 imageUris.remove(uri)
@@ -122,8 +146,14 @@ class WriteReviewActivity : AppCompatActivity() {
 
         wrapper.addView(imageView)
         wrapper.addView(closeBtn)
+
+        // add 버튼 다음에 붙이고 싶으면 index를 지정해도 됨
+        // val insertIndex = imageContainer.indexOfChild(btnAddImage) + 1
+        // imageContainer.addView(wrapper, insertIndex)
+
         imageContainer.addView(wrapper)
     }
+
 
     fun submitPurchaseReview(
         purchaseItemId: Long,

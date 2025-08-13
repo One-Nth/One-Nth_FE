@@ -69,11 +69,17 @@ private fun setupRecyclerViews() {
 
         reviewRecyclerView.adapter = ReviewAdapter(reviews)
 
+
         // 작성 대기 중인 후기 RecyclerView 설정
         val editReviewRecyclerView = findViewById<RecyclerView>(R.id.editReviewRecyclerView)
         pendingReviewAdapter = NwonSavedItemAdapter()
         editReviewRecyclerView.layoutManager = LinearLayoutManager(this)
         editReviewRecyclerView.adapter = pendingReviewAdapter
+
+        // ✅ 어댑터 연결
+//         recyclerView.adapter = ReviewAdapter()
+
+
 
         Log.d(TAG, "RecyclerView 초기화 완료")
     } catch (e: Exception) {

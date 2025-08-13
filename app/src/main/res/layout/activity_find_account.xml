@@ -6,36 +6,41 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- 상단 바 -->
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="27dp"
-            android:layout_height="27dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ep_arrow_up_bold"
-            android:clickable="true"
-            android:focusable="true"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:src="@drawable/humbleicons_arrow_up"
+            android:background="@android:color/transparent"
+            android:contentDescription="뒤로가기"
             android:layout_marginStart="8dp"
-            android:contentDescription="뒤로가기" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
+            android:id="@+id/tv_title"
             style="@style/PretendardSubtitle2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="계정 찾기"
+            android:text="계정찾기"
             android:textColor="@color/main_black"
-            android:layout_centerInParent="true"
-            android:translationX="-120dp"/>
-    </RelativeLayout>
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toEndOf="@id/backButton"
+            app:layout_constraintTop_toTopOf="@id/backButton"
+            app:layout_constraintBottom_toBottomOf="@id/backButton"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <!-- 구분선 -->
     <View
@@ -65,7 +70,8 @@
         android:layout_width="330dp"
         android:layout_height="40dp"
         android:hint="ex) 홍길동"
-        android:textColor="@color/light_gray"
+        android:textColor="@color/main_black"
+        android:textColorHint="@color/light_gray"
         android:background="@drawable/edittext_border2"
         android:inputType="text"
         android:layout_marginTop="8dp"
@@ -102,7 +108,8 @@
             android:layout_width="330dp"
             android:layout_height="50dp"
             android:hint="ex) 1234@naver.com"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/main_black"
+            android:textColorHint="@color/light_gray"
             android:background="@drawable/edittext_border2"
             android:paddingEnd="90dp"
             android:gravity="start|center_vertical"
@@ -159,7 +166,8 @@
             android:layout_width="330dp"
             android:layout_height="40dp"
             android:hint="인증번호를 입력해주세요."
-            android:textColor="@color/light_gray"
+            android:textColor="@color/main_black"
+            android:textColorHint="@color/light_gray"
             android:paddingEnd="60dp"
             android:gravity="start|center_vertical"
             android:textAlignment="viewStart"
@@ -210,7 +218,8 @@
         android:layout_width="330dp"
         android:layout_height="40dp"
         android:hint="비밀번호를 입력해주세요."
-        android:textColor="@color/light_gray"
+        android:textColor="@color/main_black"
+        android:textColorHint="@color/light_gray"
         android:background="@drawable/edittext_border"
         android:inputType="textPassword"
         android:layout_marginTop="10dp"
@@ -247,7 +256,8 @@
         android:layout_width="330dp"
         android:layout_height="40dp"
         android:hint="비밀번호를 다시 입력해주세요."
-        android:textColor="@color/light_gray"
+        android:textColor="@color/main_black"
+        android:textColorHint="@color/light_gray"
         android:background="@drawable/edittext_border"
         android:inputType="textPassword"
         android:layout_marginTop="10dp"

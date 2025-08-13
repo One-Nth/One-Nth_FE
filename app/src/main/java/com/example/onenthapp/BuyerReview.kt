@@ -21,9 +21,9 @@ class BuyerReview : AppCompatActivity() {
         val text = intent.getStringExtra("text")
 
         // 필요한 뷰에 값 설정
-        findViewById<TextView>(R.id.reviewerNameDetail).text = name
-        findViewById<TextView>(R.id.starRatingDetail).text = "★".repeat(rating)
-        findViewById<TextView>(R.id.reviewTextDetail).text = text
+//        findViewById<TextView>(R.id.reviewerNameDetail).text = name
+//        findViewById<TextView>(R.id.starRatingDetail).text = "★".repeat(rating)
+//        findViewById<TextView>(R.id.reviewTextDetail).text = text
     }
 }
 

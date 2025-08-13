@@ -1,4 +1,5 @@
 package com.example.onenthapp
+import ImageSliderAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -182,11 +183,11 @@ class ProductDetailFragment : Fragment() {
 //            return
 //        }
 
-        imageSliderAdapter = ImageSliderAdapter(dummyImages)
-        binding.viewpagerImages.adapter = imageSliderAdapter
+        //imageSliderAdapter = ImageSliderAdapter(dummyImages)
+        //binding.viewpagerImages.adapter = imageSliderAdapter
 
         // ViewPager2에 indicator 연결
-        binding.dotsIndicator.attachTo(binding.viewpagerImages)
+        //binding.dotsIndicator.attachTo(binding.viewpagerImages)
 
     }
     // --- MapView 생명주기 관리 (Fragment의 생명주기에 맞춰 호출 - 공식 문서 권장) ---

@@ -32,7 +32,7 @@
     <!-- 차단 해제 버튼 -->
     <ImageButton
         android:id="@+id/btnUnblock"
-        android:src="@drawable/btn_unblock"
+        android:src="@drawable/blockcancelbtn"
         android:background="@android:color/transparent"
         android:layout_width="wrap_content"
         android:layout_height="32dp"

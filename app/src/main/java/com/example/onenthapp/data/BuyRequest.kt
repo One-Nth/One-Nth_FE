@@ -6,6 +6,7 @@ data class BuyRequest(
     val itemCategory: String,
     val purchaseUrl: String?,
     val purchaseLocation: String?,
-    val originPrice: Int,
-    val tags: List<String>
+    val price: Int?,
+    val tags: List<String>,
+    val expirationDate: String?
 )

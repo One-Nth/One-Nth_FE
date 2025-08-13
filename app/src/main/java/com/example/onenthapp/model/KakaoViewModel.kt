@@ -28,7 +28,7 @@ class KakaoViewModel(private val repo: AuthRepository) : ViewModel() {
             lastKakaoResult = data
 
             // 기존회원이면 서버가 자체 JWT(access_token/refresh_token)를 내려줌
-            data.accessToken?.let { TokenManager.saveToken(it) }
+            data.accessToken?.let { TokenManager.saveAccessToken(it) }
             data.refreshToken?.let { if (it.isNotEmpty()) TokenManager.saveRefreshToken(it) }
 
             onResult(true, null, data.isNew, data.accessToken, data.refreshToken)
@@ -60,7 +60,7 @@ class KakaoViewModel(private val repo: AuthRepository) : ViewModel() {
             val r = repo.kakaoSignup(req)
             if (r.isSuccess) {
                 val data = r.getOrNull()!!
-                data.accessToken?.let { TokenManager.saveToken(it) }
+                data.accessToken?.let { TokenManager.saveAccessToken(it) }
                 data.refreshToken?.let { if (it.isNotEmpty()) TokenManager.saveRefreshToken(it) }
                 signupStatus.postValue("카카오 회원가입 성공")
                 signupSuccess.postValue(true)

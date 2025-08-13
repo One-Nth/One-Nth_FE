@@ -9,6 +9,8 @@ data class UserReviewResponse(
 
 data class UserReviewResult(
     val memberId: Long,
+    val memberNickName: String?,     // ✅ 추가(옵션)
+    val profileImageUrl: String?,    // ✅ 추가(옵션)
     val reviewList: List<Review>
 )
 
@@ -18,6 +20,8 @@ data class Review(
     val itemId: Long,
     val createdAt: String,
     val reviewerId: Long,
+    val reviewerNickName: String,          // ✅ 추가
+    val reviewerProfileImageUrl: String?,  // ✅ 추가
     val reviewTargetId: Long,
     val content: String,
     val rate: Int,
