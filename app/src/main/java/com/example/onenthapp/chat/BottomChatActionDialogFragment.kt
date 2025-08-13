@@ -16,7 +16,7 @@ class BottomChatActionDialogFragment(
 ) : BottomSheetDialogFragment() {
 
     enum class ActionType {
-        REPORT, BLOCK, MUTE, EXIT
+        REPORT,  MUTE, EXIT
     }
 
     override fun getTheme(): Int = R.style.BottomSheet_NoDim_HalfHeight
@@ -42,11 +42,6 @@ class BottomChatActionDialogFragment(
                 title.text = "채팅 알람을 해제하시겠습니까?"
                 description.text = "채팅 알람을 해제하면 거래 확정 및 완료 알림을\n받아볼 수 없어요."
                 button.text = "작성하기"
-            }
-            ActionType.BLOCK -> {
-                title.text = "해당 사용자를 차단하시겠습니까?"
-                description.text = "해당 사용자를 차단하면 상대방과 대화할 수\n없으며 상대방 또한 메시지를 보낼 수 없습니다."
-                button.text = "차단하기"
             }
             ActionType.EXIT -> {
                 title.text = "해당 채팅방을 나가시겠습니까?"

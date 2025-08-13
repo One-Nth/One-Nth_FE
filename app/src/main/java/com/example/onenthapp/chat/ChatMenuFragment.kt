@@ -31,8 +31,7 @@ class ChatMenuFragment : Fragment() {
         }
 
         binding.chatMenuBlock.setOnClickListener {
-            BottomChatActionDialogFragment(BottomChatActionDialogFragment.ActionType.BLOCK)
-                .show(parentFragmentManager, "BlockDialog")
+            startActivity(Intent(requireContext(), ChatBlockActivity::class.java))
         }
 
         binding.chatMenuDeclare.setOnClickListener {
