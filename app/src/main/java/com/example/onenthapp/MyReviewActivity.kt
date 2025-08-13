@@ -135,6 +135,7 @@ class MyReviewActivity : AppCompatActivity() {
                             reviewId = r.reviewId,
                             itemType = r.itemType,
                             itemId = r.itemId,
+                            itemTitle = r.itemTitle,
                             createdAt = r.createdAt,
                             reviewerId = r.reviewerId,
                             reviewerNickName = r.reviewerNickName,

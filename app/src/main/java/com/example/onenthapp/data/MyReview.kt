@@ -4,6 +4,7 @@ data class MyReview(
     val reviewId: Long,
     val itemType: String,
     val itemId: Long,
+    val itemTitle: String,
     val createdAt: String,
     val reviewerId: Long,
     val reviewerNickName: String,          // ✅ 추가
