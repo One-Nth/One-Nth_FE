@@ -69,6 +69,7 @@
 
                 <!-- 100 -->
                 <TextView
+                    android:id="@+id/purchaseDealCountText"
                     style="@style/PretendardH2"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
@@ -87,12 +88,18 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/purchaseDealAmountText"
                         style="@style/PretendardBody1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20,000회 거래"
+                        android:text="20,000"
                         android:textColor="@color/N_saved_gray" />
-
+                    <TextView
+                        style="@style/PretendardBody1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="회 거래"
+                        android:textColor="@color/N_saved_gray" />
                 </LinearLayout>
 
             </FrameLayout>
@@ -124,6 +131,7 @@
 
                 <!-- 50 -->
                 <TextView
+                    android:id="@+id/shareDealCountText"
                     style="@style/PretendardH2"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
@@ -142,12 +150,18 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/shareDealAmountText"
                         style="@style/PretendardBody1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20,000회 거래"
+                        android:text="20,000"
                         android:textColor="@color/N_saved_gray" />
-
+                    <TextView
+                        style="@style/PretendardBody1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="회 거래"
+                        android:textColor="@color/N_saved_gray" />
                 </LinearLayout>
 
             </FrameLayout>
@@ -207,93 +221,13 @@
                 android:clickable="true"
                 android:textColor="@color/main_black"/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/editReviewRecyclerView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/rectangle_9"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="22dp"
-                android:layout_marginBottom="12dp"
-                android:padding="1dp"
-                android:gravity="center_vertical">
-
-                <!-- 썸네일 회색 네모 -->
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:src="@drawable/rectangle_11"
-                    android:clipToOutline="true" />
-
-                <!-- 상품 정보 -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="상품명"
-                        style="@style/PretendardSemibold3"
-                        android:textColor="@color/main_black" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="가격 / 수량 / 원래 가격"
-                        style="@style/PretendardBody4"
-                        android:textColor="@color/N_saved_gray"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/rectangle_9"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="12dp"
-                android:padding="1dp"
-                android:gravity="center_vertical">
-
-                <!-- 썸네일 회색 네모 -->
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:src="@drawable/rectangle_11"
-                    android:clipToOutline="true" />
-
-                <!-- 상품 정보 -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="상품명"
-                        style="@style/PretendardSemibold3"
-                        android:textColor="@color/main_black" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="가격 / 수량 / 원래 가격"
-                        style="@style/PretendardBody4"
-                        android:textColor="@color/N_saved_gray"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_marginBottom="40dp"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
         </LinearLayout>
-    </LinearLayout>
+        </LinearLayout>
 </ScrollView>
