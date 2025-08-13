@@ -145,8 +145,8 @@ class AlertSettingsActivity : AppCompatActivity() {
                     if (body?.isSuccess == true) {
                         val userSettings = body.result
                         Log.d(TAG, "UserSettings received:")
-                        Log.d(TAG, "- Scrap alert enabled: ${userSettings.scrapAlertSummary.enabled}")
-                        Log.d(TAG, "- Review alert enabled: ${userSettings.reviewAlertSummary.enabled}")
+                        Log.d(TAG, "- Scrap alert enabled: ${userSettings.scrapAlertSummary?.enabled}")
+                        Log.d(TAG, "- Review alert enabled: ${userSettings.reviewAlertSummary?.enabled}")
                         Log.d(TAG, "- Keyword alerts count: ${userSettings.keywordAlertSummaryList.size}")
 
                         userSettings.keywordAlertSummaryList.forEachIndexed { index, keyword ->
@@ -154,14 +154,13 @@ class AlertSettingsActivity : AppCompatActivity() {
                         }
 
                         withContext(Dispatchers.Main) {
-                            // 스위치 상태 설정
-                            binding.alertSwitch1.isChecked = userSettings.scrapAlertSummary.enabled
-                            binding.alertSwitch2.isChecked = userSettings.reviewAlertSummary.enabled
+                            binding.alertSwitch1.isChecked = userSettings.scrapAlertSummary?.enabled ?: false
+                            binding.alertSwitch2.isChecked = userSettings.reviewAlertSummary?.enabled ?: false
 
-                            // 키워드 목록 표시
                             keywordAdapter.submitList(userSettings.keywordAlertSummaryList)
                             Log.d(TAG, "UI updated successfully")
                         }
+
                     } else {
                         Log.e(TAG, "API returned success=false: ${body?.message}")
                         withContext(Dispatchers.Main) {
