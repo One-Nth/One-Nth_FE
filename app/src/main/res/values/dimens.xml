@@ -5,4 +5,5 @@
     <dimen name="bottom_sheet_half_height">341dp</dimen>
     <dimen name="tag_chip_corner_radius">10dp</dimen>
     <dimen name="tag_chip_min_height">38dp</dimen>
+    <dimen name="product_card_radius">16dp</dimen>
 </resources>

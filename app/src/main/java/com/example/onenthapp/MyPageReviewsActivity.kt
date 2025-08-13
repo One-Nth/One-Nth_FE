@@ -23,6 +23,7 @@ class MyPageReviewsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMypageReviewsBinding
     private lateinit var adapter: BuyerReviewAdapter
     private val reviewApi = RetrofitInstance.reviewApi
+    private lateinit var myEditAdapter: MyOwnReviewEditAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,7 @@ class MyPageReviewsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         adapter = BuyerReviewAdapter()
+
         binding.buyerReviewRecyclerView.adapter = adapter
         binding.buyerReviewRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -70,9 +72,56 @@ class MyPageReviewsActivity : AppCompatActivity() {
             finish()
         }
 
+        // ✅ 내가 쓴 후기 수정하기 리스트 (세로)
+        myEditAdapter = MyOwnReviewEditAdapter { review ->
+            // 편집 화면으로 이동
+            startActivity(Intent(this, ReviewEditActivity::class.java).apply {
+                putExtra("reviewId", review.reviewId)
+                putExtra("itemType", review.itemType)   // "PURCHASE" | "SHARE"
+                putExtra("canEdit", true)
+                // 보기 전용일 때 보여줄 닉/프로필 넘기고 싶으면 여기에서 세팅
+            })
+        }
+        binding.editReviewRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.editReviewRecyclerView.adapter = myEditAdapter
+        binding.editReviewRecyclerView.isNestedScrollingEnabled = false
+
         loadBuyerReviews()
         bindProfile()
         loadTradeSummary()
+        loadMyWrittenReviews()
+    }
+
+    private fun loadMyWrittenReviews() {
+        lifecycleScope.launch {
+            try {
+                val resp = reviewApi.getMyReviews()
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                    // 서버 모델과 앱 모델이 동일 이름이면 그대로 매핑
+                    val list = resp.body()!!.result.reviewList.map { r ->
+                        MyReview(
+                            reviewId = r.reviewId,
+                            itemType = r.itemType,
+                            itemId = r.itemId,
+                            itemTitle = r.itemTitle,                 // ✅ 제목 사용
+                            createdAt = r.createdAt,
+                            reviewerId = r.reviewerId,
+                            reviewerNickName = r.reviewerNickName,
+                            reviewerProfileImageUrl = r.reviewerProfileImageUrl,
+                            reviewTargetId = r.reviewTargetId,
+                            content = r.content,
+                            rate = r.rate,
+                            reviewImageList = r.reviewImageList      // ✅ 썸네일 대용
+                        )
+                    }
+                    myEditAdapter.submit(list)
+                } else {
+                    myEditAdapter.submit(emptyList())
+                }
+            } catch (e: Exception) {
+                myEditAdapter.submit(emptyList())
+            }
+        }
     }
 
     private fun loadBuyerReviews() {
