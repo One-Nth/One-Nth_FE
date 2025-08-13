@@ -16,9 +16,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
-import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
-import kotlinx.coroutines.launch
 import com.bumptech.glide.Glide
 import com.example.onenthapp.data.post.PostDetailResponse
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
@@ -30,46 +27,12 @@ class LifeTipsDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLifeDetailsBinding
     private lateinit var commentAdapter: CommentAdapter
-    private val api = RetrofitInstance.notificationboardApi
-
-
-    private var postId: Int = -1
-    private var isLiked = false
-    private var isScrapped = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLifeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        postId = intent.getIntExtra("postId", -1)
-
-        // 전달받은 데이터
-        val title = intent.getStringExtra("title")
-        val content = intent.getStringExtra("content")
-//        val timeAgo = intent.getStringExtra("timeAgo")
-//        val commentCount = intent.getIntExtra("commentCount", 0)
-//        val likeCount = intent.getIntExtra("likeCount", 0)
-//        val viewCount = intent.getIntExtra("viewCount", 0)
-
-        // RecyclerView 설정
-        setupRecyclerView()
-        loadComments()
-
-        binding.tvTitle.text = title
-        binding.tvContent.text = content
-
-        binding.ivBack.setOnClickListener { finish() }
-        binding.ivShare.setOnClickListener { showSharePopup() }
-        binding.btnSendComment.setOnClickListener { postComment() }
-        binding.postlikeicon.setOnClickListener { toggleLike() }
-        binding.ivBookmark.setOnClickListener { toggleScrap() }
-    }
-
-    private fun setupRecyclerView() {
-        commentAdapter = CommentAdapter(mutableListOf())
-        binding.rvComments.layoutManager = LinearLayoutManager(this)
-        binding.rvComments.adapter = commentAdapter
 
         // 댓글  ---------------------------------------------------------
         // 댓글 리사이클러뷰 세팅
@@ -139,126 +102,11 @@ class LifeTipsDetailActivity : AppCompatActivity() {
             Comment(nickname = "bt26az", content = "사진 첨부합니다~", likeCount = 0),
         )
         commentAdapter.submitList(dummy)
-
     }
     // 댓글  ---------------------------------------------------------
 
 
 
-
-    private fun postComment() {
-        val content = binding.etComment.text.toString().trim()
-        if (content.isEmpty()) return
-
-        lifecycleScope.launch {
-            try {
-                val request = AddCommentToPostRequest(content = content)
-                val res = api.addCommentToPost(postId, request)
-                if (res.isSuccessful) {
-                    binding.etComment.text.clear()
-                    loadComments()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun deleteComment(commentId: Int) {
-        lifecycleScope.launch {
-            try {
-                val res = api.deleteCommentFromPost(postId.toInt(), commentId)
-                if (res.isSuccessful) {
-                    loadComments()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun loadComments() {
-        lifecycleScope.launch {
-            try {
-                val res = api.getPostComments(postId)
-                if (res.isSuccessful) {
-                    val commentItems = res.body()?.result ?: emptyList()
-
-                    // CommentItem → Comment 변환
-                    val comments = commentItems.map { item ->
-                        Comment(
-                            nickname = item.nickname,
-                            content = item.content,
-                            likeCount = 0 // API에 likeCount 없으므로 기본값 0
-                        )
-                    }
-
-                    commentAdapter.updateComments(comments)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-
-
-
-
-    private fun toggleLike() {
-        lifecycleScope.launch {
-            try {
-                if (isLiked) {
-                    val res = api.unlikepost(postId)
-                    if (res.isSuccessful) {
-                        isLiked = false
-                        binding.postlikeicon.setImageResource(R.drawable.ic_board_like)
-                    }
-                } else {
-                    val res = api.likepost(postId)
-                    if (res.isSuccessful) {
-                        isLiked = true
-                        binding.postlikeicon.setImageResource(R.drawable.ic_board_like_filled)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun toggleScrap() {
-        lifecycleScope.launch {
-            try {
-                if (isScrapped) {
-                    val res = api.unscrapPost(postId)
-                    if (res.isSuccessful) {
-                        isScrapped = false
-                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_off)
-                    }
-                } else {
-                    val res = api.scrapPost(postId)
-                    if (res.isSuccessful) {
-                        isScrapped = true
-                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_on)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-
-
-    private fun showSharePopup() {
-        val dialog = Dialog(this)
-        val view = LayoutInflater.from(this).inflate(R.layout.share_nwon_popup, null)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(view)
-        dialog.setCancelable(true)
-
-        linkEditText.setText("https://yourapp.com/post/$postId")
 
 
     private fun bindDetail(d: PostDetailResponse.Detail) {
@@ -338,8 +186,5 @@ class LifeTipsDetailActivity : AppCompatActivity() {
     } catch (_: Exception) {
         iso.substringBefore('.').replace('T', ' ')
     }
-
-
-
 }
 
