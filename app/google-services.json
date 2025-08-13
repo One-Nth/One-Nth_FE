@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "18904736836",
+    "project_id": "one-nth",
+    "storage_bucket": "one-nth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18904736836:android:f3cf6ac2100b0cbadb4811",
+        "android_client_info": {
+          "package_name": "com.example.onenthapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWm_1h5RrgL3dXvQvOF9NmajcCqore9hE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
