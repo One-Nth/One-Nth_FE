@@ -8,66 +8,78 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
 import com.example.onenthapp.data.post.PostDetailResponse
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
-import org.w3c.dom.Comment
 
 class LifeTipsDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLifeDetailsBinding
     private lateinit var commentAdapter: CommentAdapter
+    private val api = RetrofitInstance.notificationboardApi
+
+    private var postId: Long = -1L
+    private var isLiked = false
+    private var isScrapped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLifeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        // 댓글  ---------------------------------------------------------
-        // 댓글 리사이클러뷰 세팅
-        setupCommentsRv()
-        // 🔹더미 댓글로 팝업 테스트
-        showDummyComments()
-        // 댓글  ---------------------------------------------------------
-
-
-        binding.ivBack.setOnClickListener { finish() }
-
-        val postId = intent.getLongExtra("postId", -1L)
+        // postId만 받으면 됩니다(목록/검색에서 putExtra("postId", ...))
+        postId = intent.getLongExtra("postId", -1L)
         if (postId <= 0L) {
             Toast.makeText(this, "잘못된 게시글입니다.", Toast.LENGTH_SHORT).show()
-            finish(); return
+            finish()
+            return
         }
 
+        // 댓글 RV
+        setupCommentsRv()
+        loadComments()
+
+        // 클릭 리스너
+        binding.ivBack.setOnClickListener { finish() }
+        binding.ivShare.setOnClickListener { showSharePopup() }
+        binding.btnSendComment.setOnClickListener { postComment() }
+        binding.postlikeicon.setOnClickListener { toggleLike() }
+        binding.ivBookmark.setOnClickListener { toggleScrap() }
+
+        // 상세 API
         val token = TokenManager.getAccessToken()
         if (token.isNullOrEmpty()) {
             Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-            finish(); return
+            finish()
+            return
         }
 
         setLoading(true)
-
         lifecycleScope.launch {
             try {
                 val resp = RetrofitInstance.postApi.getPostDetail("Bearer $token", postId)
                 setLoading(false)
-
                 if (resp.isSuccessful && resp.body()?.isSuccess == true) {
                     resp.body()!!.result?.let { bindDetail(it) }
                 } else {
-                    val err = resp.errorBody()?.string()
-                    Toast.makeText(this@LifeTipsDetailActivity, "상세 조회 실패: ${resp.code()} $err", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@LifeTipsDetailActivity,
+                        "상세 조회 실패: ${resp.code()} ${resp.errorBody()?.string()}",
+                        Toast.LENGTH_LONG
+                    ).show()
                     finish()
                 }
             } catch (e: Exception) {
@@ -78,14 +90,14 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
-
-
-    // 댓글  ---------------------------------------------------------
+    /** 댓글 리스트 RecyclerView */
     private fun setupCommentsRv() {
         commentAdapter = CommentAdapter { action, c ->
             when (action) {
-                CommentAdapter.Action.Chat  -> Toast.makeText(this, "채팅: ${c.nickname}", Toast.LENGTH_SHORT).show()
-                CommentAdapter.Action.Block -> Toast.makeText(this, "차단: ${c.nickname}", Toast.LENGTH_SHORT).show()
+                CommentAdapter.Action.Chat ->
+                    Toast.makeText(this, "채팅: ${c.nickname}", Toast.LENGTH_SHORT).show()
+                CommentAdapter.Action.Block ->
+                    Toast.makeText(this, "차단: ${c.nickname}", Toast.LENGTH_SHORT).show()
             }
         }
         binding.rvComments.apply {
@@ -96,24 +108,144 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDummyComments() {
-        val dummy = listOf(
-            Comment(nickname = "asdds", content = "저 여름마다 잘 쓰고 있어요", likeCount = 2),
-            Comment(nickname = "bt26az", content = "사진 첨부합니다~", likeCount = 0),
-        )
-        commentAdapter.submitList(dummy)
+    /** 댓글 작성 */
+    private fun postComment() {
+        val content = binding.etComment.text.toString().trim()
+        if (content.isEmpty()) return
+
+        lifecycleScope.launch {
+            try {
+                val request = AddCommentToPostRequest(content = content)
+                val res = api.addCommentToPost(postId.toInt(), request)
+                if (res.isSuccessful) {
+                    binding.etComment.text.clear()
+                    loadComments()
+                } else {
+                    Toast.makeText(this@LifeTipsDetailActivity, "댓글 등록 실패", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this@LifeTipsDetailActivity, "댓글 등록 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
-    // 댓글  ---------------------------------------------------------
 
+    /** 댓글 삭제(필요 시 사용) */
+    private fun deleteComment(commentId: Int) {
+        lifecycleScope.launch {
+            try {
+                val res = api.deleteCommentFromPost(postId.toInt(), commentId)
+                if (res.isSuccessful) {
+                    loadComments()
+                } else {
+                    Toast.makeText(this@LifeTipsDetailActivity, "댓글 삭제 실패", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this@LifeTipsDetailActivity, "댓글 삭제 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
+    /** 댓글 목록 로드 */
+    private fun loadComments() {
+        lifecycleScope.launch {
+            try {
+                val res = api.getPostComments(postId.toInt())
+                if (res.isSuccessful) {
+                    val items = res.body()?.result ?: emptyList()
+                    val comments = items.map { item ->
+                        // 프로젝트 내 정의된 Comment 데이터클래스를 사용하세요 (org.w3c.dom.Comment 말고!)
+                        Comment(
+                            nickname = item.nickname,
+                            content = item.content,
+                            likeCount = 0
+                        )
+                    }
+                    commentAdapter.submitList(comments)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
+    /** 좋아요 토글 */
+    private fun toggleLike() {
+        lifecycleScope.launch {
+            try {
+                if (isLiked) {
+                    val res = api.unlikepost(postId.toInt())
+                    if (res.isSuccessful) {
+                        isLiked = false
+                        binding.postlikeicon.setImageResource(R.drawable.ic_board_like)
+                    }
+                } else {
+                    val res = api.likepost(postId.toInt())
+                    if (res.isSuccessful) {
+                        isLiked = true
+                        binding.postlikeicon.setImageResource(R.drawable.ic_board_like_filled)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
+    /** 스크랩 토글 */
+    private fun toggleScrap() {
+        lifecycleScope.launch {
+            try {
+                if (isScrapped) {
+                    val res = api.unscrapPost(postId.toInt())
+                    if (res.isSuccessful) {
+                        isScrapped = false
+                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_off)
+                    }
+                } else {
+                    val res = api.scrapPost(postId.toInt())
+                    if (res.isSuccessful) {
+                        isScrapped = true
+                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_on)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
+    /** 공유 팝업 */
+    private fun showSharePopup() {
+        val dialog = Dialog(this)
+        val view = LayoutInflater.from(this).inflate(R.layout.share_nwon_popup, null)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(view)
+        dialog.setCancelable(true)
+
+        val link = "https://yourapp.com/post/$postId"
+        view.findViewById<EditText?>(R.id.shareLinkEditText)?.setText(link)
+        view.findViewById<View?>(R.id.copyButton)?.setOnClickListener {
+            copyToClipboard("post_link", link)
+            Toast.makeText(this, "링크가 복사되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+        view.findViewById<View?>(R.id.closeButton)?.setOnClickListener { dialog.dismiss() }
+
+        dialog.show()
+    }
+
+    private fun copyToClipboard(label: String, text: String) {
+        val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cm.setPrimaryClip(ClipData.newPlainText(label, text))
+    }
+
+    /** 상세 바인딩 */
     private fun bindDetail(d: PostDetailResponse.Detail) {
         binding.tvTitle.text = d.title
         binding.tvNickname.text = d.nickname ?: "익명"
 
-        // 프로필 이미지
+        // 프로필
         val pUrl = d.profileImageUrl
         if (!pUrl.isNullOrBlank()) {
             Glide.with(this)
@@ -126,8 +258,8 @@ class LifeTipsDetailActivity : AppCompatActivity() {
             binding.ivProfile.setImageResource(R.drawable.profile_base)
         }
 
+        // 메타(지역명 없으면 시간만)
         val timeAgo = toTimeAgo(d.createdAt)
-        // LIFE_TIP은 regionName=null → 시간만 보여주기
         binding.tvMeta.text = d.regionName?.let { "$it · $timeAgo" } ?: timeAgo
 
         binding.tvContent.text = d.content
@@ -137,35 +269,45 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         binding.tvIconLike.text = d.likeCount.toString()
         binding.tvIconViews.text = "조회수 ${d.viewCount}"
 
-        // 하단 "댓글 N" 텍스트도 갱신
+        // 하단 "댓글 N"
         binding.tvCommentCount.text = "댓글 ${d.commentCount}"
 
-        // 이미지 0~2장 처리
-        val urls = d.imageUrls.orEmpty()
-        when (urls.size) {
-            0 -> binding.photoRow.visibility = View.GONE
-            1 -> {
-                binding.photoRow.visibility = View.VISIBLE
-                binding.ivPhoto1.visibility = View.VISIBLE
-                binding.ivPhoto2.visibility = View.GONE
-                Glide.with(this).load(urls[0]).centerCrop().into(binding.ivPhoto1)
-            }
-            else -> {
-                binding.photoRow.visibility = View.VISIBLE
-                binding.ivPhoto1.visibility = View.VISIBLE
-                binding.ivPhoto2.visibility = View.VISIBLE
-                Glide.with(this).load(urls[0]).centerCrop().into(binding.ivPhoto1)
-                Glide.with(this).load(urls[1]).centerCrop().into(binding.ivPhoto2)
+        // 이미지 스트립 (최대 5장)
+        val urls = d.imageUrls.orEmpty().filter { it.isNotBlank() }.take(5)
+        binding.photoScroll.isVisible = urls.isNotEmpty()
+        val strip = binding.photoStrip
+        strip.removeAllViews()
+        if (urls.isNotEmpty()) {
+            val tileSize = dp(155)   // 높이와 동일한 정사각형
+            val gap = dp(10)
+            urls.forEachIndexed { idx, url ->
+                val iv = ImageView(this).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        tileSize,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    ).apply {
+                        if (idx != urls.lastIndex) marginEnd = gap
+                    }
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    setBackgroundResource(R.drawable.rectangle_tips)
+                }
+                Glide.with(this).load(url).into(iv)
+                strip.addView(iv)
             }
         }
     }
 
+    /** 로딩 상태 처리(필요 시 ProgressBar 연결) */
     private fun setLoading(loading: Boolean) {
-        // 필요시 ProgressBar 제어
-        // binding.progress.isVisible = loading
+        // binding.progress.isVisible = loading  // 레이아웃에 있으면 사용
+        binding.btnSendComment.isEnabled = !loading
     }
 
-    // API 24 호환 "n분 전"
+    /** dp → px */
+    private fun dp(v: Int): Int =
+        (v * resources.displayMetrics.density).toInt()
+
+    /** ISO → "n분 전" */
     private fun toTimeAgo(iso: String): String = try {
         val trimmed = iso.substringBefore('.') // 2025-08-10T21:07:28
         val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
@@ -178,6 +320,7 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         val days = hours / 24
 
         when {
+            mins < 1 -> "방금 전"
             mins < 60 -> "${mins}분 전"
             hours < 24 -> "${hours}시간 전"
             days < 7 -> "${days}일 전"
@@ -187,4 +330,3 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         iso.substringBefore('.').replace('T', ' ')
     }
 }
-

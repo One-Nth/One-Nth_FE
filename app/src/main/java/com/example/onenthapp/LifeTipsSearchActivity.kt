@@ -25,13 +25,13 @@ class LifeTipsSearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // 툴바/뒤로가기
-        binding.ivBack.setOnClickListener { finish() }
+        binding.toolbarSearchResult.setNavigationOnClickListener { finish() }
 
         // 인텐트에서 검색어/게시판 타입 받기
         val query = intent.getStringExtra("query").orEmpty()
         val boardType = (intent.getStringExtra("boardType") ?: "life_tip")
             .uppercase(Locale.getDefault()) // "LIFE_TIP", "DISCOUNT", "RESTAURANT"
-        binding.tvSearchKeyword.text = query
+        binding.toolbarSearchResult.title = query
 
         // RecyclerView
         adapter = LifeTipsSearchAdapter { item ->

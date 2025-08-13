@@ -28,11 +28,11 @@ class ChatCheckActivity : AppCompatActivity() {
             finish()
         }
 
-        // 거래 완료
-        binding.reviewButton.setOnClickListener {
-            val intent = Intent(this, WriteReviewActivity::class.java)
-            startActivity(intent)
-        }
+//        // 거래 완료
+//        binding.reviewButton.setOnClickListener {
+//            val intent = Intent(this, ngWriteReviewActivity::class.java)
+//            startActivity(intent)
+//        }
 
 
         // 택배 거래 버튼 클릭 시 운송장 입력란 보여주기

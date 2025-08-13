@@ -3,6 +3,8 @@
     android:height="155dp"
     android:viewportWidth="155"
     android:viewportHeight="155">
+  <solid android:color="@android:color/transparent"/>
+  <corners android:radius="12dp"/>
   <path
       android:pathData="M15,0L140,0A15,15 0,0 1,155 15L155,140A15,15 0,0 1,140 155L15,155A15,15 0,0 1,0 140L0,15A15,15 0,0 1,15 0z"
       android:fillColor="#E2E2E2"/>

@@ -2,35 +2,49 @@ package com.example.onenthapp
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.util.TokenManager
+import kotlinx.coroutines.launch
 
-class ScrapProductFragment : Fragment(R.layout.fragment_scrap_ntip) {
+class ScrapProductFragment : Fragment(R.layout.fragment_mypost_product) {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: ScrapProductAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewScrapProduct)
+        recyclerView = view.findViewById(R.id.recyclerViewMyPostProduct)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = ScrapProductAdapter(emptyList())
+        recyclerView.adapter = adapter
 
-        // Map 리스트 형태로 데이터 전달
-        val products = listOf(
-            mapOf(
-                "tag" to "같이 사요",
-                "name" to "상품 A",
-                "info" to "가격 10,000원 / 2개 / 원래 12,000원",
-                "views" to "조회수 24",
-                "time" to "3분 전"
-            ),
-            mapOf(
-                "tag" to "공동구매",
-                "name" to "상품 B",
-                "info" to "가격 5,000원 / 1개 / 원래 7,000원",
-                "views" to "조회수 15",
-                "time" to "10분 전"
-            )
-        )
+        loadPage(page = 1, size = 10)
+    }
 
-        recyclerView.adapter = ScrapProductAdapter(products)
+    private fun loadPage(page: Int, size: Int) {
+        val token = TokenManager.getAccessToken()
+        if (token.isNullOrBlank()) {
+            Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val resp = RetrofitInstance.memberApi.getScrappedItems(
+                    bearerToken = "Bearer $token",
+                    page = page,
+                    size = size
+                )
+                val items = resp.result?.items.orEmpty()
+                adapter.submitList(items)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "스크랩 불러오기 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

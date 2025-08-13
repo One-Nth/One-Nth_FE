@@ -1,6 +1,7 @@
 package com.example.onenthapp
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -25,6 +26,13 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import com.google.android.material.chip.Chip
+import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
+import android.view.KeyEvent
+import android.graphics.Color
+import android.text.Editable
+import android.text.TextWatcher
 
 class CreateLifePostActivity : AppCompatActivity() {
 
@@ -33,6 +41,10 @@ class CreateLifePostActivity : AppCompatActivity() {
     // 선택 이미지(최대 10장)
     private val pickedUris = mutableListOf<Uri>()
     private val maxImages = 5
+
+    // ✅ 태그 저장소 (# 없이 저장)
+    private val tagList = mutableListOf<String>()
+    private val maxTags = 10  // 필요하면 조절
 
     // 갤러리에서 여러 장 선택
     private val pickImagesLauncher =
@@ -72,10 +84,79 @@ class CreateLifePostActivity : AppCompatActivity() {
             pickImagesLauncher.launch("image/*")
         }
 
+        // ✅ 태그 입력 세팅
+        setupTagInput()
+
         // 초기 렌더
         updateImageCount()
         renderThumbnails()
     }
+    /** ✅ 태그 입력 로직: 엔터/완료/쉼표/스페이스로 확정, 칩 생성 */
+    private fun setupTagInput() = with(binding) {
+        // 키보드 '완료' 눌렀을 때
+        etTags.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                addTagFromInput()
+                true
+            } else false
+        }
+        // 하드웨어 엔터키(줄바꿈)도 처리
+        etTags.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                addTagFromInput(); true
+            } else false
+        }
+        // 입력 중에 공백/쉼표로 구분해도 추가
+        etTags.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val str = s?.toString().orEmpty()
+                if (str.endsWith(" ") || str.endsWith(",")) addTagFromInput()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+    }
+
+    /** ✅ 입력창의 텍스트를 하나의 태그로 변환해서 칩 추가 */
+    private fun addTagFromInput() {
+        val raw = binding.etTags.text?.toString()?.trim()?.removeSuffix(",").orEmpty()
+        val clean = raw.removePrefix("#").trim()
+        if (clean.isBlank()) { binding.etTags.text?.clear(); return }
+
+        if (tagList.size >= maxTags) {
+            Toast.makeText(this, "태그는 최대 ${maxTags}개까지 가능합니다.", Toast.LENGTH_SHORT).show()
+            binding.etTags.text?.clear()
+            return
+        }
+        // 중복 방지(대소문자 구분 없이)
+        if (tagList.any { it.equals(clean, ignoreCase = true) }) {
+            binding.etTags.text?.clear()
+            return
+        }
+
+        tagList.add(clean)
+        addTagChip(clean)
+        binding.etTags.text?.clear()
+    }
+
+    /** ✅ ChipGroup에 칩 추가 (초록 배경 + X 버튼) */
+    private fun addTagChip(tag: String) {
+        val chip = Chip(this).apply {
+            text = "# $tag"
+            isCloseIconVisible = true
+            // 색상(연한 초록 배경 + 초록 텍스트) — 필요 시 프로젝트 색상으로 교체
+            chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#E7F6ED"))
+            setTextColor(ContextCompat.getColor(this@CreateLifePostActivity, R.color.main_green))
+            closeIconTint = ColorStateList.valueOf(ContextCompat.getColor(this@CreateLifePostActivity, R.color.main_green))
+            setOnCloseIconClickListener {
+                tagList.remove(tag)
+                binding.chipGroupTags.removeView(this)
+            }
+        }
+        binding.chipGroupTags.addView(chip)
+    }
+
 
     /** 상단의 "1/10" 같은 카운트 UI 갱신 */
     private fun updateImageCount() {
@@ -155,7 +236,7 @@ class CreateLifePostActivity : AppCompatActivity() {
         val content = binding.etContent.text?.toString()?.trim().orEmpty()
         val link = binding.etLink.text?.toString()?.trim().orEmpty()
         val tagsInput = binding.etTags.text?.toString()?.trim().orEmpty()
-        val tags = if (tagsInput.isBlank()) emptyList() else tagsInput.split(",").map { it.trim() }
+        val tags = tagList.toList()
 
         if (title.isBlank() || content.isBlank()) {
             Toast.makeText(this, "제목과 내용을 입력해 주세요.", Toast.LENGTH_SHORT).show()
@@ -163,8 +244,19 @@ class CreateLifePostActivity : AppCompatActivity() {
         }
 
         val payload = when (postType) {
-            "LIFE_TIP" -> PostPayload(title = title, content = content, link = link.ifBlank { null }, tags = tags)
-            "DISCOUNT", "RESTAURANT" -> PostPayload(title = title, content = content, address = null, placeName = null, tags = tags)
+            "LIFE_TIP" -> PostPayload(
+                title = title,
+                content = content,
+                link = link.ifBlank { null },
+                tags = tags
+            )
+            "DISCOUNT", "RESTAURANT" -> PostPayload(
+                title = title,
+                content = content,
+                address = null,
+                placeName = null,
+                tags = tags
+            )
             else -> {
                 Toast.makeText(this, "지원하지 않는 postType 입니다.", Toast.LENGTH_SHORT).show()
                 return
