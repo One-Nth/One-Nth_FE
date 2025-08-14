@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_search_detail"
+    app:startDestination="@id/emptyFragment">
+
+    <fragment
+        android:id="@+id/emptyFragment"
+        android:name="com.example.onenthapp.feature.item.EmptyFragment"
+        android:label="empty" />
+
+    <fragment
+        android:id="@+id/groupPurchaseDetailFragment"
+        android:name="com.example.onenthapp.feature.item.GroupPurchaseDetailFragment">
+        <argument
+            android:name="productId"
+            app:argType="long" />
+        <argument
+            android:name="initialScraped"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/sharingItemDetailFragment"
+        android:name="com.example.onenthapp.feature.item.SharingItemDetailFragment">
+        <argument
+            android:name="productId"
+            app:argType="long" />
+        <argument
+            android:name="initialScraped"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+
+</navigation>
+
+

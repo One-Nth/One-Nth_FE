@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.example.onenthapp.chat.ChatActivity
+import com.example.onenthapp.feature.chat.ChatActivity
 import com.example.onenthapp.databinding.ActivityMainBinding
 import com.example.onenthapp.model.HomeTabType
 import com.example.onenthapp.model.SharedViewModel
@@ -69,10 +69,37 @@ class MainActivity : AppCompatActivity() {
             lifePostType = b.getString("postType") ?: "LIFE_TIP"
         }
 
+        // 검색 결과에서 상세로 이동 요청 처리 (인텐트 플래그)
+        intent?.let { maybeIntent ->
+            if (maybeIntent.getBooleanExtra("navigate_to_detail", false)) {
+                val productId = maybeIntent.getLongExtra("detail_item_id", -1L)
+                val isShare = maybeIntent.getBooleanExtra("detail_is_share", false)
+                val initialScraped = maybeIntent.getBooleanExtra("detail_initial_scraped", false)
+                if (productId != -1L) {
+                    if (isShare) {
+                        navController.navigate(
+                            R.id.action_home_to_sharedetail,
+                            Bundle().apply {
+                                putLong("productId", productId)
+                                putBoolean("initialScraped", initialScraped)
+                            }
+                        )
+                    } else {
+                        navController.navigate(
+                            R.id.action_home_to_buydetail,
+                            Bundle().apply {
+                                putLong("productId", productId)
+                                putBoolean("initialScraped", initialScraped)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
         // 화면 이동 시 하단바/FAB 노출 & FAB 모드 전환
         navController.addOnDestinationChangedListener { _, dest, _ ->
             val hideOn = setOf(
-                R.id.action_search_to_productdetail,
                 R.id.action_global_complete,
                 R.id.groupPurchaseDetailFragment,
                 R.id.action_home_to_buydetail,
@@ -152,6 +179,39 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == 1000) {
             val allGranted = grandResults.all { it == PackageManager.PERMISSION_GRANTED }
             if (!allGranted) finish()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val navController =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+        intent?.let { maybeIntent ->
+            if (maybeIntent.getBooleanExtra("navigate_to_detail", false)) {
+                val productId = maybeIntent.getLongExtra("detail_item_id", -1L)
+                val isShare = maybeIntent.getBooleanExtra("detail_is_share", false)
+                val initialScraped = maybeIntent.getBooleanExtra("detail_initial_scraped", false)
+                if (productId != -1L) {
+                    if (isShare) {
+                        navController.navigate(
+                            R.id.action_home_to_sharedetail,
+                            Bundle().apply {
+                                putLong("productId", productId)
+                                putBoolean("initialScraped", initialScraped)
+                            }
+                        )
+                    } else {
+                        navController.navigate(
+                            R.id.action_home_to_buydetail,
+                            Bundle().apply {
+                                putLong("productId", productId)
+                                putBoolean("initialScraped", initialScraped)
+                            }
+                        )
+                    }
+                }
+                maybeIntent.removeExtra("navigate_to_detail")
+            }
         }
     }
 }
