@@ -139,9 +139,7 @@ class AlertSettingsActivity : AppCompatActivity() {
                             binding.alertSwitch1.isChecked = userSettings.scrapAlertSummary?.enabled ?: false
                             binding.alertSwitch2.isChecked = userSettings.reviewAlertSummary?.enabled ?: false
 
-                            keywordAdapter.submitList(userSettings.keywordAlertSummaryList.toList())
-
-                            keywordAdapter.submitList(userSettings.keywordAlertSummaryList.toList())
+                            keywordAdapter.submitList(response.body()?.result?.keywordAlertSummaryList?.toList())
 
                             // 추가: 빈 리스트일 때 강제로 notifyDataSetChanged()
                             if (userSettings.keywordAlertSummaryList.isEmpty()) {

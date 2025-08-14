@@ -21,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.onenthapp.chat.ChatRoomActivity
+import com.example.onenthapp.data.chat.ChatNameRequest
 import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
 import com.example.onenthapp.data.post.PostDetailResponse
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
@@ -97,16 +98,52 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         commentAdapter = CommentAdapter { action, c ->
             when (action) {
                 CommentAdapter.Action.Chat -> {
-                    // ✅ ChatRoomActivity로 이동
-                    val intent = Intent(this, ChatRoomActivity::class.java).apply {
-                        // 나중에 서버에서 writerId 내려주면 아래처럼 같이 넘기면 됨
-                        // putExtra("peerId", c.writerId)
-                        putExtra("peerNickname", c.nickname)   // 선택
-                        putExtra("fromPostId", postId)          // 선택
+                    // ✅ 서버로 채팅방 생성 요청 보내기
+                    val token = TokenManager.getAccessToken()
+                    if (token.isNullOrEmpty()) {
+                        Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                        return@CommentAdapter
                     }
-                    startActivity(intent)
-                }
-                CommentAdapter.Action.Block ->
+
+                    lifecycleScope.launch {
+                        try {
+                            val token = TokenManager.getAccessToken()
+                            if (token.isNullOrEmpty()) {
+                                Toast.makeText(this@LifeTipsDetailActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                                return@launch
+                            }
+
+                            // Retrofit 인터페이스에 맞게 파라미터 직접 전달
+                            val res = RetrofitInstance.messageApi.createChatRoom(
+                                targetMemberId = c.writeId,
+                                chatRoomType = "TIP_SHARE"
+                            )
+
+                            if (res.isSuccessful && res.body()?.isSuccess == true) {
+                                val chatRoom = res.body()!!.result!!
+
+                                // 채팅방 화면으로 이동
+                                val intent = Intent(this@LifeTipsDetailActivity, ChatRoomActivity::class.java).apply {
+                                    putExtra("chatRoomId", chatRoom.chatRoomId)
+                                    putExtra("peerNickname", chatRoom.chatRoomName)
+                                    putExtra("targetId",c.writeId)
+                                    putExtra("nickname", c.nickname)
+                                }
+                                startActivity(intent)
+                            } else {
+                                Toast.makeText(this@LifeTipsDetailActivity, "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(
+                                this@LifeTipsDetailActivity,
+                                "채팅방 오류: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }}        }
+
+
+                    CommentAdapter.Action.Block ->
                     Toast.makeText(this, "차단: ${c.nickname}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -171,7 +208,8 @@ class LifeTipsDetailActivity : AppCompatActivity() {
                         Comment(
                             nickname = item.nickname,
                             content = item.content,
-                            likeCount = 0
+                            likeCount = 0,
+                            writeId = item.memberId
                         )
                     }
                     commentAdapter.submitList(comments)

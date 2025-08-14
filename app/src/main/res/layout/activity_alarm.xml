@@ -11,8 +11,9 @@
     <RelativeLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:padding="5.17dp"
+        android:layout_height="81dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
