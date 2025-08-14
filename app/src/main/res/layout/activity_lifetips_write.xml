@@ -211,6 +211,17 @@
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:singleLine="true"
+                app:singleSelection="true"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp" />
 
             <!-- 장소 섹션 (DISCOUNT/RESTAURANT 전용) -->
             <LinearLayout
@@ -267,7 +278,7 @@
             </LinearLayout>
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroup"
+                android:id="@+id/chipGroupLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
