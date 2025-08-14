@@ -283,25 +283,6 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
-//    private fun toggleScrap() {
-//        lifecycleScope.launch {
-//            try {
-//                if (isScrapped) {
-//                    val res = RetrofitInstance.notificationboardApi.unscrapPost(postId.toInt())
-//                    if (res.isSuccessful) {
-//                        isScrapped = false
-//                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_off)
-//                    }
-//                } else {
-//                    val res = RetrofitInstance.notificationboardApi.scrapPost(postId.toInt())
-//                    if (res.isSuccessful) {
-//                        isScrapped = true
-//                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_on)
-//                    }
-//                }
-//            } catch (_: Exception) { }
-//        }
-//    }
 
     private fun showSharePopup() {
         val dialog = Dialog(this)

@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val sharedViewModel: SharedViewModel by viewModels()
 
     // Tip 탭의 현재 게시판 타입 (LIFE_TIP/DISCOUNT/RESTAURANT)
-    private var tipPostType: String = "LIFE_TIP"
+    private var lifePostType: String = "LIFE_TIP"
 
     /** 생활꿀팁 글쓰기 vs 상품 등록 */
     private enum class FabMode { TIP_POST_WRITE, PRODUCT_REGISTER }
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         // ✅ TipFragment에서 현재 탭의 postType 받기
         supportFragmentManager.setFragmentResultListener("board_tab", this) { _, b ->
-            tipPostType = b.getString("postType") ?: "LIFE_TIP"
+            lifePostType = b.getString("postType") ?: "LIFE_TIP"
         }
 
         // 화면 이동 시 하단바/FAB 노출 & FAB 모드 전환
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 // 생활꿀팁/할인정보/맛집 글쓰기 단일 화면
                 startActivity(
                     Intent(this, CreateLifePostActivity::class.java)
-                        .putExtra("postType", tipPostType)
+                        .putExtra("postType", lifePostType)
                 )
             } else {
                 // 상품 등록 (현재 홈 탭에 따라)

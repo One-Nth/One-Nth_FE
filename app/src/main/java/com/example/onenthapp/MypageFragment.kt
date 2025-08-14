@@ -35,11 +35,11 @@ class MypageFragment : Fragment() {
             startActivity(intent)
         }
 
-        val policyButton = view.findViewById<LinearLayout>(R.id.menuPolicy)
-        policyButton.setOnClickListener {
-            val intent = Intent(requireContext(), PolicyActivity::class.java)
-            startActivity(intent)
-        }
+//        val policyButton = view.findViewById<LinearLayout>(R.id.menuPolicy)
+//        policyButton.setOnClickListener {
+//            val intent = Intent(requireContext(), PolicyActivity::class.java)
+//            startActivity(intent)
+//        }
 
         // ✅ 스크랩한 글 클릭 시 이동
         val scrapButton = view.findViewById<LinearLayout>(R.id.menuScrap)
