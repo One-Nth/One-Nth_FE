@@ -10,7 +10,7 @@ import com.example.onenthapp.R
 import com.example.onenthapp.data.chat.ChatMessage
 
 class ChatAdapter(
-    private val myMemberId: Long // 본인 닉네임으로 메시지 방향 구분
+    private val myMemberId: Int // 본인 닉네임으로 메시지 방향 구분
 ) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
     private val messages = mutableListOf<ChatMessage>()

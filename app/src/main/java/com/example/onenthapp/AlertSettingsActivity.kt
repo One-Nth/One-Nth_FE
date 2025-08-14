@@ -82,8 +82,8 @@ class AlertSettingsActivity : AppCompatActivity() {
 
             // 스크랩 알림 스위치
             binding.alertSwitch1.setOnCheckedChangeListener { _, isChecked ->
-                Log.d(TAG, "Scrap alert switch changed to: $isChecked")
-                updateScrapAlert(isChecked)
+//                Log.d(TAG, "Scrap alert switch changed to: $isChecked")
+//                updateScrapAlert(isChecked)
             }
 
             // 리뷰 알림 스위치
@@ -128,60 +128,45 @@ class AlertSettingsActivity : AppCompatActivity() {
     }
 
     private fun loadUserSettings() {
-        Log.d(TAG, "loadUserSettings started")
-
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                Log.d(TAG, "Making API call to getUserSettings")
                 val response = repository.getUserSettings()
-                Log.d(TAG, "API response received. IsSuccessful: ${response.isSuccessful}")
-
                 if (response.isSuccessful) {
                     val body = response.body()
-                    Log.d(TAG, "Response body isSuccess: ${body?.isSuccess}")
-                    Log.d(TAG, "Response body message: ${body?.message}")
-                    Log.d(TAG, "Response body code: ${body?.code}")
-
                     if (body?.isSuccess == true) {
                         val userSettings = body.result
-                        Log.d(TAG, "UserSettings received:")
-                        Log.d(TAG, "- Scrap alert enabled: ${userSettings.scrapAlertSummary.enabled}")
-                        Log.d(TAG, "- Review alert enabled: ${userSettings.reviewAlertSummary.enabled}")
-                        Log.d(TAG, "- Keyword alerts count: ${userSettings.keywordAlertSummaryList.size}")
-
-                        userSettings.keywordAlertSummaryList.forEachIndexed { index, keyword ->
-                            Log.d(TAG, "Keyword $index: ${keyword.keyword} (${keyword.keywordAlertType}) - enabled: ${keyword.enabled}")
-                        }
-
                         withContext(Dispatchers.Main) {
-                            // 스위치 상태 설정
-                            binding.alertSwitch1.isChecked = userSettings.scrapAlertSummary.enabled
-                            binding.alertSwitch2.isChecked = userSettings.reviewAlertSummary.enabled
+                            binding.alertSwitch1.isChecked = userSettings.scrapAlertSummary?.enabled ?: false
+                            binding.alertSwitch2.isChecked = userSettings.reviewAlertSummary?.enabled ?: false
 
-                            // 키워드 목록 표시
-                            keywordAdapter.submitList(userSettings.keywordAlertSummaryList)
-                            Log.d(TAG, "UI updated successfully")
+                            keywordAdapter.submitList(userSettings.keywordAlertSummaryList.toList())
+
+                            keywordAdapter.submitList(userSettings.keywordAlertSummaryList.toList())
+
+                            // 추가: 빈 리스트일 때 강제로 notifyDataSetChanged()
+                            if (userSettings.keywordAlertSummaryList.isEmpty()) {
+                                keywordAdapter.notifyDataSetChanged()
+                            }
+
                         }
                     } else {
-                        Log.e(TAG, "API returned success=false: ${body?.message}")
                         withContext(Dispatchers.Main) {
                             Toast.makeText(this@AlertSettingsActivity, "설정을 불러오는데 실패했습니다: ${body?.message}", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {
-                    Log.e(TAG, "HTTP error: ${response.code()} - ${response.message()}")
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@AlertSettingsActivity, "서버 오류: ${response.code()}", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Exception in loadUserSettings: ${e.message}", e)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
+
 
     private fun registerRegionKeyword() {
         Log.d(TAG, "registerRegionKeyword started")
@@ -274,29 +259,29 @@ class AlertSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateScrapAlert(isEnabled: Boolean) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = repository.updateScrapAlert(isEnabled)
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful && response.body()?.isSuccess == true) {
-                        Toast.makeText(this@AlertSettingsActivity,
-                            if (isEnabled) "스크랩 알림이 활성화되었습니다." else "스크랩 알림이 비활성화되었습니다.",
-                            Toast.LENGTH_SHORT).show()
-                    } else {
-                        // 실패 시 스위치 상태 되돌리기
-                        binding.alertSwitch1.isChecked = !isEnabled
-                        Toast.makeText(this@AlertSettingsActivity, "설정 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    binding.alertSwitch1.isChecked = !isEnabled
-                    Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
+//    private fun updateScrapAlert(isEnabled: Boolean) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            try {
+//                val response = repository.updateScrapAlert(isEnabled)
+//                withContext(Dispatchers.Main) {
+//                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+//                        Toast.makeText(this@AlertSettingsActivity,
+//                            if (isEnabled) "스크랩 알림이 활성화되었습니다." else "스크랩 알림이 비활성화되었습니다.",
+//                            Toast.LENGTH_SHORT).show()
+//                    } else {
+//                        // 실패 시 스위치 상태 되돌리기
+//                        binding.alertSwitch1.isChecked = !isEnabled
+//                        Toast.makeText(this@AlertSettingsActivity, "설정 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    binding.alertSwitch1.isChecked = !isEnabled
+//                    Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
+//    }
 
     private fun updateReviewAlert(isEnabled: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -380,8 +365,13 @@ class AlertSettingsActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
+                // 삭제 후 서버 성공 응답을 받았을 때
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AlertSettingsActivity, "선택한 키워드가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                    toggleEditMode(false)
+
+                    // 서버에서 최신 데이터 다시 불러오기
+                    loadUserSettings() // 여기서 데이터를 다시 받아서 어댑터에 submitList() 호출 필요
                 }
             }
         }

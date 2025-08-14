@@ -47,6 +47,7 @@
         <activity android:name=".LifeTipsSearchActivity" />
         <activity android:name=".LifeTipsDetailActivity" />
         <activity android:name=".chat.ChatCheckActivity" />
+        <activity android:name=".chat.ChatBlockActivity"/>
 
         <activity
             android:name=".chat.ChatRoomActivity"

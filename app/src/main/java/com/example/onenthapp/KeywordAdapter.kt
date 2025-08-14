@@ -22,42 +22,42 @@ class KeywordAdapter(
     }
 
     inner class KeywordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val keywordText: TextView = itemView.findViewById(R.id.alertKeywordText)
-        val keywordIcon: ImageView = itemView.findViewById(R.id.alertIcon)
+        private val keywordText: TextView = itemView.findViewById(R.id.alertKeywordText)
+        private val keywordIcon: ImageView = itemView.findViewById(R.id.alertIcon)
+        private val deleteIcon: ImageView = itemView.findViewById(R.id.deleteIcon) // 추가
 
         fun bind(keyword: KeywordAlertSummary) {
             Log.d(TAG, "Binding keyword: ${keyword.keyword}, enabled: ${keyword.enabled}")
             try {
                 keywordText.text = "# ${keyword.keyword}"
 
-                // 알림 상태에 따른 아이콘 변경
-                if (keyword.enabled) {
-                    keywordIcon.setImageResource(R.drawable.ic_alarmbell)
-                    keywordIcon.alpha = 1.0f
-                } else {
-                    keywordIcon.setImageResource(R.drawable.ic_alarmbell)
-                    keywordIcon.alpha = 0.5f
-                }
+                // 알림 상태에 따른 아이콘 투명도 처리
+                keywordIcon.setImageResource(R.drawable.ic_alarmbell)
 
-                // 편집 모드에 따른 처리
                 val editMode = isEditModeProvider()
                 Log.d(TAG, "Edit mode: $editMode")
 
                 if (editMode) {
-                    // 편집 모드일 때는 클릭으로 삭제 선택
-                    itemView.setOnClickListener {
-                        Log.d(TAG, "Delete clicked for keyword: ${keyword.keyword}")
+                    // 편집 모드: 삭제 아이콘 표시, 알림 아이콘 비활성화
+                    deleteIcon.visibility = View.VISIBLE
+                    keywordIcon.visibility=View.GONE
+
+
+                    deleteIcon.setOnClickListener {
+                        Log.d(TAG, "Delete icon clicked for keyword: ${keyword.keyword}")
                         onDeleteClick(keyword.keywordAlertId, keyword.keywordAlertType)
                     }
-                    itemView.background = itemView.context.getDrawable(R.drawable.edittext_border2) // 선택 가능한 상태 표시
+
                 } else {
-                    // 일반 모드일 때는 알림 아이콘 클릭으로 on/off 토글
+                    // 일반 모드: 삭제 아이콘 숨기고, 알림 아이콘 토글 기능 활성화
+                    deleteIcon.visibility = View.GONE
+                    keywordIcon.visibility=View.VISIBLE
                     keywordIcon.setOnClickListener {
                         Log.d(TAG, "Toggle clicked for keyword: ${keyword.keyword}, current enabled: ${keyword.enabled}")
                         onToggleClick(keyword.keywordAlertId, keyword.keywordAlertType, !keyword.enabled)
                     }
-                    itemView.setOnClickListener(null)
-                    itemView.background = itemView.context.getDrawable(R.drawable.edittext_border2)
+
+                    deleteIcon.setOnClickListener(null)
                 }
 
             } catch (e: Exception) {

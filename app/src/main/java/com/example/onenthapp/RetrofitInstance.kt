@@ -91,7 +91,6 @@ object RetrofitInstance {
         retrofit.create(ReviewApi::class.java)
     }
 
-
     val transactionApi: TransactionApi by lazy {
         retrofit.create(TransactionApi::class.java)
     }

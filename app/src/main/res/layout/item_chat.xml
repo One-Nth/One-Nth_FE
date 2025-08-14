@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_chat_bubble_received"
             android:padding="10dp"
-            android:textColor="#FFFFFF" />
+            android:textColor="#111111" />
     </LinearLayout>
 
 </LinearLayout>

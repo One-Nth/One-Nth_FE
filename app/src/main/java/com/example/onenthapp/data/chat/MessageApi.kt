@@ -6,13 +6,14 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MessageApi {
 
     // 채팅방 메세지 조회
     @GET("chats/{chatRoomId}/messages")
     suspend fun getChatMessages(
-        @Path("chatRoomId") chatRoomId: Long
+        @Path("chatRoomId") chatRoomId: Int
     ): Response<ChatResponse>
 
     // 채팅방 이름 조회 (생성 포함)
@@ -24,12 +25,12 @@ interface MessageApi {
     // 채팅방 목록 조회
     @GET("chats/rooms")
     suspend fun getChatListMessages(
-        @Path("chatRoomType") chatRoomType: String
+        @Query("chatRoomType") chatRoomType: String
     ): Response<ChatListResponse>
 
     // 채팅방 나가기
     @DELETE("chats/{chatRoomId}/leave")
     suspend fun leaveChatRoom(
-        @Path("chatRoomId") chatRoomId: Long
+        @Path("chatRoomId") chatRoomId: Int
     ): Response<LeaveChatResponse>
 }
