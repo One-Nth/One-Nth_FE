@@ -7,6 +7,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
@@ -37,4 +38,13 @@ interface PostApi {
         @Header("Authorization") bearer: String,
         @Path("postId") postId: Long
     ): Response<PostDetailResponse>
+
+    @Multipart
+    @PATCH("post/{postId}")
+    suspend fun patchPost(
+        @Header("Authorization") token: String,
+        @Path("postId") postId: Long,
+        @Part("post") postJson: RequestBody,                 // JSON 문자열
+        @Part images: List<MultipartBody.Part>? = null       // 선택
+    ): BaseResponse<PatchPostResult>
 }

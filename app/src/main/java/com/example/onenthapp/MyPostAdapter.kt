@@ -3,6 +3,7 @@ package com.example.onenthapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,6 +14,9 @@ import com.example.onenthapp.data.post.MyPostItem
 class MyPostAdapter(
     private val onItemClick: ((MyPostItem) -> Unit)? = null
 ) : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
+
+    private var showExtraIcon: Boolean = false   // 기본 OFF
+    private var onExtraClick: ((MyPostItem) -> Unit)? = null
 
     companion object {
         private val diff = object : DiffUtil.ItemCallback<MyPostItem>() {
@@ -38,6 +42,7 @@ class MyPostAdapter(
         private val tvLike = v.findViewById<TextView>(R.id.tvLikeCount)
         private val tvViews = v.findViewById<TextView>(R.id.tvViews)
         private val tvTime = v.findViewById<TextView>(R.id.tvTime)
+        private val ivExtra = v.findViewById<ImageView>(R.id.ivExtra)
 
         fun bind(item: MyPostItem) {
             tvCategory.text = labelFor(item.postType)
@@ -50,6 +55,14 @@ class MyPostAdapter(
 
             // ✅ 아이템 클릭 → 콜백에 현재 아이템 전달
             itemView.setOnClickListener { onItemClick?.invoke(item) }
+
+            // 우측 상단(끝) 아이콘 노출/숨김 + 클릭
+            ivExtra.visibility = if (showExtraIcon) View.VISIBLE else View.GONE
+            if (showExtraIcon) {
+                ivExtra.setOnClickListener { onExtraClick?.invoke(item) }
+            } else {
+                ivExtra.setOnClickListener(null)
+            }
         }
     }
 
@@ -66,4 +79,15 @@ class MyPostAdapter(
     private fun formatTime(raw: String): String = try {
         raw.replace('T', ' ').take(19)
     } catch (_: Throwable) { raw }
+
+    /** 내 글 보기 화면에서만 우측 아이콘 노출 여부 설정 */
+    fun setShowExtraIcon(value: Boolean) {
+        showExtraIcon = value
+        notifyDataSetChanged()
+    }
+
+    /** 우측 아이콘 클릭 콜백 설정 */
+    fun setOnExtraClick(listener: ((MyPostItem) -> Unit)?) {
+        onExtraClick = listener
+    }
 }
