@@ -18,6 +18,7 @@ import com.example.onenthapp.util.TokenManager
 import com.example.onenthapp.data.MyRegionApi
 import com.example.onenthapp.data.MapMarkerApi
 import com.example.onenthapp.data.BookmarkApi
+import com.example.onenthapp.data.ItemSearchApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
@@ -111,6 +112,10 @@ object RetrofitInstance {
     }
     val bookmarkApi: BookmarkApi by lazy {
         retrofit.create(BookmarkApi::class.java)
+    }
+
+    val itemSearchApi: ItemSearchApi by lazy {
+        retrofit.create(ItemSearchApi::class.java)
     }
 
 }

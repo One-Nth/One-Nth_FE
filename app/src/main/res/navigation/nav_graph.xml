@@ -31,17 +31,6 @@
                 app:argType="boolean" />
         </action>
     </fragment>
-
-    <fragment
-        android:id="@+id/searchResultFragment"
-        android:name="com.example.onenthapp.SearchResultFragment"
-        android:label="검색 결과"
-        tools:layout="@layout/fragment_search_result">
-        <action
-            android:id="@+id/action_search_to_productdetail"
-            app:destination="@id/productDetailFragment" />
-    </fragment>
-
     <fragment
         android:id="@+id/statsFragment"
         android:name="com.example.onenthapp.StatsFragment"

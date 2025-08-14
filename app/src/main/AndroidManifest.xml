@@ -96,5 +96,6 @@
         <activity
             android:name=".EditPostActivity"
             android:exported="false" />
+        <activity android:name=".SearchResultActivity" android:exported="false" />
     </application>
 </manifest>

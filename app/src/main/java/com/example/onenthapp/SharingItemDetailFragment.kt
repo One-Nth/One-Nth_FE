@@ -45,7 +45,7 @@ class SharingItemDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
-        var currentScraped = requireArguments().getBoolean("initialScraped", false)
+        var currentScraped = requireArguments().getBoolean("initialScraped")
         
         fun renderIcon() {
             binding.btnBookmark.setImageResource(
@@ -75,7 +75,7 @@ class SharingItemDetailFragment : Fragment() {
                 if (resp.isSuccessful && resp.body()?.isSuccess == true) {
                     bindDetail(resp.body()!!.result)
                 } else {
-                    Toast.makeText(requireContext(), "불러오기 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "불러오기 실패: ${resp.code()} ${resp.errorBody()?.string() ?: resp.message()} ", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
@@ -112,7 +112,7 @@ class SharingItemDetailFragment : Fragment() {
             tvMethod.text        = if(d?.purchaseMethod == "OFFLINE") "직거래" else "온라인"
             tvSellerName.text    = d?.writerNickname
             // status는 API에서 제공하는 statusLabel 사용
-            tvStatus.text        = d?.statusLabel ?: "상태없음"
+            tvStatus.text        = d?.statusLabel ?: "판매중"
 
             // 인증 상태 표시
             tvVerification.text  = if(d?.writerVerified == true) "본인 인증 완료" else "본인 인증 미완료"

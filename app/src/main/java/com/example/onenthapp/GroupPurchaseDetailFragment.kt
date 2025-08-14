@@ -46,7 +46,7 @@ class GroupPurchaseDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
-        var currentScraped = requireArguments().getBoolean("initalScraped")
+        var currentScraped = requireArguments().getBoolean("initialScraped")
         fun renderIcon() {
             binding.btnBookmark.setImageResource(
                 if (currentScraped) R.drawable.ic_bookmark_on else R.drawable.ic_bookmark_off
@@ -70,7 +70,7 @@ class GroupPurchaseDetailFragment : Fragment() {
                 if (resp.isSuccessful && resp.body()?.isSuccess == true) {
                     bindDetail(resp.body()!!.result)
                 } else {
-                    Toast.makeText(requireContext(), "불러오기 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "불러오기 실패: ${resp.code()} ${resp.errorBody()?.string() ?: resp.message()} ", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
@@ -97,7 +97,7 @@ class GroupPurchaseDetailFragment : Fragment() {
             tvTitle.text         = d?.title
             tvProductName.text = d?.title
             tvProductLink.text   = d?.purchaseUrl
-            tvPrice.text         = "${d?.price}원"
+            tvPrice.text         = d?.price?.let { "${it}원" } ?: "가격 협의"
             tvCategory.text      = categoryLabel
             tvProductDue.text    = d?.expirationDate ?: "없음"
             tvMethod.text        = if(d?.purchaseMethod == "OFFLINE") "직거래" else "온라인"
