@@ -319,7 +319,8 @@ class LifeTipsDetailActivity : AppCompatActivity() {
                         Comment(
                             nickname = item.nickname,
                             content = item.content,
-                            likeCount = 0
+                            likeCount = 0,
+                            writeId = item.memberId
                         )
                     }
                     commentAdapter.submitList(comments)
@@ -330,51 +331,7 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
-    /** 좋아요 토글 */
-    private fun toggleLike() {
-        lifecycleScope.launch {
-            try {
-                if (isLiked) {
-                    val res = api.unlikepost(postId.toInt())
-                    if (res.isSuccessful) {
-                        isLiked = false
-                        binding.postlikeicon.setImageResource(R.drawable.ic_board_like)
-                    }
-                } else {
-                    val res = api.likepost(postId.toInt())
-                    if (res.isSuccessful) {
-                        isLiked = true
-                        binding.postlikeicon.setImageResource(R.drawable.ic_board_like_filled)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
-    /** 스크랩 토글 */
-    private fun toggleScrap() {
-        lifecycleScope.launch {
-            try {
-                if (isScrapped) {
-                    val res = api.unscrapPost(postId.toInt())
-                    if (res.isSuccessful) {
-                        isScrapped = false
-                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_off)
-                    }
-                } else {
-                    val res = api.scrapPost(postId.toInt())
-                    if (res.isSuccessful) {
-                        isScrapped = true
-                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_on)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     /** 공유 팝업 */
     private fun showSharePopup() {
