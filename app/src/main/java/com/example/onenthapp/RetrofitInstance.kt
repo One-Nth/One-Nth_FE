@@ -3,7 +3,7 @@ package com.example.onenthapp
 import android.util.Log
 import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.MemberApi
-import com.example.onenthapp.data.PlusApi
+import com.example.onenthapp.data.item.PlusApi
 import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
@@ -15,9 +15,10 @@ import com.example.onenthapp.data.transaction.TransactionApi
 import com.example.onenthapp.data.post.PostApi
 
 import com.example.onenthapp.util.TokenManager
-import com.example.onenthapp.data.MyRegionApi
-import com.example.onenthapp.data.MapMarkerApi
-import com.example.onenthapp.data.BookmarkApi
+import com.example.onenthapp.data.map.MyRegionApi
+import com.example.onenthapp.data.map.MapMarkerApi
+import com.example.onenthapp.data.item.BookmarkApi
+import com.example.onenthapp.data.item.ItemSearchApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
@@ -111,6 +112,10 @@ object RetrofitInstance {
     }
     val bookmarkApi: BookmarkApi by lazy {
         retrofit.create(BookmarkApi::class.java)
+    }
+
+    val itemSearchApi: ItemSearchApi by lazy {
+        retrofit.create(ItemSearchApi::class.java)
     }
 
 }

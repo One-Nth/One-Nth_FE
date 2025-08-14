@@ -3,13 +3,20 @@ package com.example.onenthapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onenthapp.data.post.MyPostItem
 
-class MyPostAdapter : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
+// MyPostAdapter.kt
+class MyPostAdapter(
+    private val onItemClick: ((MyPostItem) -> Unit)? = null
+) : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
+
+    private var showExtraIcon: Boolean = false   // 기본 OFF
+    private var onExtraClick: ((MyPostItem) -> Unit)? = null
 
     companion object {
         private val diff = object : DiffUtil.ItemCallback<MyPostItem>() {
@@ -19,7 +26,6 @@ class MyPostAdapter : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
                 oldItem == newItem
         }
 
-        // postType → 한글 라벨 매핑
         private fun labelFor(type: String?): String = when (type?.uppercase()) {
             "LIFE_TIP"   -> "생활꿀팁"
             "DISCOUNT"   -> "할인 정보"
@@ -36,24 +42,27 @@ class MyPostAdapter : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
         private val tvLike = v.findViewById<TextView>(R.id.tvLikeCount)
         private val tvViews = v.findViewById<TextView>(R.id.tvViews)
         private val tvTime = v.findViewById<TextView>(R.id.tvTime)
+        private val ivExtra = v.findViewById<ImageView>(R.id.ivExtra)
 
-        fun bind(it: MyPostItem) {
-            // ▸ 카테고리 라벨
-            tvCategory.text = labelFor(it.postType)
+        fun bind(item: MyPostItem) {
+            tvCategory.text = labelFor(item.postType)
+            tvTitle.text = item.postTitle
+            tvContent.text = item.content
+            tvComment.text = item.commentCount.toString()
+            tvLike.text = item.likeCount.toString()
+            tvViews.text = "조회수 ${item.viewCount}"
+            tvTime.text = formatTime(item.createdTime)
 
-            // ▸ 제목
-            tvTitle.text = it.postTitle
+            // ✅ 아이템 클릭 → 콜백에 현재 아이템 전달
+            itemView.setOnClickListener { onItemClick?.invoke(item) }
 
-            // ▸ 보조 텍스트
-            tvContent.text = it.content
-
-            // ▸ 카운트들
-            tvComment.text = it.commentCount.toString()
-            tvLike.text = it.likeCount.toString()
-            tvViews.text = "조회수 ${it.viewCount}"
-
-            // ▸ 시간
-            tvTime.text = formatTime(it.createdTime)
+            // 우측 상단(끝) 아이콘 노출/숨김 + 클릭
+            ivExtra.visibility = if (showExtraIcon) View.VISIBLE else View.GONE
+            if (showExtraIcon) {
+                ivExtra.setOnClickListener { onExtraClick?.invoke(item) }
+            } else {
+                ivExtra.setOnClickListener(null)
+            }
         }
     }
 
@@ -63,10 +72,22 @@ class MyPostAdapter : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
         return VH(v)
     }
 
-    override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        holder.bind(getItem(position))
+    }
 
     private fun formatTime(raw: String): String = try {
-        // 서버 포맷 다양성 대비, 실패 시 원문 표시
         raw.replace('T', ' ').take(19)
     } catch (_: Throwable) { raw }
+
+    /** 내 글 보기 화면에서만 우측 아이콘 노출 여부 설정 */
+    fun setShowExtraIcon(value: Boolean) {
+        showExtraIcon = value
+        notifyDataSetChanged()
+    }
+
+    /** 우측 아이콘 클릭 콜백 설정 */
+    fun setOnExtraClick(listener: ((MyPostItem) -> Unit)?) {
+        onExtraClick = listener
+    }
 }

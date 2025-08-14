@@ -34,10 +34,10 @@
             -->
         </activity>
 
-        <activity android:name=".alarm.AlarmActivity" android:exported="false" />
+        <activity android:name=".feature.alarm.AlarmActivity" android:exported="false" />
         <activity android:name=".MyReviewActivity" android:exported="false" />
         <activity android:name=".BuyerReview" />
-        <activity android:name=".chat.ChatActivity" />
+        <activity android:name=".feature.chat.ChatActivity" />
         <activity android:name=".EditMyReviewActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".AlertSettingsActivity" />
@@ -46,11 +46,11 @@
         <activity android:name=".PolicyActivity" />
         <activity android:name=".LifeTipsSearchActivity" />
         <activity android:name=".LifeTipsDetailActivity" />
-        <activity android:name=".chat.ChatCheckActivity" />
-        <activity android:name=".chat.ChatBlockActivity"/>
+        <activity android:name=".feature.chat.ChatCheckActivity" />
+        <activity android:name=".feature.chat.ChatBlockActivity"/>
 
         <activity
-            android:name=".chat.ChatRoomActivity"
+            android:name=".feature.chat.ChatRoomActivity"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
@@ -89,10 +89,14 @@
         <activity android:name=".AllMyReviewActivity" />
         <activity android:name=".ReviewEditActivity" />
         <activity android:name=".MyPageReviewsActivity" />
-        <activity android:name=".MyRegionActivity" />
+        <activity android:name=".feature.map.MyRegionActivity" />
         <activity android:name=".CreateLifePostActivity" />
         <activity android:name=".BuyerReviewDetailActivity"
             android:exported="false" />
         <activity android:name=".chat.CancelDealActivity"/>
+        <activity
+            android:name=".EditPostActivity"
+            android:exported="false" />
+        <activity android:name=".SearchResultActivity" android:exported="false" />
     </application>
 </manifest>

@@ -1,8 +1,11 @@
 package com.example.onenthapp
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,13 +19,32 @@ class ScrapPostFragment : Fragment(R.layout.fragment_scrap_ntip) {
     private lateinit var vm: MyScrapsViewModel
     private lateinit var adapter: MyPostAdapter  // ← MyPostItem용 어댑터 재사용
 
+    // 상세에서 취소 후 돌아오면 목록 새로고침
+    private val detailLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { res ->
+        if (res.resultCode == Activity.RESULT_OK &&
+            res.data?.getBooleanExtra("needRefresh", false) == true) {
+            vm.loadFirst()
+        }
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val rv = view.findViewById<RecyclerView>(R.id.recyclerViewScrapProduct /* or proper id */)
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = MyPostAdapter()
+        // ✅ 클릭하면 상세로 이동 + "scrapped=true" 전달
+        adapter = MyPostAdapter { item ->
+            val intent = Intent(requireContext(), LifeTipsDetailActivity::class.java).apply {
+                putExtra("postId", item.postId)   // Long
+                putExtra("scrapped", true)        // 스크랩 목록에서 진입
+            }
+            detailLauncher.launch(intent)
+        }
         rv.adapter = adapter
+
 
         val api = RetrofitInstance.memberApi
         val repo = PostRepository(api)

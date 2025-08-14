@@ -33,6 +33,9 @@ import android.view.KeyEvent
 import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.ViewOutlineProvider
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class CreateLifePostActivity : AppCompatActivity() {
 
@@ -44,7 +47,7 @@ class CreateLifePostActivity : AppCompatActivity() {
 
     // ✅ 태그 저장소 (# 없이 저장)
     private val tagList = mutableListOf<String>()
-    private val maxTags = 10  // 필요하면 조절
+    private val maxTags = 5
 
     // 갤러리에서 여러 장 선택
     private val pickImagesLauncher =
@@ -184,51 +187,60 @@ class CreateLifePostActivity : AppCompatActivity() {
     }
 
 
+
     /** 개별 썸네일 셀(프레임) 생성 */
     private fun createThumbFrame(
         uri: Uri,
         index: Int,
         onRemove: () -> Unit
     ): View {
-        // 크기/마진(dp → px)
         val size = dp(116)
         val marginStart = dp(8)
+        val corner = dp(12)   // ← 모서리 라운드 정도(원하면 8~16 사이로 조절)
 
         val frame = FrameLayout(this).apply {
             layoutParams = LinearLayout.LayoutParams(size, size).apply {
                 setMargins(marginStart, 0, 0, 0)
             }
-            background = getDrawable(R.drawable.rectangle_11) // 기존 박스 배경
+            // 카메라 타일과 동일 규격 배경 유지
+            background = getDrawable(R.drawable.rectangle_11)
         }
 
-        // 썸네일 이미지
         val iv = ImageView(this).apply {
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
             scaleType = ImageView.ScaleType.CENTER_CROP
-            clipToOutline = true
         }
-        Glide.with(this).load(uri).into(iv)
+
+        // 🔸 이미지 자체에 모서리 라운드 적용(CenterCrop + RoundedCorners)
+        Glide.with(this)
+            .load(uri)
+            .transform(CenterCrop(), RoundedCorners(corner))
+            .into(iv)
+
         frame.addView(iv)
 
-        // 삭제 버튼
+        // 우상단 X
         val btnDel = ImageView(this).apply {
             layoutParams = FrameLayout.LayoutParams(dp(22), dp(22)).apply {
-                // 오른쪽 위
                 gravity = android.view.Gravity.END or android.view.Gravity.TOP
-                val pad = dp(10)
-                setPadding(pad)
-                setMargins(pad, pad, pad, pad)
+                setMargins(dp(6), dp(6), dp(6), dp(6))
             }
             setImageResource(R.drawable.btn_delete)
+            setPadding(dp(6), dp(6), dp(6), dp(6)) // View에 패딩 4방향
             setOnClickListener { onRemove() }
+            bringToFront()
         }
         frame.addView(btnDel)
 
         return frame
     }
+
+
+
+
 
     /** 글 등록 */
     private fun submit(postType: String) {

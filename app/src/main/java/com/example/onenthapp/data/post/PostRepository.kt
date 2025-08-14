@@ -95,4 +95,24 @@ class PostRepository(private val api: MemberApi) {
     }
 
 
+    suspend fun cancelMyLike(postId: Long): Result<Unit> = runCatching {
+        val bearer = tokenOrThrow()
+        val resp = api.cancelMyLikedPost(bearer, postId)
+        if (!resp.isSuccessful ||
+            resp.body()?.isSuccess != true ||
+            resp.body()?.result?.isSuccess != true
+        ) error(resp.body()?.message ?: "공감 취소 실패")
+        Unit
+    }
+
+    suspend fun cancelMyScrapPost(postId: Long): Result<Unit> = runCatching {
+        val resp = api.cancelMyScrapPost(tokenOrThrow(), postId)
+        if (!resp.isSuccessful ||
+            resp.body()?.isSuccess != true ||
+            resp.body()?.result?.isSuccess != true
+        ) {
+            error(resp.body()?.message ?: "스크랩 취소 실패")
+        }
+        Unit
+    }
 }
