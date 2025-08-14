@@ -18,6 +18,10 @@ data class PostDetailResponse(
         val likeCount: Int,
         val scrapStatus: Boolean,
         val viewCount: Int,
+        val tags: List<String>?,            // 추가
+        val address: String?,               // 추가
+        val placeName: String?,             // 추가
+        val link: String?,                  // 추가 (LIFE_TIP)
         val createdAt: String
     )
 }
