@@ -27,6 +27,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import androidx.appcompat.app.AlertDialog
 
 class EditPostActivity : AppCompatActivity() {
 
@@ -109,18 +110,24 @@ class EditPostActivity : AppCompatActivity() {
         ivBack.setOnClickListener { finish() }
         ivEdit.setOnClickListener { submitUpdate() }
 
-        cameraTile.setOnClickListener {
-            val remain = maxImages - uiImages.size
-            if (remain <= 0) {
-                Toast.makeText(this@EditPostActivity, "이미지는 최대 $maxImages 장까지 가능합니다.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            pickImagesLauncher.launch("image/*")
-        }
+        // ✅ 팝업 없이 바로 삭제 실행
+        ivDelete.setOnClickListener { doDeletePost() }
+
+        cameraTile.setOnClickListener { /* ... */ }
 
         updateImageCount()
         renderThumbnails()
     }
+
+
+//    private fun confirmDelete() {
+//        AlertDialog.Builder(this)
+//            .setTitle("게시글 삭제")
+//            .setMessage("이 게시글을 삭제할까요?")
+//            .setPositiveButton("삭제") { _, _ -> doDeletePost() }
+//            .setNegativeButton("취소", null)
+//            .show()
+//    }
 
     /** 상세 조회 → 제목/내용/기존 이미지(URL) 선반영 */
     private fun loadDetail() {
@@ -232,6 +239,42 @@ class EditPostActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun doDeletePost() {
+        val token = TokenManager.getAccessToken()
+        if (token.isNullOrBlank()) {
+            Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 중복 클릭 방지
+        binding.ivDelete.isEnabled = false
+        binding.ivEdit.isEnabled = false
+
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitInstance.postApi.deletePost(
+                    bearer = "Bearer $token",
+                    postId = postId
+                )
+
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                    Toast.makeText(this@EditPostActivity, "삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                    setResult(Activity.RESULT_OK)  // 목록으로 돌아가 새로고침 용
+                    finish()
+                } else {
+                    val msg = resp.body()?.message ?: "삭제 실패 (HTTP ${resp.code()})"
+                    Toast.makeText(this@EditPostActivity, msg, Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@EditPostActivity, "오류: ${e.message}", Toast.LENGTH_SHORT).show()
+            } finally {
+                binding.ivDelete.isEnabled = true
+                binding.ivEdit.isEnabled = true
+            }
+        }
+    }
+
 
     // ---------------- 썸네일 렌더 ----------------
 
