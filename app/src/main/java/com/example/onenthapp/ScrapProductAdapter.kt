@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.example.onenthapp.data.MyPostProductItem
 import java.time.Duration
 import java.time.OffsetDateTime
-import com.example.onenthapp.R
 
 class ScrapProductAdapter(
     private var items: List<MyPostProductItem>
@@ -46,7 +45,7 @@ class ScrapProductAdapter(
 //            else -> it.itemType
 //        }
         h.tvName.text = it.productName
-        h.tvInfo.text = "가격 ${it.price.formatWon()}"
+        h.tvInfo.text = "${it.price.formatWon()}"
 //        h.tvViews.text = "조회수 -"
 //        h.tvTime.text = it.createdTime.toRelative()
 
@@ -72,14 +71,14 @@ class ScrapProductAdapter(
     fun Long.formatWon(): String =
         NumberFormat.getInstance().format(this) + "원"
 
-private fun String.toRelative(): String = try {
-    val odt = OffsetDateTime.parse(this)
-    val minutes = Duration.between(odt, OffsetDateTime.now()).toMinutes()
-    when {
-        minutes < 1 -> "방금 전"
-        minutes < 60 -> "${minutes}분 전"
-        minutes < 60 * 24 -> "${minutes / 60}시간 전"
-        minutes < 60 * 24 * 7 -> "${minutes / (60 * 24)}일 전"
+    private fun String.toRelative(): String = try {
+        val odt = OffsetDateTime.parse(this)
+        val minutes = Duration.between(odt, OffsetDateTime.now()).toMinutes()
+        when {
+            minutes < 1 -> "방금 전"
+            minutes < 60 -> "${minutes}분 전"
+            minutes < 60 * 24 -> "${minutes / 60}시간 전"
+            minutes < 60 * 24 * 7 -> "${minutes / (60 * 24)}일 전"
         else -> odt.toLocalDate().toString()
     }
 } catch (_: Exception) { this }
