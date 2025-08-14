@@ -5,19 +5,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.onenthapp.chat.ChatRoomActivity
 import com.example.onenthapp.R
 
 data class ChatNotification(
+    val chatRoomId: Int,
     val nickname: String,
     val message: String,
     val time: String
 )
 
 class ChatNotificationAdapter(
-    private val items: List<ChatNotification>,
+    private var items: List<ChatNotification>,
     private val context: Context
 ) : RecyclerView.Adapter<ChatNotificationAdapter.ViewHolder>() {
+
+    // 클릭 리스너 저장할 변수 선언
+    private var onItemClickListener: ((ChatNotification) -> Unit)? = null
+
+    // 클릭 리스너 등록 함수
+    fun setOnItemClickListener(listener: (ChatNotification) -> Unit) {
+        onItemClickListener = listener
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nickname: TextView = itemView.findViewById(R.id.nicknameTextView)
@@ -26,8 +34,10 @@ class ChatNotificationAdapter(
 
         init {
             itemView.setOnClickListener {
-                val intent = Intent(context, ChatRoomActivity::class.java)
-                context.startActivity(intent)
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener?.invoke(items[position])
+                }
             }
         }
     }
@@ -46,4 +56,9 @@ class ChatNotificationAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun updateData(newItems: List<ChatNotification>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
 }

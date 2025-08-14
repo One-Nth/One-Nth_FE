@@ -14,17 +14,13 @@ class ChatActivity : AppCompatActivity() {
         val btnTip = binding.btnTip
 
         if (selected == 0) {
-            btnOnenth.setBackgroundResource(R.drawable.tab_button_selected)
-            btnOnenth.setTextColor(resources.getColor(R.color.main_white, null))
+            btnOnenth.setBackgroundResource(R.drawable.onenth_on)
 
-            btnTip.setBackgroundResource(R.drawable.tab_button_unselected)
-            btnTip.setTextColor(resources.getColor(R.color.main_black, null))
+            btnTip.setBackgroundResource(R.drawable.tiponenth_off)
         } else {
-            btnOnenth.setBackgroundResource(R.drawable.tab_button_unselected)
-            btnOnenth.setTextColor(resources.getColor(R.color.main_black, null))
+            btnOnenth.setBackgroundResource(R.drawable.onenth_off)
 
-            btnTip.setBackgroundResource(R.drawable.tab_button_selected)
-            btnTip.setTextColor(resources.getColor(R.color.main_white, null))
+            btnTip.setBackgroundResource(R.drawable.tiponenth_on)
         }
 
         binding.viewPager.currentItem = selected
@@ -35,6 +31,7 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         val adapter = ChatPagerAdapter(this)
         binding.viewPager.adapter = adapter

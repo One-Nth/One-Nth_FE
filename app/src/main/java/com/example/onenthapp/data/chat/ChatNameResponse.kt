@@ -9,5 +9,5 @@ data class ChatNameResponse(
 
 data class ChatNameResult(
     val chatRoomName: String,
-    val chatRoomId: Long
+    val chatRoomId: Int
 )

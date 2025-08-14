@@ -1,5 +1,6 @@
-package com.example.onenthapp
+package com.example.onenthapp.chat
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,16 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.graphics.Color
-
+import androidx.lifecycle.lifecycleScope
+import com.example.onenthapp.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.launch
 
 class BottomChatActionDialogFragment(
     private val type: ActionType
 ) : BottomSheetDialogFragment() {
 
     enum class ActionType {
-        REPORT, BLOCK, MUTE, EXIT
+        REPORT,  MUTE, EXIT
     }
 
     override fun getTheme(): Int = R.style.BottomSheet_NoDim_HalfHeight
@@ -36,21 +38,21 @@ class BottomChatActionDialogFragment(
                 description.visibility = View.GONE
                 view.findViewById<View>(R.id.reportOptionsGroup).visibility = View.VISIBLE
                 button.text = "차단하기"
+                button.setBackgroundColor(Color.parseColor("#FF8383"))
             }
             ActionType.MUTE -> {
                 title.text = "채팅 알람을 해제하시겠습니까?"
                 description.text = "채팅 알람을 해제하면 거래 확정 및 완료 알림을\n받아볼 수 없어요."
                 button.text = "작성하기"
             }
-            ActionType.BLOCK -> {
-                title.text = "해당 사용자를 차단하시겠습니까?"
-                description.text = "해당 사용자를 차단하면 상대방과 대화할 수\n없으며 상대방 또한 메시지를 보낼 수 없습니다."
-                button.text = "차단하기"
-            }
             ActionType.EXIT -> {
                 title.text = "해당 채팅방을 나가시겠습니까?"
                 description.text = "해당 채팅방 나가기 시 채팅방의 데이터가 모두\n사라집니다."
                 button.text = "나가기"
+
+                button.setOnClickListener {
+
+                }
             }
         }
 
