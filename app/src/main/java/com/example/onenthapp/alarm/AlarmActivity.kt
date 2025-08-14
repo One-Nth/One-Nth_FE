@@ -1,6 +1,7 @@
 package com.example.onenthapp.alarm
 
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ class AlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm)
+
 
         tabLayout = findViewById(R.id.tabLayout)
         recyclerView = findViewById(R.id.recyclerView)
@@ -36,6 +38,7 @@ class AlarmActivity : AppCompatActivity() {
                     1 -> adapter.updateData(getShareTogetherData())
                 }
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })

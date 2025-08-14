@@ -244,7 +244,8 @@ app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/deal_complete"
-
+        android:layout_marginStart="41dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notification_cancel"
         />
     <ImageView

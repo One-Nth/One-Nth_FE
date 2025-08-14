@@ -22,6 +22,7 @@ class ChatRoomActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatRoomBinding
     private lateinit var chatAdapter: ChatAdapter
+    private lateinit var webSocketClient: ChatWebSocketClient
 
     private val chatRoomId = 1L // 실제 프로젝트에서는 intent로 받아올 것
     private val myMemberId = 1L // 본인 ID (로그인 정보 기준)
@@ -31,11 +32,29 @@ class ChatRoomActivity : AppCompatActivity() {
         binding = ActivityChatRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        webSocketClient = ChatWebSocketClient(
+            chatRoomId = chatRoomId,
+            memberId = myMemberId
+        ) { message ->
+            runOnUiThread {
+                chatAdapter.addMessage(message)
+                binding.chatRecyclerView.scrollToPosition(chatAdapter.itemCount - 1)
+            }
+        }
+        webSocketClient.connect()
+
+
         setupRecyclerView()
         setupToolbar()
         loadMessages()
         setupSendButton()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        webSocketClient.close()
+    }
+
 
     private fun setupRecyclerView() {
         chatAdapter = ChatAdapter(myMemberId)
@@ -90,15 +109,21 @@ class ChatRoomActivity : AppCompatActivity() {
             val content = binding.messageInput.text.toString().trim()
             if (content.isNotEmpty()) {
                 val newMessage = ChatMessage(
-                    senderMemberId = myMemberId,   // 본인 ID 넣기
+                    senderMemberId = myMemberId,
                     content = content,
-                    messageTime = "" // 필요하면 현재 시간 넣기
+                    messageTime = "" // 서버에서 시간 처리할 수도 있음
                 )
-                chatAdapter.addMessage(newMessage)  // 리사이클러뷰에 메시지 추가
-                binding.chatRecyclerView.scrollToPosition(chatAdapter.itemCount - 1)  // 스크롤 최하단으로 이동
-                binding.messageInput.text.clear()  // 입력창 초기화
+
+                // 로컬 UI에 먼저 보여주기
+                chatAdapter.addMessage(newMessage)
+                binding.chatRecyclerView.scrollToPosition(chatAdapter.itemCount - 1)
+                binding.messageInput.text.clear()
+
+                // 서버에 WebSocket으로 전송
+                webSocketClient.sendMessage(newMessage)
             }
         }
     }
+
 }
 
