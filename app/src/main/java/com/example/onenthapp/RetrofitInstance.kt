@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.util.Log
 import com.example.onenthapp.data.AuthApi
 import com.example.onenthapp.data.MemberApi
 import com.example.onenthapp.data.PlusApi
@@ -89,7 +90,6 @@ object RetrofitInstance {
     val reviewApi: ReviewApi by lazy {
         retrofit.create(ReviewApi::class.java)
     }
-
 
     val transactionApi: TransactionApi by lazy {
         retrofit.create(TransactionApi::class.java)

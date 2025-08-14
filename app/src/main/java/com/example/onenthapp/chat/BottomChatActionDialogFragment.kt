@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import com.example.onenthapp.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.launch
 
 class BottomChatActionDialogFragment(
     private val type: ActionType
@@ -47,6 +49,10 @@ class BottomChatActionDialogFragment(
                 title.text = "해당 채팅방을 나가시겠습니까?"
                 description.text = "해당 채팅방 나가기 시 채팅방의 데이터가 모두\n사라집니다."
                 button.text = "나가기"
+
+                button.setOnClickListener {
+
+                }
             }
         }
 

@@ -7,7 +7,7 @@ class ChatRepository {
     private val api = RetrofitInstance.messageApi
 
     // 채팅방 메세지 조회
-    suspend fun getMessages(chatRoomId: Long) =
+    suspend fun getMessages(chatRoomId: Int) =
         api.getChatMessages(chatRoomId)
 
     // 채팅방 이름 조회
@@ -19,6 +19,6 @@ class ChatRepository {
         api.getChatListMessages(chatRoomType)
 
     // 채팅방 나가기
-    suspend fun leaveChatRoom(chatRoomId: Long): Response<LeaveChatResponse> =
+    suspend fun leaveChatRoom(chatRoomId: Int): Response<LeaveChatResponse> =
         api.leaveChatRoom(chatRoomId)
 }

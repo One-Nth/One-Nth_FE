@@ -1,21 +1,16 @@
 package com.example.onenthapp.chat
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.onenthapp.chat.BottomChatActionDialogFragment
 import com.example.onenthapp.R
 import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.chat.ChatMessage
 import com.example.onenthapp.databinding.ActivityChatRoomBinding
 import com.example.onenthapp.databinding.ChatTopToolbarBinding
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
 
 class ChatRoomActivity : AppCompatActivity() {
@@ -24,8 +19,8 @@ class ChatRoomActivity : AppCompatActivity() {
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var webSocketClient: ChatWebSocketClient
 
-    private val chatRoomId = 1L // 실제 프로젝트에서는 intent로 받아올 것
-    private val myMemberId = 1L // 본인 ID (로그인 정보 기준)
+    private val chatRoomId = 1 // 실제 프로젝트에서는 intent로 받아올 것
+    private val myMemberId = 1 // 본인 ID (로그인 정보 기준)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

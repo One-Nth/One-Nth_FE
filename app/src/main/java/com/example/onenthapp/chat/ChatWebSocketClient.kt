@@ -7,8 +7,8 @@ import okio.ByteString
 import org.json.JSONObject
 
 class ChatWebSocketClient(
-    private val chatRoomId: Long,
-    private val memberId: Long,
+    private val chatRoomId: Int,
+    private val memberId: Int,
     private val onMessageReceived: (ChatMessage) -> Unit
 ) {
     private var webSocket: WebSocket? = null
@@ -29,7 +29,7 @@ class ChatWebSocketClient(
                 try {
                     val json = JSONObject(text)
                     val message = ChatMessage(
-                        senderMemberId = json.getLong("senderMemberId"),
+                        senderMemberId = json.getInt("senderMemberId"),
                         content = json.getString("content"),
                         messageTime = json.getString("messageTime")
                     )

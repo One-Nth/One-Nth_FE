@@ -32,6 +32,7 @@ class ChatActivity : AppCompatActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         val adapter = ChatPagerAdapter(this)
         binding.viewPager.adapter = adapter
 

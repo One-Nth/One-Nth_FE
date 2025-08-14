@@ -50,7 +50,7 @@ interface UserSetApi {
     ): Response<BaseResponse>
 
     // 9. 알림 받을 키워드 삭제
-    @HTTP(method = "PATCH", path = "user-settings/keyword-alters", hasBody = true)
+    @PATCH( "user-settings/keyword-alerts")
     suspend fun deleteKeywords(@Body request: DeleteKeywordsRequest): Response<BaseResponse>
 
     // 10. 차단 목록 조회
