@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -33,7 +34,14 @@ class LikePostActivity : AppCompatActivity() {
 
         val rv = findViewById<RecyclerView>(R.id.recyclerViewLikePost)
         rv.layoutManager = LinearLayoutManager(this)
-        adapter = MyPostAdapter()
+// ✅ 클릭하면 상세로 이동
+        adapter = MyPostAdapter { item ->
+            val intent = Intent(this, LifeTipsDetailActivity::class.java).apply {
+                putExtra("postId", item.postId)   // Long
+                putExtra("liked", true)           // 공감 목록에서 진입 → 초기 하트 on
+            }
+            startActivity(intent)
+        }
         rv.adapter = adapter
 
 

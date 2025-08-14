@@ -1,8 +1,11 @@
 package com.example.onenthapp
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -17,12 +20,32 @@ class MyPostFragment : Fragment(R.layout.fragment_mypost) {
     private lateinit var vm: MyPostsViewModel
     private lateinit var adapter: MyPostAdapter
 
+    private val editLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            vm.loadFirst() // 수정/삭제 후 목록 새로고침
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val rv = view.findViewById<RecyclerView>(R.id.recyclerViewMyPost)
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = MyPostAdapter()
+
+        adapter = MyPostAdapter(
+            onItemClick = { /* ... */ }
+        ).apply {
+            setShowExtraIcon(true)// "내 글" 화면이므로 ON
+            setOnExtraClick { item ->
+                val i = Intent(requireContext(), EditPostActivity::class.java).apply {
+                    putExtra("postId", item.postId)
+                    putExtra("postType", item.postType)
+                }
+                editLauncher.launch(i) // 또는 startActivity(i)
+            }
+        }
         rv.adapter = adapter
 
         // VM 생성 (postTypeFilter는 필요 시 "TIP")

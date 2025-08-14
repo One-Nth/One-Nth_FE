@@ -61,51 +61,70 @@
         android:textColor="@color/main_black"
         android:layout_marginTop="2dp" />
 
-    <!-- 댓글/좋아요/조회수 -->
+    <!-- 댓글/좋아요/조회수 + 오른쪽 끝 이미지 -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="6dp">
+        android:layout_marginTop="6dp"
+        android:gravity="center_vertical">
 
+        <!-- 왼쪽 : 댓글/좋아요/조회수 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_board_comment" />
+
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:id="@+id/tvCommentCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:textColor="@color/main_black"
+                android:layout_marginStart="4dp"/>
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_board_like"
+                android:layout_marginStart="12dp" />
+
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:id="@+id/tvLikeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textColor="@color/main_black"
+                android:layout_marginStart="4dp"/>
+
+            <TextView
+                style="@style/PretendardSubtitle4"
+                android:id="@+id/tvViews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="조회수 24"
+                android:textColor="@color/light_gray"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+        <!-- 오른쪽 끝 이미지 -->
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/ic_board_comment" />
-
-        <TextView
-            style="@style/PretendardSubtitle4"
-            android:id="@+id/tvCommentCount"
+            android:id="@+id/ivExtra"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2"
-            android:textColor="@color/main_black"
-            android:layout_marginStart="4dp"/>
-
-        <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/ic_board_like"
-            android:layout_marginStart="12dp" />
-
-        <TextView
-            style="@style/PretendardSubtitle4"
-            android:id="@+id/tvLikeCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            android:textColor="@color/main_black"
-            android:layout_marginStart="4dp"/>
-
-        <TextView
-            style="@style/PretendardSubtitle4"
-            android:id="@+id/tvViews"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="조회수 24"
-            android:textColor="@color/light_gray"
-            android:layout_marginStart="12dp"/>
+            android:visibility="gone"
+            android:src="@drawable/edit_post"/>
     </LinearLayout>
+
 
     <View
         android:id="@+id/divider"
