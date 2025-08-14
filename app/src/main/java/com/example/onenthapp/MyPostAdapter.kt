@@ -44,8 +44,8 @@ class MyPostAdapter : ListAdapter<MyPostItem, MyPostAdapter.VH>(diff) {
             // ▸ 제목
             tvTitle.text = it.postTitle
 
-            // ▸ 보조 텍스트(장소/지역)
-            tvContent.text = it.placeName ?: (it.regionName ?: "")
+            // ▸ 보조 텍스트
+            tvContent.text = it.content
 
             // ▸ 카운트들
             tvComment.text = it.commentCount.toString()

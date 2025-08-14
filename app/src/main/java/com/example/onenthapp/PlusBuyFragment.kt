@@ -44,14 +44,6 @@ class PlusBuyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        with(binding) {
-//            tvNameError.visibility     = View.GONE
-//            tvUrlError.visibility      = View.GONE
-//            tvPriceError.visibility    = View.GONE
-//            tvLocationError.visibility = View.GONE
-//            tvExpiryError.visibility   = View.GONE
-//            tvTagsError.visibility     = View.GONE
-//        }
         // 엔터로 다음 포커스 이동
         binding.etProductName.imeOptions = EditorInfo.IME_ACTION_NEXT
         binding.etProductName.setOnEditorActionListener { _, actionId, _ ->
@@ -73,7 +65,6 @@ class PlusBuyFragment : Fragment() {
 //            }
         //val imageUri = "imageUri"
 
-//            findNavController().navigate(R.id.action_global_complete, bundle)
         binding.includeToolbar.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -234,7 +225,8 @@ class PlusBuyFragment : Fragment() {
                                 "productPrice" to priceStr,  // launch 블록 외부에서 정의된 값 사용
                                 // "firstImageUriString" to realUris.firstOrNull()?.toString(), // 필요시
                                 "productId" to newId,        // 여기서 얻은 newId 사용
-                                "isBuy" to true
+                                "isBuy" to true,
+                                "firstImageUrl" to realUris.firstOrNull()?.toString() // 첫 번째 이미지 정보
                             )
                             // 4) 완료 화면으로 이동
                             findNavController().navigate(R.id.plusCompleteFragment, bundle)

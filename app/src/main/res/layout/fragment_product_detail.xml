@@ -1,8 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
 
     <ScrollView
         android:id="@+id/product_detail"
@@ -34,28 +36,34 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="16dp">
+
                     <ImageButton
                         android:id="@+id/btn_back"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_left" />
+
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
+
                     <ImageButton
                         android:id="@+id/btn_bookmark"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:src="@drawable/ic_bookmark_off" />
+
                     <ImageButton
                         android:id="@+id/btn_share"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
                         android:src="@drawable/ic_share_gray" />
                 </LinearLayout>
 
@@ -83,60 +91,62 @@
                     android:id="@+id/layout_product_info"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
+                    android:paddingTop="10dp">
 
-                    >
                     <TextView
                         android:id="@+id/tvTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/pretendard_bold"
                         android:text="두루마리 휴지"
-                        android:layout_marginTop="25dp"
                         android:textColor="@color/main_black"
-                        android:textSize="23sp"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:textSize="22sp"
+                        app:layout_constraintStart_toStartOf="parent"
 
-                        app:layout_constraintStart_toStartOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <TextView
                         android:id="@+id/tvStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="24dp"
-                        android:textColor="@color/main_green"
                         android:layout_marginEnd="4dp"
-                        android:paddingVertical="2dp"
-                        android:textSize="13sp"
-                        android:fontFamily="@font/pretendard_regular"
-                        android:text="판매중"
                         android:background="@drawable/bg_status_tag"
+                        android:fontFamily="@font/pretendard_regular"
+                        android:paddingVertical="2dp"
+                        android:text="판매중"
+                        android:textColor="@color/main_green"
+                        android:textSize="13sp"
                         app:layout_constraintRight_toLeftOf="@id/tvCategory"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tvCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="24dp"
                         android:layout_marginEnd="4dp"
+                        android:background="@drawable/bg_category_tag"
+                        android:fontFamily="@font/pretendard_regular"
                         android:paddingVertical="2dp"
+                        android:text="생활용품"
                         android:textColor="@color/main_white"
                         android:textSize="13sp"
-                        android:fontFamily="@font/pretendard_regular"
-                        android:text="생활용품"
-                        android:background="@drawable/bg_category_tag"
                         app:layout_constraintRight_toLeftOf="@id/tvMethod"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <TextView
                         android:id="@+id/tvMethod"
                         android:layout_width="wrap_content"
                         android:layout_height="24dp"
+                        android:background="@drawable/bg_category_method"
+                        android:fontFamily="@font/pretendard_regular"
+                        android:paddingVertical="2dp"
+                        android:text="직거래"
                         android:textColor="@color/main_white"
                         android:textSize="13sp"
-                        android:paddingVertical="2dp"
-                        android:fontFamily="@font/pretendard_regular"
-                        android:text="직거래"
-                        android:background="@drawable/bg_category_method"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -148,53 +158,53 @@
                     android:background="@color/border_upperbar"
                     android:orientation="vertical" />
 
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/layout_seller_info"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginBottom="20dp"-->
-<!--                    android:gravity="center_vertical"-->
-<!--                    android:orientation="horizontal">-->
+                <!--                <LinearLayout-->
+                <!--                    android:id="@+id/layout_seller_info"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginBottom="20dp"-->
+                <!--                    android:gravity="center_vertical"-->
+                <!--                    android:orientation="horizontal">-->
 
-<!--                    <ImageView-->
-<!--                        android:id="@+id/seller_profile"-->
-<!--                        android:layout_width="54dp"-->
-<!--                        android:layout_height="54dp"-->
-<!--                        android:layout_marginEnd="11dp"-->
-<!--                        android:scaleType="fitXY"-->
-<!--                        android:src="@drawable/ph_profile_image" />-->
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/seller_profile"-->
+                <!--                        android:layout_width="54dp"-->
+                <!--                        android:layout_height="54dp"-->
+                <!--                        android:layout_marginEnd="11dp"-->
+                <!--                        android:scaleType="fitXY"-->
+                <!--                        android:src="@drawable/ph_profile_image" />-->
 
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="vertical">-->
+                <!--                    <LinearLayout-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:orientation="vertical">-->
 
-<!--                        <TextView-->
-<!--                            android:id="@+id/tv_seller_name"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_marginBottom="3dp"-->
-<!--                            android:fontFamily="@font/pretendard_semibold"-->
-<!--                            android:text="abcd123"-->
-<!--                            android:textColor="@color/main_black"-->
-<!--                            android:textSize="18sp" />-->
+                <!--                        <TextView-->
+                <!--                            android:id="@+id/tv_seller_name"-->
+                <!--                            android:layout_width="wrap_content"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:layout_marginBottom="3dp"-->
+                <!--                            android:fontFamily="@font/pretendard_semibold"-->
+                <!--                            android:text="abcd123"-->
+                <!--                            android:textColor="@color/main_black"-->
+                <!--                            android:textSize="18sp" />-->
 
-<!--                        <TextView-->
-<!--                            android:id="@+id/tv_verification"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:fontFamily="@font/pretendard_semibold"-->
-<!--                            android:text="본인 인증 완료"-->
-<!--                            android:textColor="@color/text_cost"-->
-<!--                            android:textSize="15sp" />-->
-<!--                    </LinearLayout>-->
+                <!--                        <TextView-->
+                <!--                            android:id="@+id/tv_verification"-->
+                <!--                            android:layout_width="wrap_content"-->
+                <!--                            android:layout_height="wrap_content"-->
+                <!--                            android:fontFamily="@font/pretendard_semibold"-->
+                <!--                            android:text="본인 인증 완료"-->
+                <!--                            android:textColor="@color/text_cost"-->
+                <!--                            android:textSize="15sp" />-->
+                <!--                    </LinearLayout>-->
 
-<!--                    <ImageView-->
-<!--                        android:id="@+id/profile_arrow"-->
-<!--                        android:layout_width="27dp"-->
-<!--                        android:layout_height="26dp"-->
-<!--                        android:src="@drawable/ic_right_bold" />-->
-<!--                </LinearLayout>-->
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/profile_arrow"-->
+                <!--                        android:layout_width="27dp"-->
+                <!--                        android:layout_height="26dp"-->
+                <!--                        android:src="@drawable/ic_right_bold" />-->
+                <!--                </LinearLayout>-->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_seller_info"
                     android:layout_width="match_parent"
@@ -208,25 +218,25 @@
                         android:layout_marginEnd="11dp"
                         android:scaleType="fitXY"
                         android:src="@drawable/ph_profile_image"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_seller_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="11dp"
                         android:layout_marginBottom="3dp"
                         android:fontFamily="@font/pretendard_semibold"
                         android:text="abcd123"
                         android:textColor="@color/main_black"
                         android:textSize="18sp"
+                        app:layout_constraintBottom_toTopOf="@id/tv_verification"
+                        app:layout_constraintEnd_toStartOf="@id/profile_arrow"
                         app:layout_constraintStart_toEndOf="@id/seller_profile"
                         app:layout_constraintTop_toTopOf="@id/seller_profile"
-                        app:layout_constraintEnd_toStartOf="@id/profile_arrow"
-                        app:layout_constraintBottom_toTopOf="@id/tv_verification"
-                        app:layout_constraintVertical_chainStyle="packed"
-                        android:layout_marginStart="11dp"/>
+                        app:layout_constraintVertical_chainStyle="packed" />
                     <!-- layout_marginStart을 seller_profile의 layout_marginEnd와 동일하게 주었습니다. -->
 
                     <TextView
@@ -237,21 +247,22 @@
                         android:text="지역 인증 완료"
                         android:textColor="@color/text_cost"
                         android:textSize="15sp"
-                        app:layout_constraintStart_toStartOf="@id/tv_seller_name"
-                        app:layout_constraintTop_toBottomOf="@id/tv_seller_name"
+                        app:layout_constraintBottom_toBottomOf="@id/seller_profile"
                         app:layout_constraintEnd_toEndOf="@id/tv_seller_name"
-                        app:layout_constraintBottom_toBottomOf="@id/seller_profile"/>
+                        app:layout_constraintStart_toStartOf="@id/tv_seller_name"
+                        app:layout_constraintTop_toBottomOf="@id/tv_seller_name" />
 
                     <ImageView
                         android:id="@+id/profile_arrow"
                         android:layout_width="27dp"
                         android:layout_height="26dp"
                         android:src="@drawable/ic_right_bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <View
                     android:id="@+id/group_divider_mid"
                     android:layout_width="match_parent"
@@ -286,24 +297,24 @@
                         android:text="상품명"
                         android:textColor="@color/main_black"
                         android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_product_name"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="24dp"
                         android:fontFamily="@font/pretendard_semibold"
                         android:text="잘풀리는집 두루마리 휴지"
                         android:textColor="@color/main_green"
                         android:textSize="15sp"
-                        android:layout_width="150dp"
-                        android:layout_marginEnd="24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/label_product_name"
-                        app:layout_constraintBottom_toBottomOf="@id/label_product_name"
                         app:layout_constrainedWidth="true"
-                        app:layout_constraintHorizontal_bias="0" />
+                        app:layout_constraintBottom_toBottomOf="@id/label_product_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintTop_toTopOf="@id/label_product_name" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -322,31 +333,32 @@
                         android:text="구매 링크"
                         android:textColor="@color/main_black"
                         android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_product_link"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="114dp"
+                        android:layout_marginEnd="24dp"
                         android:fontFamily="@font/pretendard_semibold"
                         android:text="https://fjsofjdsfh ..."
                         android:textColor="@color/main_green"
                         android:textSize="15sp"
-                        android:layout_width="150dp"
-                        android:layout_marginEnd="24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/label_product_link"
-                        app:layout_constraintBottom_toBottomOf="@id/label_product_link"
                         app:layout_constrainedWidth="true"
-                        app:layout_constraintHorizontal_bias="0"/>
+                        app:layout_constraintBottom_toBottomOf="@id/label_product_link"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintTop_toTopOf="@id/label_product_link" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_product_due_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp">
+                    android:layout_marginBottom="36dp">
 
                     <TextView
                         android:id="@+id/label_product_due"
@@ -358,94 +370,105 @@
                         android:text="소비 기한"
                         android:textColor="@color/main_black"
                         android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_product_due"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="114dp"
+                        android:layout_marginEnd="24dp"
                         android:fontFamily="@font/pretendard_semibold"
                         android:text="X"
                         android:textColor="@color/main_green"
                         android:textSize="15sp"
-                        android:layout_width="150dp"
-                        android:layout_marginEnd="24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/label_product_due"
-                        app:layout_constraintBottom_toBottomOf="@id/label_product_due"
                         app:layout_constrainedWidth="true"
-                        app:layout_constraintHorizontal_bias="0"/>
+                        app:layout_constraintBottom_toBottomOf="@id/label_product_due"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintTop_toTopOf="@id/label_product_due" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                    android:id="@+id/layout_product_store_info"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginBottom="36dp">-->
+                <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+                <!--                    android:id="@+id/layout_product_store_info"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginBottom="36dp">-->
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/label_product_store"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="3dp"-->
-<!--                        android:layout_marginBottom="3dp"-->
-<!--                        android:fontFamily="@font/pretendard_semibold"-->
-<!--                        android:text="보관 방법"-->
-<!--                        android:textColor="@color/main_black"-->
-<!--                        android:textSize="15sp"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent"-->
-<!--                        app:layout_constraintBottom_toBottomOf="parent"/>-->
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/label_product_store"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginTop="3dp"-->
+                <!--                        android:layout_marginBottom="3dp"-->
+                <!--                        android:fontFamily="@font/pretendard_semibold"-->
+                <!--                        android:text="보관 방법"-->
+                <!--                        android:textColor="@color/main_black"-->
+                <!--                        android:textSize="15sp"-->
+                <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                <!--                        app:layout_constraintTop_toTopOf="parent"-->
+                <!--                        app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_product_store"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginStart="114dp"-->
-<!--                        android:fontFamily="@font/pretendard_semibold"-->
-<!--                        android:text="X"-->
-<!--                        android:textColor="@color/main_green"-->
-<!--                        android:textSize="15sp"-->
-<!--                        android:layout_width="150dp"-->
-<!--                        android:layout_marginEnd="24dp"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="@id/label_product_store"-->
-<!--                        app:layout_constraintBottom_toBottomOf="@id/label_product_store"-->
-<!--                        app:layout_constrainedWidth="true"-->
-<!--                        app:layout_constraintHorizontal_bias="0"/>-->
-<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/tv_product_store"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginStart="114dp"-->
+                <!--                        android:fontFamily="@font/pretendard_semibold"-->
+                <!--                        android:text="X"-->
+                <!--                        android:textColor="@color/main_green"-->
+                <!--                        android:textSize="15sp"-->
+                <!--                        android:layout_width="150dp"-->
+                <!--                        android:layout_marginEnd="24dp"-->
+                <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                        app:layout_constraintTop_toTopOf="@id/label_product_store"-->
+                <!--                        app:layout_constraintBottom_toBottomOf="@id/label_product_store"-->
+                <!--                        app:layout_constrainedWidth="true"-->
+                <!--                        app:layout_constraintHorizontal_bias="0"/>-->
+                <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <View
-                    android:id="@+id/group_divider_bottom"
+                <LinearLayout
+                    android:id="@+id/offline_place"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@color/border_upperbar"
-                    android:orientation="vertical" />
-
-                <TextView
-                    android:id="@+id/tv_product_place"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:fontFamily="@font/pretendard_semibold"
-                    android:text="거래 희망 장소"
-                    android:textColor="@color/main_black"
-                    android:textSize="20sp" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <FrameLayout
-                    android:id="@+id/layout_location_map"
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:layout_marginBottom="27dp"
-                    android:background="@color/search_gray"
->
-                <com.kakao.vectormap.MapView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/location_map"
-                    />
-                </FrameLayout>
+                    <View
+                        android:id="@+id/group_divider_bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@color/border_upperbar"
+                        android:orientation="vertical"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tv_product_place"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="거래 희망 장소"
+                        android:textColor="@color/main_black"
+                        android:textSize="20sp"
+                        android:visibility="visible" />
+
+                    <FrameLayout
+                        android:id="@+id/layout_location_map"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:layout_marginBottom="27dp"
+                        android:background="@color/search_gray"
+                        android:visibility="visible"
+                        tools:ignore="ExtraText">
+
+                        <com.kakao.vectormap.MapView
+                            android:id="@+id/location_map"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </FrameLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -459,17 +482,17 @@
         android:elevation="40dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingVertical="20dp"
->
+        android:paddingVertical="20dp">
+
         <LinearLayout
             android:id="@+id/layout_price_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="31dp"
->
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
                 android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
@@ -480,46 +503,46 @@
                 android:textColor="#000000"
                 android:textSize="18sp" />
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:orientation="horizontal">-->
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:orientation="horizontal">-->
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:fontFamily="@font/pretendard_semibold"-->
-<!--                    android:text="원가 : "-->
-<!--                    android:textColor="@color/text_search"-->
-<!--                    android:textSize="15sp" />-->
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:fontFamily="@font/pretendard_semibold"-->
+            <!--                    android:text="원가 : "-->
+            <!--                    android:textColor="@color/text_search"-->
+            <!--                    android:textSize="15sp" />-->
 
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tv_origin_price"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:fontFamily="@font/pretendard_semibold"-->
-<!--                    android:text="20개 0000원"-->
-<!--                    android:textColor="@color/text_search"-->
-<!--                    android:textSize="15sp" />-->
+            <!--                <TextView-->
+            <!--                    android:id="@+id/tv_origin_price"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:fontFamily="@font/pretendard_semibold"-->
+            <!--                    android:text="20개 0000원"-->
+            <!--                    android:textColor="@color/text_search"-->
+            <!--                    android:textSize="15sp" />-->
 
-<!--            </LinearLayout>-->
+            <!--            </LinearLayout>-->
         </LinearLayout>
+
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_chat"
             android:layout_width="98dp"
             android:layout_height="40dp"
             android:layout_marginEnd="27dp"
-            android:id="@+id/btn_chat"
+            android:background="@drawable/btn_rounded_green_background"
             android:fontFamily="@font/pretendard_regular"
             android:text="채팅하기"
             android:textColor="@color/main_white"
             android:textSize="17sp"
-            android:background="@drawable/btn_rounded_green_background"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

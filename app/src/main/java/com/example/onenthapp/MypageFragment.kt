@@ -23,6 +23,12 @@ class MypageFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_mypage, container, false)
 
+        val backButton = view.findViewById<ImageView>(R.id.backButton)
+        backButton.setOnClickListener {
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
+        }
+
         val settingsButton = view.findViewById<ImageView>(R.id.settingsButton)
         settingsButton.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)

@@ -4,6 +4,7 @@ import NicknameResponse
 import ProfileImageResponse
 import ProfileResponse
 import com.example.onenthapp.data.post.MyPostsPage
+import com.example.onenthapp.data.userset.BaseResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -80,4 +81,18 @@ interface MemberApi {
         @Query("page") page: Int = 1,
         @Query("size") size: Int = 10
     ): MyPageItemsResponse
+
+    // 같이사요 삭제
+    @DELETE("group-purchases/{groupPurchaseId}")
+    suspend fun deleteGroupPurchase(
+        @Header("Authorization") bearerToken: String,
+        @Path("groupPurchaseId") id: Long
+    ): BaseResponse
+
+    // 함께나눠요 삭제
+    @DELETE("sharing-items/{sharingItemId}")
+    suspend fun deleteSharingItem(
+        @Header("Authorization") bearerToken: String,
+        @Path("sharingItemId") id: Long
+    ): BaseResponse
 }

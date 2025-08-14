@@ -15,6 +15,7 @@ data class MyPostItem(
     val postId: Long,
     val postType: String,
     val postTitle: String,
+    val content: String,
     val placeName: String?,    // 서버가 null 줄 수도 있어서 안전하게
     val latitude: Double?,
     val longitude: Double?,

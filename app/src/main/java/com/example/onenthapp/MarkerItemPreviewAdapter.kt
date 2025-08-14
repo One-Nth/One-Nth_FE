@@ -9,20 +9,24 @@ import com.example.onenthapp.data.MapItemPreview
 import com.example.onenthapp.databinding.ItemSearchResultBinding
 
 class MarkerItemPreviewAdapter(
-    private val onItemClick: (MapItemPreview) -> Unit
+    private val onItemClick: (MapItemPreview) -> Unit,
+    private val onBookmarkClick: (id: Long, before: Boolean, onDone: (Boolean) -> Unit) -> Unit
 ) : ListAdapter<MapItemPreview, MarkerItemPreviewAdapter.VH>(DIFF) {
 
     override fun onCreateViewHolder(p: ViewGroup, v: Int) =
-        VH(ItemSearchResultBinding.inflate(LayoutInflater.from(p.context), p, false), onItemClick)
+        VH(ItemSearchResultBinding.inflate(LayoutInflater.from(p.context), p, false), onItemClick, onBookmarkClick)
 
-    override fun onBindViewHolder(h: VH, pos: Int) = h.bind(getItem(pos))
-
+    override fun onBindViewHolder(h: VH, pos: Int) {
+        val item= getItem(pos)
+        h.bind(item)
+    }
     class VH(
         private val b: ItemSearchResultBinding,
-        private val onItemClick: (MapItemPreview) -> Unit
+        private val onItemClick: (MapItemPreview) -> Unit,
+        private val onBookmarkClick: (id: Long, before: Boolean, onDone: (Boolean) -> Unit) -> Unit
     ) : RecyclerView.ViewHolder(b.root) {
         fun bind(item: MapItemPreview) {
-            b.bind(item)
+            b.bind(item, onBookmarkClick)
             b.root.setOnClickListener { onItemClick(item) }
         }
     }

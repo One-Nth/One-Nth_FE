@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.onenthapp.chat.ChatRoomActivity
 import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
 import com.example.onenthapp.data.post.PostDetailResponse
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
@@ -94,8 +96,16 @@ class LifeTipsDetailActivity : AppCompatActivity() {
     private fun setupCommentsRv() {
         commentAdapter = CommentAdapter { action, c ->
             when (action) {
-                CommentAdapter.Action.Chat ->
-                    Toast.makeText(this, "채팅: ${c.nickname}", Toast.LENGTH_SHORT).show()
+                CommentAdapter.Action.Chat -> {
+                    // ✅ ChatRoomActivity로 이동
+                    val intent = Intent(this, ChatRoomActivity::class.java).apply {
+                        // 나중에 서버에서 writerId 내려주면 아래처럼 같이 넘기면 됨
+                        // putExtra("peerId", c.writerId)
+                        putExtra("peerNickname", c.nickname)   // 선택
+                        putExtra("fromPostId", postId)          // 선택
+                    }
+                    startActivity(intent)
+                }
                 CommentAdapter.Action.Block ->
                     Toast.makeText(this, "차단: ${c.nickname}", Toast.LENGTH_SHORT).show()
             }
@@ -107,6 +117,8 @@ class LifeTipsDetailActivity : AppCompatActivity() {
             isNestedScrollingEnabled = false
         }
     }
+
+
 
     /** 댓글 작성 */
     private fun postComment() {
