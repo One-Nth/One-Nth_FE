@@ -34,7 +34,7 @@
             style="@style/PretendardSubtitle2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="차단된 사용자 관리"
+            android:text="동네 인증 하기"
             android:textColor="@color/main_black"
             android:layout_marginStart="10dp"
             app:layout_constraintStart_toEndOf="@id/backButton"

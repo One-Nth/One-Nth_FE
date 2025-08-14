@@ -24,22 +24,22 @@ interface AuthApi {
     suspend fun signup(
         @Body request: SignupRequest
     ): Response<CommonResponse<LocalSignupResult>>
-    @POST("/api/members/login")
+    @POST("members/login")
     suspend fun login(
         @Body request: LoginRequest
     ): Response<LoginResponse>
 
-    @POST("/api/email-auth/password/request-code")
+    @POST("email-auth/password/request-code")
     suspend fun requestPasswordResetCode(
         @Body body: Map<String, String>
     ): Response<CommonResponse<String>>
 
-    @POST("/api/email-auth/password/verify-code")
+    @POST("email-auth/password/verify-code")
     suspend fun verifyPasswordResetCode(
         @Body body: Map<String, String>
     ): Response<CommonResponse<String>>
 
-    @POST("/api/members/password/reset")
+    @POST("members/password/reset")
     suspend fun resetPassword(
         @Body body: Map<String, String>
     ): Response<CommonResponse<Any>>
@@ -52,6 +52,6 @@ interface AuthApi {
         @Body req: KakaoSignupRequest
     ): Response<CommonResponse<KakaoSignupResult>>
 
-    @POST("/api/members/reissue")
+    @POST("members/reissue")
     fun reissueToken(@Body request: Map<String, String>): Call<ReissueResponse>
 }
