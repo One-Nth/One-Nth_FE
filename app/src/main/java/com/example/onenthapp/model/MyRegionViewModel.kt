@@ -1,9 +1,9 @@
 package com.example.onenthapp.model
 
 import androidx.lifecycle.*
-import com.example.onenthapp.data.MyRegion
-import com.example.onenthapp.data.MyRegionRepository
-import com.example.onenthapp.data.SimpleRegion
+import com.example.onenthapp.data.map.MyRegion
+import com.example.onenthapp.data.map.MyRegionRepository
+import com.example.onenthapp.data.map.SimpleRegion
 import kotlinx.coroutines.launch
 
 class MyRegionViewModel : ViewModel() {

@@ -43,13 +43,13 @@
 
     <fragment
         android:id="@+id/plusBuyFragment"
-        android:name="com.example.onenthapp.PlusBuyFragment"
+        android:name="com.example.onenthapp.feature.item.PlusBuyFragment"
         android:label="같이 사요 상품 등록"
         tools:layout="@layout/fragment_plus_buy" />
 
     <fragment
         android:id="@+id/plusShareFragment"
-        android:name="com.example.onenthapp.PlusShareFragment"
+        android:name="com.example.onenthapp.feature.item.PlusShareFragment"
         android:label="함께 나눠요 상품 등록"
         tools:layout="@layout/fragment_plus_share" />
 
@@ -72,12 +72,12 @@
 
     <fragment
         android:id="@+id/plusCompleteFragment"
-        android:name="com.example.onenthapp.PlusCompleteFragment"
+        android:name="com.example.onenthapp.feature.item.PlusCompleteFragment"
         android:label="상품 등록 완료"
         tools:layout="@layout/fragment_plus_complete" />
     <fragment
         android:id="@+id/groupPurchaseDetailFragment"
-        android:name="com.example.onenthapp.GroupPurchaseDetailFragment"
+        android:name="com.example.onenthapp.feature.item.GroupPurchaseDetailFragment"
         android:label="같이사요 상세">
         <argument
             android:name="productId"
@@ -85,7 +85,7 @@
     </fragment>
     <fragment
         android:id="@+id/sharingItemDetailFragment"
-        android:name="com.example.onenthapp.SharingItemDetailFragment"
+        android:name="com.example.onenthapp.feature.item.SharingItemDetailFragment"
         android:label="공유상품 상세">
         <argument
             android:name="productId"
@@ -101,7 +101,7 @@
 
     <fragment
         android:id="@+id/productDetailFragment"
-        android:name="com.example.onenthapp.ProductDetailFragment"
+        android:name="com.example.onenthapp.feature.item.ProductDetailFragment"
         android:label="상품 상세"
         tools:layout="@layout/fragment_product_detail" />
     <!-- 추후 argument 필요시 이 부분 사용 -->

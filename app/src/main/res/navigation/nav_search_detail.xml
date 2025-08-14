@@ -6,12 +6,12 @@
 
     <fragment
         android:id="@+id/emptyFragment"
-        android:name="com.example.onenthapp.EmptyFragment"
+        android:name="com.example.onenthapp.feature.item.EmptyFragment"
         android:label="empty" />
 
     <fragment
         android:id="@+id/groupPurchaseDetailFragment"
-        android:name="com.example.onenthapp.GroupPurchaseDetailFragment">
+        android:name="com.example.onenthapp.feature.item.GroupPurchaseDetailFragment">
         <argument
             android:name="productId"
             app:argType="long" />
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/sharingItemDetailFragment"
-        android:name="com.example.onenthapp.SharingItemDetailFragment">
+        android:name="com.example.onenthapp.feature.item.SharingItemDetailFragment">
         <argument
             android:name="productId"
             app:argType="long" />

@@ -1,6 +1,5 @@
 package com.example.onenthapp
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -9,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.onenthapp.data.ItemSearch
-import com.example.onenthapp.data.ItemSearchRepository
-import com.example.onenthapp.data.BookmarkRepository
+import com.example.onenthapp.data.item.ItemSearch
+import com.example.onenthapp.data.item.ItemSearchRepository
+import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.databinding.ActivitySearchResultBinding
 import com.example.onenthapp.model.HomeTabType
 import com.google.android.material.tabs.TabLayout
