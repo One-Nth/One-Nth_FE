@@ -46,14 +46,14 @@ class SharingItemDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
         var currentScraped = requireArguments().getBoolean("initialScraped", false)
-        
+
         fun renderIcon() {
             binding.btnBookmark.setImageResource(
                 if (currentScraped) R.drawable.ic_bookmark_on else R.drawable.ic_bookmark_off
             )
         }
         renderIcon()
-        
+
         binding.btnBookmark.setOnClickListener {
             val before = currentScraped
             currentScraped = !before
@@ -61,14 +61,14 @@ class SharingItemDetailFragment : Fragment() {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 val ok = if (before) bookmarkRepo.removeSharing(productId) else bookmarkRepo.addSharing(productId)
-                if (!ok) { 
-                    currentScraped = before; 
-                    renderIcon(); 
-                    Toast.makeText(requireContext(), "북마크 실패", Toast.LENGTH_SHORT).show() 
+                if (!ok) {
+                    currentScraped = before;
+                    renderIcon();
+                    Toast.makeText(requireContext(), "북마크 실패", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-        
+
         lifecycleScope.launch {
             try {
                 val resp = repo.fetchSharingItemDetail(productId)
@@ -86,6 +86,7 @@ class SharingItemDetailFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+        
     }
 
     private fun bindDetail(d: SharingItemDetailResult?) {
@@ -98,7 +99,7 @@ class SharingItemDetailFragment : Fragment() {
                 "MISC" -> "잡화"
                 else -> d?.itemCategory
             }
-            
+
         with(binding) {
             tvTitle.text         = d?.title
             tvProductName.text   = d?.title
@@ -142,14 +143,14 @@ class SharingItemDetailFragment : Fragment() {
                 viewpagerImages.visibility = View.GONE
                 dotsIndicator.visibility = View.GONE
             }
-            
+
             // item_search_result 레이아웃 바인딩 (sharingitem용)
             // 수량과 가격 정보를 sharingitem에 맞게 표시
             // tvPrice는 이미 위에서 설정됨
             // tvUnit은 "개" 단위로 표시
             // TODO: item_search_result 레이아웃의 tvUnit을 찾아서 설정
         }
-        
+
         val offline = d?.purchaseMethod == "OFFLINE"
 
         if (offline) {
@@ -157,7 +158,7 @@ class SharingItemDetailFragment : Fragment() {
             // 거래 희망 장소에 regionName 표시
             // binding.tvProductPlace.text = d?.regionName ?: "장소 정보 없음"
             // API에서 제공하는 latitude, longitude 사용 (0이 아닌 경우만)
-            if (d?.latitude != null && d?.longitude != null && 
+            if (d?.latitude != null && d?.longitude != null &&
                 d.latitude != 0.0 && d.longitude != 0.0) {
                 startMap(d.latitude, d.longitude)
             } else {
@@ -168,7 +169,7 @@ class SharingItemDetailFragment : Fragment() {
             binding.offlinePlace.visibility = View.GONE
         }
     }
-    
+
     private fun startMap(latitude: Double, longitude: Double) {
         val mapView = binding.locationMap
         mapView.start(object : MapLifeCycleCallback() {
