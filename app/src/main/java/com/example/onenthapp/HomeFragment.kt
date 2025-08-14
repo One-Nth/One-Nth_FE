@@ -1,6 +1,5 @@
 package com.example.onenthapp
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -20,28 +19,25 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavDirections
 import com.example.onenthapp.databinding.FragmentHomeBinding
 import com.example.onenthapp.databinding.ItemSearchResultBinding
-import com.example.onenthapp.model.SearchResult
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.example.onenthapp.alarm.AlarmActivity
-import com.example.onenthapp.data.BookmarkRepository
-import com.example.onenthapp.data.GroupedMarker
-import com.example.onenthapp.data.MapItemPreview
-import com.example.onenthapp.data.MapRepository
-import com.example.onenthapp.data.MyRegionRepository
+import com.example.onenthapp.feature.alarm.AlarmActivity
+import com.example.onenthapp.data.item.BookmarkRepository
+import com.example.onenthapp.data.map.GroupedMarker
+import com.example.onenthapp.data.map.MapItemPreview
+import com.example.onenthapp.data.map.MapRepository
+import com.example.onenthapp.data.map.MyRegionRepository
+import com.example.onenthapp.feature.map.MyRegionActivity
 import com.example.onenthapp.model.HomeTabType
-import com.example.onenthapp.model.SearchType
-import com.example.onenthapp.model.SharedViewModel
+ import com.example.onenthapp.model.SharedViewModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
-import com.example.onenthapp.data.PlusRepository
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.Label
@@ -320,9 +316,13 @@ class HomeFragment : Fragment() {
                     .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(et.windowToken, 0)
                 et.clearFocus()
-                //performSearch(et.text.toString())
-                //binding.bottomSheet.visibility = View.VISIBLE
-                //bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                
+                val keyword = et.text.toString().trim()
+                if (keyword.isNotBlank()) {
+                    val intent = Intent(requireContext(), SearchResultActivity::class.java)
+                    intent.putExtra("keyword", keyword)
+                    startActivity(intent)
+                }
                 true
             } else false
         }
@@ -425,7 +425,7 @@ class HomeFragment : Fragment() {
                         // peek: 핸들만
                         binding.scrollBar.isVisible = true
                         binding.midContainer.isVisible = false
-                        binding.expandedContainerFragment.isVisible = false
+                        //binding.expandedContainerFragment.isVisible = false
                         isMidPreviewVisible = false
                         bottomSheetBehavior.isDraggable = false
                     }
@@ -434,7 +434,7 @@ class HomeFragment : Fragment() {
                         // mid: 카드 1장
                         binding.scrollBar.isVisible = true
                         if (isMidPreviewVisible) binding.midContainer.isVisible = true
-                        binding.expandedContainerFragment.isVisible = false
+                        //binding.expandedContainerFragment.isVisible = false
                     }
 
                     BottomSheetBehavior.STATE_EXPANDED -> {
@@ -447,11 +447,7 @@ class HomeFragment : Fragment() {
 //                            .commitNowAllowingStateLoss()
                         binding.scrollBar.isVisible = false
                         binding.midContainer.isVisible = false
-                        binding.expandedContainerFragment.isVisible = true
-                        // 텍스트 동기화
-//                        binding.expandedContainerFragment.getFragment<>()
-//                            .editText
-//                            ?.setText(binding.searchBarEt.text.toString())
+                        //binding.expandedContainerFragment.isVisible = false
                     }
                 }
             }
