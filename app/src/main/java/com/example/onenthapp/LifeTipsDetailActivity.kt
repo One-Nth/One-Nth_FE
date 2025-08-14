@@ -18,6 +18,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.onenthapp.data.chat.ChatNameRequest
 import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
 import com.example.onenthapp.data.post.PostDetailResponse
@@ -32,6 +33,7 @@ class LifeTipsDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLifeDetailsBinding
     private lateinit var commentAdapter: CommentAdapter
+    private val api = RetrofitInstance.notificationboardApi
 
     private var postId: Long = -1L
     private var isLiked = false
@@ -51,10 +53,7 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
         renderLike(isLiked)
 
-        // ✅ 스크랩 목록에서 들어오면 true로 넘어옴
-        isScrapped = intent.getBooleanExtra("scrapped", false)
-        renderScrap(isScrapped)
-
+        // 댓글 RV
         setupCommentsRv()
         loadComments()
 
@@ -210,13 +209,52 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         commentAdapter = CommentAdapter { action, c ->
             when (action) {
                 CommentAdapter.Action.Chat -> {
-                    val intent = Intent(this, ChatRoomActivity::class.java).apply {
-                        putExtra("peerNickname", c.nickname)
-                        putExtra("fromPostId", postId)
+                    // ✅ 서버로 채팅방 생성 요청 보내기
+                    val token = TokenManager.getAccessToken()
+                    if (token.isNullOrEmpty()) {
+                        Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                        return@CommentAdapter
                     }
-                    startActivity(intent)
-                }
-                CommentAdapter.Action.Block ->
+
+                    lifecycleScope.launch {
+                        try {
+                            val token = TokenManager.getAccessToken()
+                            if (token.isNullOrEmpty()) {
+                                Toast.makeText(this@LifeTipsDetailActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                                return@launch
+                            }
+
+                            // Retrofit 인터페이스에 맞게 파라미터 직접 전달
+                            val res = RetrofitInstance.messageApi.createChatRoom(
+                                targetMemberId = c.writeId,
+                                chatRoomType = "TIP_SHARE"
+                            )
+
+                            if (res.isSuccessful && res.body()?.isSuccess == true) {
+                                val chatRoom = res.body()!!.result!!
+
+                                // 채팅방 화면으로 이동
+                                val intent = Intent(this@LifeTipsDetailActivity, ChatRoomActivity::class.java).apply {
+                                    putExtra("chatRoomId", chatRoom.chatRoomId)
+                                    putExtra("peerNickname", chatRoom.chatRoomName)
+                                    putExtra("targetId",c.writeId)
+                                    putExtra("nickname", c.nickname)
+                                }
+                                startActivity(intent)
+                            } else {
+                                Toast.makeText(this@LifeTipsDetailActivity, "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(
+                                this@LifeTipsDetailActivity,
+                                "채팅방 오류: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }}        }
+
+
+                    CommentAdapter.Action.Block ->
                     Toast.makeText(this, "차단: ${c.nickname}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -228,6 +266,9 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
+
+
+    /** 댓글 작성 */
     private fun postComment() {
         val content = binding.etComment.text.toString().trim()
         if (content.isEmpty()) return
@@ -235,7 +276,7 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val request = AddCommentToPostRequest(content = content)
-                val res = RetrofitInstance.notificationboardApi.addCommentToPost(postId.toInt(), request)
+                val res = api.addCommentToPost(postId.toInt(), request)
                 if (res.isSuccessful) {
                     binding.etComment.text.clear()
                     loadComments()
@@ -243,63 +284,56 @@ class LifeTipsDetailActivity : AppCompatActivity() {
                     Toast.makeText(this@LifeTipsDetailActivity, "댓글 등록 실패", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 Toast.makeText(this@LifeTipsDetailActivity, "댓글 등록 오류: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    /** 댓글 삭제(필요 시 사용) */
     private fun deleteComment(commentId: Int) {
         lifecycleScope.launch {
             try {
-                val res = RetrofitInstance.notificationboardApi.unlikepost(postId.toInt())
-
-                if (res.isSuccessful) loadComments()
-                else Toast.makeText(this@LifeTipsDetailActivity, "댓글 삭제 실패", Toast.LENGTH_SHORT).show()
+                val res = api.deleteCommentFromPost(postId.toInt(), commentId)
+                if (res.isSuccessful) {
+                    loadComments()
+                } else {
+                    Toast.makeText(this@LifeTipsDetailActivity, "댓글 삭제 실패", Toast.LENGTH_SHORT).show()
+                }
             } catch (e: Exception) {
+                e.printStackTrace()
                 Toast.makeText(this@LifeTipsDetailActivity, "댓글 삭제 오류: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    /** 댓글 목록 로드 */
     private fun loadComments() {
         lifecycleScope.launch {
             try {
-                val res = RetrofitInstance.notificationboardApi.getPostComments(postId.toInt())
+                val res = api.getPostComments(postId.toInt())
                 if (res.isSuccessful) {
                     val items = res.body()?.result ?: emptyList()
                     val comments = items.map { item ->
+                        // 프로젝트 내 정의된 Comment 데이터클래스를 사용하세요 (org.w3c.dom.Comment 말고!)
                         Comment(
                             nickname = item.nickname,
                             content = item.content,
-                            likeCount = 0
+                            likeCount = 0,
+                            writeId = item.memberId
                         )
                     }
                     commentAdapter.submitList(comments)
                 }
-            } catch (_: Exception) { }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
-//    private fun toggleScrap() {
-//        lifecycleScope.launch {
-//            try {
-//                if (isScrapped) {
-//                    val res = RetrofitInstance.notificationboardApi.unscrapPost(postId.toInt())
-//                    if (res.isSuccessful) {
-//                        isScrapped = false
-//                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_off)
-//                    }
-//                } else {
-//                    val res = RetrofitInstance.notificationboardApi.scrapPost(postId.toInt())
-//                    if (res.isSuccessful) {
-//                        isScrapped = true
-//                        binding.ivBookmark.setImageResource(R.drawable.ic_bookmark_on)
-//                    }
-//                }
-//            } catch (_: Exception) { }
-//        }
-//    }
 
+
+    /** 공유 팝업 */
     private fun showSharePopup() {
         val dialog = Dialog(this)
         val view = LayoutInflater.from(this).inflate(R.layout.share_nwon_popup, null)

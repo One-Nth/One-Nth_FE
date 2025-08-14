@@ -1,7 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="791dp"
+    android:layout_height="match_parent"
     android:background="@color/main_white">
 
     <!-- 툴바 -->
@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="81dp"
         android:background="#FFFFFF"
+        android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
@@ -49,8 +50,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="거래를 확정했어요!"
-        android:textSize="24sp"
+        android:textSize="30sp"
         android:textStyle="bold"
+        android:layout_marginStart="6dp"
         android:textColor="@color/main_green"
         app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"
         app:layout_constraintStart_toEndOf="@id/checkimg"
@@ -76,8 +78,8 @@
         android:textColor="@color/main_green"
         app:layout_constraintTop_toBottomOf="@id/checktitle"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="27dp"/>
 
     <!-- 상품 선택 드롭다운 -->
     <AutoCompleteTextView
@@ -89,11 +91,26 @@
         android:paddingStart="30dp"
         style="@style/PretendardBody8"
         android:inputType="none"
-        android:dropDownHeight="160dp"
+        android:dropDownHeight="334dp"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@+id/dealDateLabel"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="26dp"/>
+        android:layout_marginStart="26dp"
+        android:drawableEnd="@drawable/icon_dropbox_down"
+        android:dropDownVerticalOffset="4dp"
+        android:dropDownWidth="314dp"
+        />
+
+    <include
+        android:id="@+id/itemDropdownProduct"
+        layout="@layout/item_dropdown_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/productDropdown"
+        app:layout_constraintTop_toBottomOf="@+id/productDropdown"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="12dp"/>
 
     <TextView
         style="@style/PretendardSemibold4"
@@ -103,10 +120,10 @@
         android:text="거래 방식을 선택해주세요"
         android:textSize="18sp"
         android:textColor="@color/main_green"
-        app:layout_constraintTop_toBottomOf="@id/productDropdown"
+        app:layout_constraintTop_toBottomOf="@+id/itemDropdownProduct"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="26dp"/>
 
     <!-- 만나서 거래할래요 버튼 -->
     <Button
@@ -119,8 +136,8 @@
         android:backgroundTint="#EDF9F2"
         app:layout_constraintTop_toBottomOf="@id/deal_method"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="12dp"
-        android:layout_marginStart="26dp"/>
+        android:layout_marginTop="9dp"
+        android:layout_marginStart="30dp"/>
 
     <!-- 택배로 거래할래요 버튼 -->
     <Button
@@ -129,12 +146,12 @@
         android:layout_width="156dp"
         android:layout_height="60dp"
         android:text="택배로 거래할래요"
-        android:textColor="#b1b1b1"
+        android:textColor="#AFAFAF"
         android:backgroundTint="#F0F0F0"
         app:layout_constraintTop_toBottomOf="@id/deal_method"
         app:layout_constraintStart_toEndOf="@id/inpersonButton"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="9dp"/>
 
     <!-- 상품 금액 라벨 -->
     <TextView
@@ -148,17 +165,17 @@
         app:layout_constraintTop_toBottomOf="@id/inpersonButton"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="26dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="31dp"/>
 
     <!-- 상품 금액 입력 -->
     <com.google.android.material.textfield.TextInputEditText
         style="@style/PretendardBody8"
         android:id="@+id/dateInput"
         android:layout_width="311dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#f4f4f4"
+        android:layout_height="34dp"
+        android:background="#f4f4f4"
         android:paddingStart="12dp"
-        android:text="2000"
+        android:text="25/05/28"
         android:textColor="@color/main_black"
         app:layout_constraintTop_toBottomOf="@id/deal_date"
         app:layout_constraintStart_toStartOf="parent"
@@ -184,11 +201,11 @@
         style="@style/PretendardBody8"
         android:id="@+id/priceInput"
         android:layout_width="311dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#f4f4f4"
+        android:layout_height="34dp"
+        android:background="#f4f4f4"
         android:paddingStart="12dp"
-        android:text="2000"
-        android:textColor="@color/main_black"
+        android:text="종합 가격을 입력해주세요"
+        android:textColor="#AFAFAF"
         app:layout_constraintTop_toBottomOf="@id/deal_price"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="26dp"
@@ -213,15 +230,30 @@
         style="@style/PretendardBody8"
         android:id="@+id/originalpriceInput"
         android:layout_width="311dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#f4f4f4"
+        android:layout_height="34dp"
+        android:background="#f4f4f4"
         android:paddingStart="12dp"
-        android:text="2000"
-        android:textColor="@color/main_black"
+        android:text="단위당 원가를 입력해주세요"
+        android:textColor="#AFAFAF"
         app:layout_constraintTop_toBottomOf="@id/deal_original_price"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="26dp"
         android:layout_marginTop="8dp"/>
+
+    <!-- 거래 완료 버튼 -->
+    <Button
+        android:id="@+id/completeButton"
+        style="@style/PretendardSemibold3"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:text="저장하기"
+        android:textSize="15dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/main_green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -258,20 +290,7 @@
 <!--        android:layout_marginStart="26dp" />-->
 
 
-<!--    &lt;!&ndash; 거래 완료 버튼 &ndash;&gt;-->
-<!--    <Button-->
-<!--        android:id="@+id/completeButton"-->
-<!--        style="@style/PretendardSemibold3"-->
-<!--        android:layout_width="150dp"-->
-<!--        android:layout_height="34dp"-->
-<!--        android:text="거래 완료"-->
-<!--        android:textSize="15dp"-->
-<!--        android:textColor="@android:color/white"-->
-<!--        android:backgroundTint="@color/main_green"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/deliveryButton"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        android:layout_marginTop="32dp"/>-->
+
 
 <!--    &lt;!&ndash; 운송장 입력 라벨 &ndash;&gt;-->
 <!--    <TextView-->

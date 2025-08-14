@@ -52,6 +52,6 @@ interface AuthApi {
         @Body req: KakaoSignupRequest
     ): Response<CommonResponse<KakaoSignupResult>>
 
-    @POST("/api/members/reissue")
+    @POST("members/reissue")
     fun reissueToken(@Body request: Map<String, String>): Call<ReissueResponse>
 }

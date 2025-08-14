@@ -12,7 +12,7 @@ class ChatRepository {
 
     // 채팅방 이름 조회
     suspend fun getChatRoomName(targetMemberId: Int, chatRoomType: String): Response<ChatNameResponse> =
-        api.createChatRoom(ChatNameRequest(targetMemberId, chatRoomType))
+        api.createChatRoom(targetMemberId, chatRoomType)
 
     // 채팅 목록 조회
     suspend fun getChatRoomList(chatRoomType: String): Response<ChatListResponse> =
@@ -21,4 +21,8 @@ class ChatRepository {
     // 채팅방 나가기
     suspend fun leaveChatRoom(chatRoomId: Int): Response<LeaveChatResponse> =
         api.leaveChatRoom(chatRoomId)
+
+    // id->name
+    suspend fun getMemberNickName(memberId: Int):Response<MemberNickName>
+    = api.getMemberNickname((memberId))
 }

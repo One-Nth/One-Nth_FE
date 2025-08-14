@@ -1,19 +1,24 @@
-package com.example.onenthapp.feature.chat
+package com.example.onenthapp.chat
 
 import ChatNotification
 import ChatNotificationAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.example.onenthapp.RetrofitInstance.messageApi
-import com.example.onenthapp.databinding.FragmentOnenthChatBinding
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.onenthapp.RetrofitInstance
+import com.example.onenthapp.databinding.FragmentOnenthChatBinding
+import com.example.onenthapp.feature.chat.ChatRoomActivity
+import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -23,7 +28,7 @@ class OnenthChatFragment : Fragment() {
 
     private var _binding: FragmentOnenthChatBinding? = null
     private val binding get() = _binding!!
-    private val api = messageApi
+    private val api = RetrofitInstance.messageApi
     private lateinit var chatNotificationAdapter: ChatNotificationAdapter
 
     override fun onCreateView(
@@ -38,17 +43,19 @@ class OnenthChatFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         chatNotificationAdapter = ChatNotificationAdapter(emptyList(), requireContext())
-        binding.notificationList.layoutManager = LinearLayoutManager(requireContext()) // 꼭 필요
+        binding.notificationList.layoutManager = LinearLayoutManager(requireContext())
         binding.notificationList.adapter = chatNotificationAdapter
 
-
-        // API에서 채팅방 목록 불러오기
-        fetchChatRooms("DEAL")  // 정상 호출 (chatRoomType이 URL에 들어감)
+        fetchChatRooms("DEAL")
 
         chatNotificationAdapter.setOnItemClickListener { chatNotification ->
-            val intent = Intent(requireContext(), ChatRoomActivity::class.java)
-            intent.putExtra("chatRoomId", chatNotification.chatRoomId) // chatRoomId 추가
-            intent.putExtra("myMemberId", 1) // 본인 ID (예: 로그인 정보에서 받아서 넣기)
+            val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
+                putExtra("chatRoomId", chatNotification.chatRoomId)
+                putExtra("myMemberId", TokenManager.getMemberId())
+                putExtra("roomName", chatNotification.roomName)
+                putExtra("peerNickname", chatNotification.nickname)
+                putExtra("opponentId", chatNotification.opponentId)
+            }
             startActivity(intent)
         }
     }
@@ -57,19 +64,36 @@ class OnenthChatFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    messageApi.getChatListMessages(chatRoomType)
+                    api.getChatListMessages(chatRoomType)
                 }
 
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
                     val chatRooms = response.body()?.result ?: emptyList()
 
-                    // ChatRoom을 ChatNotification으로 변환
-                    val notifications = chatRooms.map {
-                        ChatNotification(
-                            nickname = it.chatRoomName,
-                            message = it.lastMessageContent,
-                            time = formatTime(it.lastMessageTime),
-                            chatRoomId =it.chatRoomId)
+                    val notifications = withContext(Dispatchers.IO) {
+                        chatRooms.map { chatRoom ->
+                            async {
+                                val nickname = try {
+                                    val res = api.getMemberNickname(chatRoom.opponentId)
+                                    if (res.isSuccessful && res.body()?.isSuccess == true) {
+                                        res.body()?.result?.mame ?: "알 수 없음"
+                                    } else {
+                                        "알 수 없음"
+                                    }
+                                } catch (e: Exception) {
+                                    "알 수 없음"
+                                }
+
+                                ChatNotification(
+                                    chatRoomId = chatRoom.chatRoomId,
+                                    nickname = nickname,
+                                    message = chatRoom.lastMessageContent ?: "메시지 없음",
+                                    time = formatTime(chatRoom.lastMessageTime),
+                                    roomName = chatRoom.chatRoomName,
+                                    opponentId = chatRoom.opponentId
+                                )
+                            }
+                        }.awaitAll()
                     }
 
                     chatNotificationAdapter.updateData(notifications)
@@ -82,14 +106,37 @@ class OnenthChatFragment : Fragment() {
                 Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
             } catch (e: HttpException) {
                 Toast.makeText(requireContext(), "서버 오류", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "알 수 없는 오류 발생", Toast.LENGTH_SHORT).show()
+                Log.e("fetchChatRooms", "알 수 없는 오류 발생", e)
             }
         }
     }
 
-    // ISO8601 시간 → 사용자 친화적 문자열로 변환 (예: "1시간 전")
-    private fun formatTime(isoTime: String): String {
-        // 간단히 ISO 형식을 그대로 반환하거나, 원하는 경우 포맷팅 추가 가능
-        return isoTime.replace("T", " ").substring(0, 16) // "2025-08-01 12:02"
+    private fun formatTime(iso: String?): String {
+        if (iso.isNullOrEmpty()) return ""
+
+        return try {
+            val trimmed = iso.substringBefore('.') // 예: 2025-08-10T21:07:28
+            val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
+            sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
+            val date = sdf.parse(trimmed) ?: return trimmed
+
+            val diffMs = System.currentTimeMillis() - date.time
+            val mins = diffMs / 60000
+            val hours = mins / 60
+            val days = hours / 24
+
+            when {
+                mins < 1 -> "방금 전"
+                mins < 60 -> "${mins}분 전"
+                hours < 24 -> "${hours}시간 전"
+                days < 7 -> "${days}일 전"
+                else -> trimmed.replace('T', ' ')
+            }
+        } catch (_: Exception) {
+            iso.substringBefore('.').replace('T', ' ')
+        }
     }
 
     override fun onDestroyView() {

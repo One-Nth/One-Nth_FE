@@ -1,5 +1,6 @@
 package com.example.onenthapp.feature.chat
 
+import android.R.attr.type
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -8,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 
@@ -20,8 +23,32 @@ class BottomChatActionDialogFragment(
     enum class ActionType {
         REPORT,  MUTE, EXIT
     }
+    private var chatRoomId: Int = -1
+    private lateinit var roomName: String
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        chatRoomId = arguments?.getInt(ARG_CHAT_ROOM_ID) ?: -1
+        roomName = arguments?.getString(ARG_ROOM_NAME) ?: "" // <- roomName 받아오기
+    }
 
-    override fun getTheme(): Int = R.style.BottomSheet_NoDim_HalfHeight
+        companion object {
+            private const val ARG_CHAT_ROOM_ID = "chatRoomId"
+            private const val ARG_ROOM_NAME = "roomName"
+            private const val ARG_ACTION_TYPE = "actionType"
+
+            fun newInstance(chatRoomId: Int, roomName: String, actionType: ActionType): BottomChatActionDialogFragment {
+                val fragment = BottomChatActionDialogFragment(actionType)
+                val args = Bundle()
+                args.putInt(ARG_CHAT_ROOM_ID, chatRoomId)
+                args.putString(ARG_ROOM_NAME, roomName)
+                fragment.arguments = args
+                return fragment
+            }
+
+        }
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -51,14 +78,34 @@ class BottomChatActionDialogFragment(
                 button.text = "나가기"
 
                 button.setOnClickListener {
+                    val chatRoomId = arguments?.getInt(ARG_CHAT_ROOM_ID) ?: -1
+                    leaveChatRoom(chatRoomId)
 
                 }
             }
         }
 
-        button.setOnClickListener { dismiss() }
-
         return view
+    }
+
+    private fun leaveChatRoom(chatRoomId: Int) {
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitInstance.messageApi.leaveChatRoom(chatRoomId)
+
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "채팅방을 나갔습니다.", Toast.LENGTH_SHORT).show()
+                    dismiss()
+                    activity?.finish() // ChatRoomActivity 종료
+                } else {
+                    Log.e("ChatRoomExit", "나가기 실패: ${response.code()}")
+                    Toast.makeText(requireContext(), "채팅방 나가기에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("ChatRoomExit", "에러: ${e.message}")
+                Toast.makeText(requireContext(), "에러 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onStart() {

@@ -1,9 +1,10 @@
 package com.example.onenthapp.data.transaction
 
 data class DealCompletionRequest(
-    val dealConfirmationId: Long,
-    val dealDate: String,
-    val tradePrice: Int,
-    val tradeCount: Int,
-    val tradeType: String
+    val itemId: Int,
+    val itemType: String, // "PURCHASE"
+    val dealDate: String, // "YYYY-MM-DD"
+    val tradeType: String, // "IN_PERSON" 등
+    val purchasePrice: Int,
+    val originalPrice: Int,
 )

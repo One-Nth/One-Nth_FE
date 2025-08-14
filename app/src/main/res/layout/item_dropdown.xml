@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="314dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="31dp"
+    android:layout_marginTop="14dp"
+    android:layout_marginBottom="27dp"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/line10"
+        android:layout_width="291dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/line_14"
+        android:visibility="visible"
+        android:layout_marginTop="18dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="7dp"/>
+
+    <TextView
+        android:id="@+id/product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ABABAB"
+        android:textSize="15dp"
+        android:visibility="visible"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="8dp"
+        android:text="상품"/>
+
+    <ImageView
+        android:id="@+id/line_20"
+        android:layout_width="291dp"
+        android:visibility="visible"
+        android:layout_height="wrap_content"
+        android:src="@drawable/line_14"
+        android:layout_marginStart="8dp" />
+
+    <include
+        layout="@layout/item_dropdown_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="12dp"/>
+</LinearLayout>
