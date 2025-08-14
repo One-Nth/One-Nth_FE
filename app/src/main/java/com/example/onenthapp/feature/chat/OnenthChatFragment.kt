@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.databinding.FragmentOnenthChatBinding
+import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

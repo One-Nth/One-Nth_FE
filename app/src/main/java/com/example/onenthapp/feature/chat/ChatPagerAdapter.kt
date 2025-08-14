@@ -3,6 +3,7 @@ package com.example.onenthapp.feature.chat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.onenthapp.chat.OnenthChatFragment
 
 class ChatPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
     override fun getItemCount(): Int = 2

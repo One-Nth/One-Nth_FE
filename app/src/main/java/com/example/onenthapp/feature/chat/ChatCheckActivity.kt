@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.onenthapp.R
 import com.example.onenthapp.RetrofitInstance
+import com.example.onenthapp.chat.DropdownProductAdapter
+import com.example.onenthapp.chat.ProductItem
 import com.example.onenthapp.data.transaction.DealCompletionRequest
 import com.example.onenthapp.databinding.ActivityChatCheckBinding
 import kotlinx.coroutines.launch

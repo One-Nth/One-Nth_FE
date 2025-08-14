@@ -1,6 +1,7 @@
 package com.example.onenthapp.feature.alarm
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,7 @@ class AlarmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm)
 
-        findViewById<ImageButton>(R.id.btn_left).setOnClickListener {
+        findViewById<ImageView>(R.id.btn_left).setOnClickListener {
             finish()
         }
 

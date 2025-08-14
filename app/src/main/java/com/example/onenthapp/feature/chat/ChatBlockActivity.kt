@@ -16,6 +16,9 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.example.onenthapp.chat.CancelDealActivity
+import com.example.onenthapp.chat.DropdownProductAdapter
+import com.example.onenthapp.chat.ProductItem
 import com.example.onenthapp.data.transaction.CompleteTransactionRequest
 
 
