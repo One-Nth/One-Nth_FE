@@ -18,6 +18,10 @@ class AlarmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm)
 
+        findViewById<ImageButton>(R.id.btn_left).setOnClickListener {
+            finish()
+        }
+
 
         tabLayout = findViewById(R.id.tabLayout)
         recyclerView = findViewById(R.id.recyclerView)
