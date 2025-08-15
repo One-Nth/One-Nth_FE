@@ -146,11 +146,6 @@ class SharingItemDetailFragment : Fragment() {
                 dotsIndicator.visibility = View.GONE
             }
 
-            // item_search_result 레이아웃 바인딩 (sharingitem용)
-            // 수량과 가격 정보를 sharingitem에 맞게 표시
-            // tvPrice는 이미 위에서 설정됨
-            // tvUnit은 "개" 단위로 표시
-            // TODO: item_search_result 레이아웃의 tvUnit을 찾아서 설정
         }
 
         val offline = d?.purchaseMethod == "OFFLINE"

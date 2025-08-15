@@ -49,3 +49,11 @@ data class SearchRegionsResult(
     val regions: List<SimpleRegion>,
     val pagination: Pagination
 )
+
+// 지역 중심 좌표 결과
+data class RegionCenterResult(
+    val regionId: Long,
+    val regionName: String,
+    val latitude: Double,
+    val longitude: Double
+)

@@ -38,4 +38,11 @@ interface MyRegionApi {
         @Query("page") page: Int,
         @Query("size") size: Int
     ): GenericResponse<SearchRegionsResult>
+
+    // 지역명 기반으로 해당 지역의 대표 좌표 조회
+    @GET("map/regions/center")
+    suspend fun getRegionCenter(
+        @Query("regionName") regionName: String
+    ): GenericResponse<RegionCenterResult>
+
 }
