@@ -119,6 +119,11 @@ class MainActivity : AppCompatActivity() {
             if (dest.id == R.id.tipFragment) setFabAsTip() else setFabAsProduct()
         }
 
+        // ✅ TipFragment에서 탭 변경 시 postType 받기
+        supportFragmentManager.setFragmentResultListener("board_tab", this) { _, bundle ->
+            lifePostType = bundle.getString("postType", "LIFE_TIP")
+        }
+
         // ✅ FAB 클릭 (한 번만)
         binding.fabAdd.setOnClickListener {
             val onTipScreen = navController.currentDestination?.id == R.id.tipFragment

@@ -68,6 +68,20 @@ interface MemberApi {
         @Path("userId") userId: Long
     ): Response<TradeHistoryResponse>
 
+    // 판매자 프로필 조회 - 함께나눠요 (items 포함)
+    @GET("users/sharings/{user-id}")
+    suspend fun getSellerProfile(
+        @Header("Authorization") bearerToken: String,
+        @Path("user-id") userId: Long
+    ): Response<SellerProfileResponse>
+
+    // 판매자 프로필 조회 - 같이사요 (items 포함)
+    @GET("users/group-purchases/{user-id}")
+    suspend fun getGroupPurchaseSellerProfile(
+        @Header("Authorization") bearerToken: String,
+        @Path("user-id") userId: Long
+    ): Response<SellerProfileResponse>
+
     @GET("members/mypage/items")
     suspend fun getMyItems(
         @Header("Authorization") bearerToken: String,

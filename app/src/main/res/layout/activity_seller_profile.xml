@@ -319,6 +319,7 @@
                 android:textColor="@color/main_black" />
 
             <ImageView
+                android:id="@+id/btnGoAllItems"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/right_arrow"

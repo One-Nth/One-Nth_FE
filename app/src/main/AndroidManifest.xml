@@ -103,6 +103,9 @@
         <activity
             android:name=".PurchaseSellerProfileActivity"
             android:exported="false" />
+        <activity
+            android:name=".SellerItemDetailActivity"
+            android:exported="false" />
 
     </application>
 </manifest>
