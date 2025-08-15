@@ -1,5 +1,3 @@
-package com.example.onenthapp.feature.item
-
 import android.content.Intent
 import com.example.onenthapp.feature.item.ImageSliderAdapter
 import android.os.Bundle
@@ -107,16 +105,26 @@ class GroupPurchaseDetailFragment : Fragment() {
         lastDetail = d
         binding.btnChat.setOnClickListener {
             val targetMemberId = lastDetail?.writerid ?: return@setOnClickListener
-            val chatRoomType = "GROUP_PURCHASE"
+            val chatRoomType = "DEAL"
 
             lifecycleScope.launch {
                 try {
                     val response = messageApi.createChatRoom(targetMemberId.toInt(), chatRoomType)
                     if (response.isSuccessful && response.body() != null) {
-                        val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
-                            putExtra("targetMemberId", targetMemberId)
+                        val chatRoomId = response.body()!!.result.chatRoomId
+                        val roomName = response.body()!!.result.chatRoomName
+                        val peerNickname = lastDetail?.writerNickname ?: "익명"
+
+                        if (chatRoomId != -1 && roomName.isNotEmpty()) {
+                            val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
+                                putExtra("chatRoomId", chatRoomId)
+                                putExtra("roomName", roomName)
+                                putExtra("peerNickname", peerNickname)
+                            }
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(requireContext(), "채팅방 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show()
                         }
-                        startActivity(intent)
                     } else {
                         Toast.makeText(requireContext(), "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
                     }

@@ -107,17 +107,26 @@ class SharingItemDetailFragment : Fragment() {
         lastDetail = d
         binding.btnChat.setOnClickListener {
             val targetMemberId = d?.writerid ?: return@setOnClickListener
-            val chatRoomType = "SHARING" // 또는 "GROUP_PURCHASE" 등
+            val chatRoomType = "DEAL" // 필요에 따라 "GROUP_PURCHASE" 등으로 변경 가능
 
             lifecycleScope.launch {
                 try {
                     val response = messageApi.createChatRoom(targetMemberId.toInt(), chatRoomType)
                     if (response.isSuccessful && response.body() != null) {
-                        // roomId는 필요 없다고 하셨으니 생략
-                        val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
-                            putExtra("targetMemberId", targetMemberId)
+                        val chatRoomId = response.body()!!.result.chatRoomId
+                        val roomName = response.body()!!.result.chatRoomName
+                        val peerNickname = lastDetail?.writerNickname ?: "익명"
+
+                        if (chatRoomId != -1 && roomName.isNotEmpty()) {
+                            val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
+                                putExtra("chatRoomId", chatRoomId)
+                                putExtra("roomName", roomName)
+                                putExtra("peerNickname", peerNickname)
+                            }
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(requireContext(), "채팅방 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show()
                         }
-                        startActivity(intent)
                     } else {
                         Toast.makeText(requireContext(), "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
                     }
@@ -129,7 +138,8 @@ class SharingItemDetailFragment : Fragment() {
         }
 
 
-        val categoryLabel =
+
+    val categoryLabel =
             when(d?.itemCategory) {
                 "FOOD" -> "식품"
                 "ELECTRONICS" -> "전자기기"
