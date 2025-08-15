@@ -12,10 +12,12 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.onenthapp.R
 import com.example.onenthapp.SharingSellerProfileActivity
+import com.example.onenthapp.RetrofitInstance.messageApi
 import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.PlusRepository
 import com.example.onenthapp.data.item.SharingItemDetailResult
 import com.example.onenthapp.databinding.FragmentProductDetailBinding
+import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.example.onenthapp.utils.ShareDialogUtil.showShareDialog
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
@@ -37,8 +39,6 @@ class SharingItemDetailFragment : Fragment() {
     private var kakaoMapInstance: KakaoMap? = null
     private var targetLatLng: LatLng? = null
     private var bookmarkRepo = BookmarkRepository()
-    private var lastDetail: SharingItemDetailResult? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ) = FragmentProductDetailBinding.inflate(inflater, container, false)
@@ -48,12 +48,6 @@ class SharingItemDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
         var currentScraped = requireArguments().getBoolean("initialScraped")
-
-
-        // ✅ 셀러 영역 클릭 시 프로필로 이동 + 가능한 값들 모두 putExtra
-        binding.layoutSellerInfo.setOnClickListener {
-            openSellerProfile(lastDetail, productId)
-        }
 
         fun renderIcon() {
             binding.btnBookmark.setImageResource(
@@ -101,7 +95,30 @@ class SharingItemDetailFragment : Fragment() {
         }
     }
     private fun bindDetail(d: SharingItemDetailResult?) {
-        lastDetail = d
+
+        binding.btnChat.setOnClickListener {
+            val targetMemberId = d?.writerid ?: return@setOnClickListener
+            val chatRoomType = "SHARING" // 또는 "GROUP_PURCHASE" 등
+
+            lifecycleScope.launch {
+                try {
+                    val response = messageApi.createChatRoom(targetMemberId.toInt(), chatRoomType)
+                    if (response.isSuccessful && response.body() != null) {
+                        // roomId는 필요 없다고 하셨으니 생략
+                        val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
+                            putExtra("targetMemberId", targetMemberId)
+                        }
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(requireContext(), "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
+                    e.printStackTrace()
+                }
+            }
+        }
+
 
         val categoryLabel =
             when(d?.itemCategory) {
@@ -153,6 +170,11 @@ class SharingItemDetailFragment : Fragment() {
                 dotsIndicator.visibility = View.GONE
             }
 
+            // item_search_result 레이아웃 바인딩 (sharingitem용)
+            // 수량과 가격 정보를 sharingitem에 맞게 표시
+            // tvPrice는 이미 위에서 설정됨
+            // tvUnit은 "개" 단위로 표시
+            // TODO: item_search_result 레이아웃의 tvUnit을 찾아서 설정
         }
 
         val offline = d?.purchaseMethod == "OFFLINE"
@@ -203,27 +225,5 @@ class SharingItemDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    // ✅ 가능한 값들 모두 안전하게 담아서 넘김 (null-safe)
-    private fun openSellerProfile(detail: SharingItemDetailResult?, productId: Long) {
-        val intent = Intent(requireContext(), SharingSellerProfileActivity::class.java).apply {
-            putExtra("originProductId", productId)                           // 현재 상품 ID
-            detail?.let {
-                putExtra("sellerId", it.writerid)
-                putExtra("sellerName", it.writerNickname ?: "")
-                putExtra("sellerProfileImageUrl", it.writerProfileImageUrl ?: "")
-                putExtra("sellerVerified", it.writerVerified == true)
-                putExtra("purchaseMethod", it.purchaseMethod ?: "")
-                putExtra("statusLabel", it.statusLabel ?: "")
-                putExtra("itemCategory", it.itemCategory ?: "")
-                putExtra("price", it.price ?: 0)                              // Int/Long이면 그대로
-                putExtra("quantity", it.quantity ?: 0)
-                putExtra("expirationDate", it.expirationDate ?: "")
-                putExtra("latitude", it.latitude ?: 0.0)
-                putExtra("longitude", it.longitude ?: 0.0)
-            }
-        }
-        startActivity(intent)
     }
 }

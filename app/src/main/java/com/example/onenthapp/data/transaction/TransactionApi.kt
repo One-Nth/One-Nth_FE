@@ -6,7 +6,7 @@ import retrofit2.http.*
 
 interface TransactionApi {
 
-    // 1. 거래 확정 폼 발행
+    // 1. 거래 확정 폼 발행 -
     @POST("deals/confirmation")
     suspend fun confirmationTransaction(
         @Query("roomName") roomName: String,

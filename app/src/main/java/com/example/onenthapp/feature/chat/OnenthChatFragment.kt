@@ -76,7 +76,7 @@ class OnenthChatFragment : Fragment() {
                                 val nickname = try {
                                     val res = api.getMemberNickname(chatRoom.opponentId)
                                     if (res.isSuccessful && res.body()?.isSuccess == true) {
-                                        res.body()?.result?.mame ?: "알 수 없음"
+                                        res.body()?.result?.nickname ?: "알 수 없음"
                                     } else {
                                         "알 수 없음"
                                     }

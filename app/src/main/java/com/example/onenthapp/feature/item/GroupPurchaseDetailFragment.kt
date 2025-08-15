@@ -13,10 +13,12 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.onenthapp.PurchaseSellerProfileActivity
 import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance.messageApi
 import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.GroupPurchaseDetailResult
 import com.example.onenthapp.data.item.PlusRepository
 import com.example.onenthapp.databinding.FragmentProductDetailBinding
+import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.example.onenthapp.utils.ShareDialogUtil.showShareDialog
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
@@ -103,6 +105,28 @@ class GroupPurchaseDetailFragment : Fragment() {
 
     private fun bindDetail(d: GroupPurchaseDetailResult?) {
         lastDetail = d
+        binding.btnChat.setOnClickListener {
+            val targetMemberId = lastDetail?.writerid ?: return@setOnClickListener
+            val chatRoomType = "GROUP_PURCHASE"
+
+            lifecycleScope.launch {
+                try {
+                    val response = messageApi.createChatRoom(targetMemberId.toInt(), chatRoomType)
+                    if (response.isSuccessful && response.body() != null) {
+                        val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
+                            putExtra("targetMemberId", targetMemberId)
+                        }
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(requireContext(), "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
+                    e.printStackTrace()
+                }
+            }
+        }
+
         val categoryLabel =
             when(d?.itemCategory) {
                 "FOOD" -> "식품"
