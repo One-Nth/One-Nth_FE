@@ -1,6 +1,7 @@
 package com.example.onenthapp.data.chat
 
 import com.example.onenthapp.RetrofitInstance
+import com.example.onenthapp.data.CommonResponse
 import retrofit2.Response
 
 class ChatRepository {
@@ -25,4 +26,8 @@ class ChatRepository {
     // id->name
     suspend fun getMemberNickName(memberId: Int):Response<MemberNickName>
     = api.getMemberNickname((memberId))
+
+    // 사용자 차단
+    suspend fun blockMember(targetMemberId: Int): Response<CommonResponse<String>>
+            = api.blockMember(targetMemberId)
 }

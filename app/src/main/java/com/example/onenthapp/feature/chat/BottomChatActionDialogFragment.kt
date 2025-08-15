@@ -1,6 +1,5 @@
 package com.example.onenthapp.feature.chat
 
-import android.R.attr.type
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -64,7 +63,7 @@ class BottomChatActionDialogFragment(
                 title.text = "해당 사용자를 신고하는 이유를 골라주세요."
                 description.visibility = View.GONE
                 view.findViewById<View>(R.id.reportOptionsGroup).visibility = View.VISIBLE
-                button.text = "차단하기"
+                button.text = "신고하기"
                 button.setBackgroundColor(Color.parseColor("#FF8383"))
             }
             ActionType.MUTE -> {
@@ -113,7 +112,7 @@ class BottomChatActionDialogFragment(
         Log.d("BottomSheetTest", "onStart 호출됨")
 
         dialog?.let {
-            val bottomSheet = it.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.let { sheet ->
                 Log.d("BottomSheetTest", "sheet found")
 

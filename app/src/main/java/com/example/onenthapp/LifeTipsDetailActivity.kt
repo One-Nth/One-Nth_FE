@@ -235,10 +235,12 @@ class LifeTipsDetailActivity : AppCompatActivity() {
 
                                 // 채팅방 화면으로 이동
                                 val intent = Intent(this@LifeTipsDetailActivity, ChatRoomActivity::class.java).apply {
+
                                     putExtra("chatRoomId", chatRoom.chatRoomId)
-                                    putExtra("peerNickname", chatRoom.chatRoomName)
-                                    putExtra("targetId",c.writeId)
-                                    putExtra("nickname", c.nickname)
+                                    putExtra("myMemberId", TokenManager.getMemberId())
+                                    putExtra("roomName", chatRoom.chatRoomName)
+                                    putExtra("peerNickname", c.nickname)
+                                    putExtra("opponentId", c.writeId)
                                 }
                                 startActivity(intent)
                             } else {
@@ -254,8 +256,37 @@ class LifeTipsDetailActivity : AppCompatActivity() {
                         }}        }
 
 
-                    CommentAdapter.Action.Block ->
-                    Toast.makeText(this, "차단: ${c.nickname}", Toast.LENGTH_SHORT).show()
+                CommentAdapter.Action.Block -> {
+                    val token = TokenManager.getAccessToken()
+                    if (token.isNullOrEmpty()) {
+                        Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                        return@CommentAdapter
+                    }
+
+                    lifecycleScope.launch {
+                        try {
+                            val res = RetrofitInstance.messageApi.blockMember(c.writeId)
+                            if (res.isSuccessful && res.body()?.isSuccess == true) {
+                                Toast.makeText(
+                                    this@LifeTipsDetailActivity,
+                                    "${c.nickname}님을 차단하였습니다.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                // 차단된 사용자 댓글 숨기려면 이 부분 사용:
+                                // commentAdapter.submitList(commentAdapter.currentList.filterNot { it.writeId == c.writeId })
+
+                                // 또는 전체 댓글 새로고침
+                                loadComments()
+                            } else {
+                                Toast.makeText(this@LifeTipsDetailActivity, "차단 실패", Toast.LENGTH_SHORT).show()
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(this@LifeTipsDetailActivity, "오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
             }
         }
         binding.rvComments.apply {

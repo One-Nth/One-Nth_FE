@@ -10,9 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 class BlockedUsersAdapter(
-    private val userList: List<BlockedUser>,
+    private var userList: List<BlockedUser>,
     private val onUnblockClick: (BlockedUser) -> Unit
 ) : RecyclerView.Adapter<BlockedUsersAdapter.ViewHolder>() {
+
+    fun updateList(newList: List<BlockedUser>) {
+        userList = newList
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userImage: ImageView = view.findViewById(R.id.userImage)

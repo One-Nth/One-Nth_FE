@@ -1,6 +1,7 @@
 package com.example.onenthapp
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -39,25 +40,44 @@ class BlockedUsersActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = repository.getBlockedUsers()
+
+                Log.d("BlockedUsers", "response.isSuccessful: ${response.isSuccessful}")
+                Log.d("BlockedUsers", "response.body(): ${response.body()}")
+
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
-                    val list = response.body()!!.result.blockedUserSummaryList
-                    userList.clear()
-                    userList.addAll(list.map {
+                    val result = response.body()?.result
+
+                    if (result == null) {
+                        Log.e("BlockedUsers", "result가 null입니다")
+                        Toast.makeText(this@BlockedUsersActivity, "서버 응답 오류 (result 없음)", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
+
+                    val list = result.blockedUserSummaryList.map {
                         BlockedUser(
                             userId = it.userId,
                             username = it.nickname,
                             profileImageUrl = it.profileImageUrl
                         )
-                    })
-                    adapter.notifyDataSetChanged()
+                    }
+
+                    adapter.updateList(list)
+
+                    Log.d("BlockedUsers", "응답받은 유저 수: ${list.size}")
+                    list.forEach {
+                        Log.d("BlockedUsers", "userId=${it.userId}, nickname=${it.username}")
+                    }
                 } else {
+                    Log.e("BlockedUsers", "응답 실패: ${response.errorBody()?.string()}")
                     Toast.makeText(this@BlockedUsersActivity, "차단 목록 불러오기 실패", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
+                Log.e("BlockedUsers", "예외 발생", e)
                 Toast.makeText(this@BlockedUsersActivity, "오류: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
     private fun unblockUser(user: BlockedUser) {
         lifecycleScope.launch {
