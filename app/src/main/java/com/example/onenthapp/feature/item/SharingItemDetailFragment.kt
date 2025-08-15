@@ -86,7 +86,6 @@ class SharingItemDetailFragment : Fragment() {
         }
     }
     private fun bindDetail(d: SharingItemDetailResult?) {
-        lastDetail = d
 
         val categoryLabel =
             when(d?.itemCategory) {
