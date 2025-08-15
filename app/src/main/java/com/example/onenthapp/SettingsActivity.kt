@@ -38,5 +38,11 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val regionVerificationSettings: LinearLayout = findViewById(R.id.RegionSettings)
+        regionVerificationSettings.setOnClickListener {
+            val intent = Intent(this, RegionVerificationActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }

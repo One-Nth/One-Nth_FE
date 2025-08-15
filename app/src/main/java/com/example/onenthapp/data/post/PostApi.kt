@@ -4,6 +4,7 @@ import com.example.onenthapp.data.CommonResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -47,4 +48,10 @@ interface PostApi {
         @Part("post") postJson: RequestBody,                 // JSON 문자열
         @Part images: List<MultipartBody.Part>? = null       // 선택
     ): BaseResponse<PatchPostResult>
+
+    @DELETE("post/{postId}")
+    suspend fun deletePost(
+        @Header("Authorization") bearer: String,
+        @Path("postId") postId: Long
+    ): Response<CommonResponse<Unit>>   // result는 빈 객체이므로 Unit/Any 사용 가능
 }

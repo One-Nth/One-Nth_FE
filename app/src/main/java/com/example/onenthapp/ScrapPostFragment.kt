@@ -1,3 +1,4 @@
+// ScrapPostFragment.kt
 package com.example.onenthapp
 
 import android.app.Activity
@@ -10,68 +11,102 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.data.post.MyPostItem
 import com.example.onenthapp.data.post.PostRepository
+import com.example.onenthapp.databinding.FragmentScrapNtipBinding
 import com.example.onenthapp.model.MyScrapsViewModel
+import com.example.onenthapp.util.TokenManager
 
 class ScrapPostFragment : Fragment(R.layout.fragment_scrap_ntip) {
 
-    private lateinit var vm: MyScrapsViewModel
-    private lateinit var adapter: MyPostAdapter  // ← MyPostItem용 어댑터 재사용
+    private var _binding: FragmentScrapNtipBinding? = null
+    private val binding get() = _binding!!
 
-    // 상세에서 취소 후 돌아오면 목록 새로고침
+    private lateinit var vm: MyScrapsViewModel
+    private lateinit var adapter: MyPostAdapter
+
+    private var fullList: List<MyPostItem> = emptyList()
+    private var currentQuery: String = ""
+
     private val detailLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { res ->
         if (res.resultCode == Activity.RESULT_OK &&
-            res.data?.getBooleanExtra("needRefresh", false) == true) {
+            res.data?.getBooleanExtra("needRefresh", false) == true
+        ) {
             vm.loadFirst()
         }
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentScrapNtipBinding.bind(view)
 
-        val rv = view.findViewById<RecyclerView>(R.id.recyclerViewScrapProduct /* or proper id */)
-        rv.layoutManager = LinearLayoutManager(requireContext())
-        // ✅ 클릭하면 상세로 이동 + "scrapped=true" 전달
+        // ✅ 여기서 더 이상 findViewById 안 씀
+        binding.recyclerViewScrapProduct.layoutManager = LinearLayoutManager(requireContext())
+
         adapter = MyPostAdapter { item ->
             val intent = Intent(requireContext(), LifeTipsDetailActivity::class.java).apply {
-                putExtra("postId", item.postId)   // Long
-                putExtra("scrapped", true)        // 스크랩 목록에서 진입
+                putExtra("postId", item.postId)
+                putExtra("scrapped", true)
             }
             detailLauncher.launch(intent)
         }
-        rv.adapter = adapter
+        binding.recyclerViewScrapProduct.adapter = adapter
 
+        // 검색어 수신
+        parentFragmentManager.setFragmentResultListener(
+            ScrapActivity.SEARCH_KEY, viewLifecycleOwner
+        ) { _, bundle ->
+            currentQuery = bundle.getString(ScrapActivity.SEARCH_BUNDLE_KEY).orEmpty()
+            adapter.submitList(applyQuery(fullList, currentQuery))
+        }
 
+        // VM
         val api = RetrofitInstance.memberApi
         val repo = PostRepository(api)
         vm = ViewModelProvider(this, object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                // ✅ 게시판 구분 없이 전체 null
                 return MyScrapsViewModel(repo, postTypeFilter = null) as T
             }
         })[MyScrapsViewModel::class.java]
 
         vm.state.observe(viewLifecycleOwner) { s ->
-            adapter.submitList(s.items.toList())
-            // 필요하면 로딩/빈화면/에러 처리
+            fullList = s.items.toList()
+            adapter.submitList(applyQuery(fullList, currentQuery))
             s.error?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
         }
 
+        val token = TokenManager.getAccessToken()
+        if (token.isNullOrBlank()) {
+            Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
         vm.loadFirst()
 
-        rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        binding.recyclerViewScrapProduct.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 if (dy <= 0) return
-                val lm = recyclerView.layoutManager as LinearLayoutManager
+                val lm = rv.layoutManager as LinearLayoutManager
                 if (lm.findLastVisibleItemPosition() >= adapter.itemCount - 3) {
                     vm.loadNext()
                 }
             }
         })
+    }
+
+    private fun applyQuery(src: List<MyPostItem>, q: String): List<MyPostItem> {
+        if (q.isBlank()) return src
+        val needle = q.lowercase()
+        return src.filter { item ->
+            listOfNotNull(item.postTitle, item.placeName, item.regionName)
+                .any { it.lowercase().contains(needle) }
+        }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }
