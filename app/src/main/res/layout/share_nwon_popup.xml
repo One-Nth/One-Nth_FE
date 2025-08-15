@@ -21,13 +21,16 @@
     <TextView
         style="@style/PretendardSemibold2"
         android:id="@+id/shareTitle"
-        android:layout_width="228dp"
-        android:layout_height="30dp"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/closeButton"
         android:layout_marginTop="20dp"
         android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:text="해당 글을 공유하시겠습니까?"
-        android:textColor="@color/main_black"/>
+        android:textColor="@color/main_black"
+        android:maxLines="2"
+        android:ellipsize="end"/>
 
     <!-- 링크 + 복사 버튼 감싸는 박스 -->
     <LinearLayout

@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.onenthapp.R
 import com.example.onenthapp.databinding.FragmentPlusCompleteBinding
+import com.example.onenthapp.utils.ShareDialogUtil.showShareDialog
 
 class PlusCompleteFragment : Fragment() {
     private var _binding: FragmentPlusCompleteBinding? = null
@@ -68,14 +69,15 @@ class PlusCompleteFragment : Fragment() {
             }
         }
 
-//        // 공유하기
-//        binding.shareContainer.setOnClickListener {
-//            val shareText = "${binding.tvPreviewTitle.text}\n${binding.tvPreviewPrice.text}"
-//            Intent(Intent.ACTION_SEND).apply {
-//                type = "text/plain"
-//                putExtra(Intent.EXTRA_TEXT, shareText)
-//            }.also { startActivity(Intent.createChooser(it, getString(R.string.share_via))) }
-//        }
+        // 공유하기
+        binding.shareContainer.setOnClickListener {
+            val shareUrl = if (isBuy) {
+                "https://onenthapp.com/group-purchase/${productId}"
+            } else {
+                "https://onenthapp.com/sharing/${productId}"
+            }
+            showShareDialog(shareUrl, "등록한 상품을 공유하시겠습니까?")
+        }
 
         // 확인 누르면 홈으로
         binding.tvConfirm.setOnClickListener {

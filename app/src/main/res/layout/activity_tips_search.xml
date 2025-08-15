@@ -26,7 +26,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginBottom="42dp"
         android:background="#CCCCCC" />
 
     <!-- 지역 필터링 섹션 (할인/맛집 게시판에서만 표시) -->
@@ -34,9 +33,10 @@
         android:id="@+id/ll_region_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
         android:orientation="vertical"
         android:background="@color/main_white"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:layout_width="match_parent"
@@ -51,9 +51,11 @@
             android:id="@+id/cg_region_filter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
             app:chipSpacingHorizontal="18dp"
             app:chipSpacingVertical="12dp"
-            android:paddingHorizontal="40dp"
+            android:paddingHorizontal="20dp"
             android:layout_marginBottom="20dp"
             app:singleSelection="true">
 
