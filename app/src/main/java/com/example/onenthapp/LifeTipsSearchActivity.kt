@@ -11,7 +11,9 @@ import com.example.onenthapp.databinding.ActivityTipsSearchBinding
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
 import java.util.Locale
-
+import android.view.View
+import androidx.compose.ui.semantics.text
+import com.google.android.material.chip.Chip
 
 
 class LifeTipsSearchActivity : AppCompatActivity() {
@@ -33,6 +35,9 @@ class LifeTipsSearchActivity : AppCompatActivity() {
             .uppercase(Locale.getDefault()) // "LIFE_TIP", "DISCOUNT", "RESTAURANT"
         binding.toolbarSearchResult.title = query
 
+        // 지역 필터링 UI 설정 (할인/맛집 게시판에서만 표시)
+        setupRegionFilter(boardType)
+
         // RecyclerView
         adapter = LifeTipsSearchAdapter { item ->
             val intent = Intent(this, LifeTipsDetailActivity::class.java)
@@ -44,6 +49,65 @@ class LifeTipsSearchActivity : AppCompatActivity() {
         binding.rvSearchResults.adapter = adapter
 
         // API 호출
+        search(boardType, query)
+    }
+
+    private fun setupRegionFilter(boardType: String) {
+        // 할인/맛집 게시판에서만 지역 필터링 UI 표시
+        if (boardType == "DISCOUNT" || boardType == "RESTAURANT") {
+            binding.llRegionFilter.visibility = View.VISIBLE
+            
+            // 지역 Chip 클릭 리스너 설정
+            setupRegionChips(boardType)
+        } else {
+            binding.llRegionFilter.visibility = View.GONE
+        }
+    }
+
+    private fun setupRegionChips(boardType: String) {
+        // ChipGroup의 선택 변경 리스너 설정
+        binding.cgRegionFilter.setOnCheckedChangeListener { group, checkedIds ->
+            // group.checkedChipId를 사용하여 현재 선택된 ID를 가져옵니다.
+            val currentSelectedChipId = group.checkedChipId // 선택된 Chip의 ID 또는 View.NO_ID
+
+            if (currentSelectedChipId != View.NO_ID) {
+                // 선택된 Chip이 있는 경우
+                val selectedChip = group.findViewById<Chip>(currentSelectedChipId)
+                val selectedChipText = selectedChip?.text ?: "알 수 없는 칩"
+                Toast.makeText(
+                    this,
+                    "선택된 칩 ID: $currentSelectedChipId, 텍스트: $selectedChipText",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                // TODO: 여기에 실제 regionName을 결정하고, search 함수를 호출하는 로직 추가
+                // val regionName: String? = when (currentSelectedChipId) {
+                //     R.id.chip_region_1 -> "REGION_1"
+                //     R.id.chip_region_2 -> "REGION_2"
+                //     R.id.chip_region_3 -> "REGION_3"
+                //     else -> null
+                // }
+                //
+                // if (regionName != null) {
+                //     val query = intent.getStringExtra("query").orEmpty()
+                //     search(boardType, query, regionName)
+                // }
+
+            } else {
+                // 선택된 Chip이 없는 경우 (모든 Chip 선택 해제 시 - 예를 들어 selectionRequired=false 일 때)
+                Toast.makeText(this, "선택된 칩 없음", Toast.LENGTH_SHORT).show()
+
+                // TODO: 여기에 필터링 없이 전체 검색 결과를 다시 로드하는 로직 추가
+                // val query = intent.getStringExtra("query").orEmpty()
+                // search(boardType, query, null)
+            }
+        }
+    }
+
+    private fun filterSearchResultsByRegion(regionId: String, boardType: String) {
+        // TODO: 실제 지역 ID로 검색 결과 필터링
+        // 현재는 임시로 전체 검색 결과 표시
+        val query = intent.getStringExtra("query").orEmpty()
         search(boardType, query)
     }
 

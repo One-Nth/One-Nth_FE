@@ -43,4 +43,12 @@ class MyRegionRepository {
         if (resp.isSuccess && resp.result != null) resp.result.regions to resp.result.pagination
         else emptyList<SimpleRegion>() to null
     }
+
+    // 지역명 기반으로 해당 지역의 대표 좌표 조회
+    suspend fun getRegionCenter(regionName: String): RegionCenterResult? = withContext(Dispatchers.IO) {
+        val resp = api.getRegionCenter(regionName)
+        if (resp.isSuccess && resp.result != null) {
+            resp.result
+        } else null
+    }
 }
