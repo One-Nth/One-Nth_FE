@@ -39,6 +39,8 @@ class SharingItemDetailFragment : Fragment() {
     private var kakaoMapInstance: KakaoMap? = null
     private var targetLatLng: LatLng? = null
     private var bookmarkRepo = BookmarkRepository()
+
+    private var lastDetail: SharingItemDetailResult? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ) = FragmentProductDetailBinding.inflate(inflater, container, false)
@@ -48,6 +50,13 @@ class SharingItemDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
         var currentScraped = requireArguments().getBoolean("initialScraped")
+
+        // ✅ 프로필 영역/화살표/닉네임 클릭 → SharingSellerProfileActivity 이동
+        val openSellerClick = View.OnClickListener { openSharingSellerProfile(lastDetail, productId) }
+        binding.layoutSellerInfo.setOnClickListener(openSellerClick)
+        binding.profileArrow.setOnClickListener(openSellerClick)
+        binding.sellerProfile.setOnClickListener(openSellerClick)
+        binding.tvSellerName.setOnClickListener(openSellerClick)
 
         fun renderIcon() {
             binding.btnBookmark.setImageResource(
@@ -95,7 +104,7 @@ class SharingItemDetailFragment : Fragment() {
         }
     }
     private fun bindDetail(d: SharingItemDetailResult?) {
-
+        lastDetail = d
         binding.btnChat.setOnClickListener {
             val targetMemberId = d?.writerid ?: return@setOnClickListener
             val chatRoomType = "SHARING" // 또는 "GROUP_PURCHASE" 등
@@ -225,5 +234,21 @@ class SharingItemDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // ✅ 판매자 프로필 화면으로 이동 (나눔/공유 전용)
+    private fun openSharingSellerProfile(d: SharingItemDetailResult?, originProductId: Long) {
+        if (d?.writerid == null) {
+            Toast.makeText(requireContext(), "판매자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val intent = Intent(requireContext(), SharingSellerProfileActivity::class.java).apply {
+            putExtra("originProductId", originProductId)
+            putExtra("sellerId", d.writerid)
+            putExtra("sellerName", d.writerNickname ?: "")
+            putExtra("sellerProfileImageUrl", d.writerProfileImageUrl ?: "")
+            putExtra("sellerVerified", d.writerVerified == true)
+        }
+        startActivity(intent)
     }
 }
