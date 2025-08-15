@@ -1,5 +1,6 @@
 package com.example.onenthapp.data.chat
 
+import com.example.onenthapp.data.CommonResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -41,4 +42,10 @@ interface MessageApi {
     suspend fun getMemberNickname(
         @Path("memberId") memberId: Int
     ): Response<MemberNickName>
+
+    // 사용자 차단하기
+    @POST("members/block/{targetMemberId}")
+    suspend fun blockMember(
+        @Path("targetMemberId") targetMemberId: Int
+    ): Response<CommonResponse<String>>
 }

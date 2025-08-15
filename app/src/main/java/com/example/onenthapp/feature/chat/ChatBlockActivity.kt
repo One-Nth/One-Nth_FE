@@ -20,8 +20,7 @@ import com.example.onenthapp.chat.CancelDealActivity
 import com.example.onenthapp.chat.DropdownProductAdapter
 import com.example.onenthapp.chat.ProductItem
 import com.example.onenthapp.data.transaction.CompleteTransactionRequest
-
-
+// 거래 완료
 class ChatBlockActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatBlockBinding
@@ -185,31 +184,26 @@ class ChatBlockActivity : AppCompatActivity() {
 
 
     private fun fetchProductsAndSetupDropdown() {
-        val api = RetrofitInstance.transactionApi
-
         lifecycleScope.launch {
             try {
-                val response = api.getAvailableProducts()
+                val response = RetrofitInstance.transactionApi.getDealConfirmationForm(roomName)
                 if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null && responseBody.isSuccess && responseBody.result != null) {
-
-                        // ProductItem 리스트로 변환
-                        val productItems = responseBody.result.map {
+                    val body = response.body()
+                    if (body?.isSuccess == true && body.result != null) {
+                        val productItems = body.result.map {
                             ProductItem(
                                 name = it.itemName,
                                 imageUrl = it.itemImageUrl,
                                 itemId = it.itemId,
-                                itemType = it.itemType
+                                itemType = it.itemType,
+                                dealConfirmationId = it.dealConfirmationid
                             )
                         }
 
-                        // DropdownProductAdapter로 세팅
                         setupProductDropdown(productItems)
-
-                        binding.productDropdown.showDropDown() // 데이터 로드 후 드롭다운 띄우기
+                        binding.productDropdown.showDropDown()
                     } else {
-                        showError("상품 정보를 불러오는데 실패했습니다.\n${responseBody?.message ?: "알 수 없는 오류"}")
+                        showError("상품 정보를 불러오는데 실패했습니다.\n${body?.message ?: "알 수 없는 오류"}")
                     }
                 } else {
                     showError("응답 실패: ${response.code()}")
@@ -220,6 +214,7 @@ class ChatBlockActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun setupProductDropdown(products: List<ProductItem>) {
         val adapter = DropdownProductAdapter(this, products)
