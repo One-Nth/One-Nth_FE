@@ -98,5 +98,6 @@
             android:exported="false" />
         <activity android:name=".SearchResultActivity" android:exported="false" />
         <activity android:name=".RegionVerificationActivity" />
+        <activity android:name=".SellerProfileActivity" android:exported="false" />
     </application>
 </manifest>
