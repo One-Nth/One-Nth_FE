@@ -93,6 +93,7 @@
         <activity android:name=".CreateLifePostActivity" />
         <activity android:name=".BuyerReviewDetailActivity"
             android:exported="false" />
+        <activity android:name=".chat.CancelDealActivity"/>
         <activity
             android:name=".EditPostActivity"
             android:exported="false" />

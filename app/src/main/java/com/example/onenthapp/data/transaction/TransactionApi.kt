@@ -6,29 +6,40 @@ import retrofit2.http.*
 
 interface TransactionApi {
 
-    // 1. 거래 취소
-    @POST("transactions/{transactionId}/completion")
-    suspend fun cancelTransaction(
-        @Path("transactionId") transactionId: Int,
-        @Body request: CancelTransactionRequest
+    // 1. 거래 확정 폼 발행
+    @POST("deals/confirmation")
+    suspend fun confirmationTransaction(
+        @Query("roomName") roomName: String,
+        @Body request: DealCompletionRequest
     ): Response<CommonResponse<String>>
+
+    // 2. 거래 완료 폼 발행
+    @POST("deals/completion")
+    suspend fun completeTransaction(
+        @Query("roomName") roomName: String,
+        @Body request: CompleteTransactionRequest
+    ): Response<CommonResponse<String>>
+
+    // 3. 내가 거래한 상품 목록 조회
+    @GET("deals/my-history/items")
+    suspend fun getMyHistory(
+        @Query("reviewStatus") reviewStatus: String
+    ): Response<AvailableProductsResponse>
+
+    // 4. 거래 확정 폼 조회
+    @GET("deals/confirmation/{roomName}")
+    suspend fun getDealConfirmationForm(
+        @Path("roomName") roomName: String
+    ): Response<DealConfirmationResponse>
 
     // 5. 거래 가능한 상품 조회
     @GET("deals/available-products")
     suspend fun getAvailableProducts(): Response<AvailableProductsResponse>
 
-    // 3. 거래 확정 폼 발행
-    @POST("transactions/{transactionId}/confirmation-form")
-    suspend fun createDealConfirmationForm(
-        @Path("transactionId") transactionId: Int,
-        @Body request: DealConfirmationFormRequest
-    ): Response<CommonResponse<String>>
-
-
-    // 2. 거래 완료 폼 발행
-    @POST("transactions/{transactionId}/confirmation")
-    suspend fun completeTransaction(
-        @Path("transactionId") transactionId: Int,
-        @Body request: CompleteTransactionRequest
+    // 6. 거래 취소
+    @DELETE("deals/cancellation")
+    suspend fun cancelTransaction(
+        @Query("roomName") roomName: String,
+        @Body request: CancelTransactionRequest
     ): Response<CommonResponse<String>>
 }

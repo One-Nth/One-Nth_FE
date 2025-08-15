@@ -19,8 +19,10 @@ interface MessageApi {
     // 채팅방 이름 조회 (생성 포함)
     @POST("chats/rooms")
     suspend fun createChatRoom(
-        @Body request: ChatNameRequest
+        @Query("targetMemberId") targetMemberId: Int,
+        @Query("chatRoomType") chatRoomType: String
     ): Response<ChatNameResponse>
+
 
     // 채팅방 목록 조회
     @GET("chats/rooms")
@@ -33,4 +35,10 @@ interface MessageApi {
     suspend fun leaveChatRoom(
         @Path("chatRoomId") chatRoomId: Int
     ): Response<LeaveChatResponse>
+
+    // id로 닉네임 조회
+    @GET("members/{memberId}/profile")
+    suspend fun getMemberNickname(
+        @Path("memberId") memberId: Int
+    ): Response<MemberNickName>
 }

@@ -11,7 +11,9 @@ data class ChatNotification(
     val chatRoomId: Int,
     val nickname: String,
     val message: String,
-    val time: String
+    val time: String,
+    val roomName: String,        // ✅ WebSocket용
+    val opponentId : Int,
 )
 
 class ChatNotificationAdapter(

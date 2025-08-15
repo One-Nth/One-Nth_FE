@@ -36,7 +36,6 @@ class SharingItemDetailFragment : Fragment() {
     private var kakaoMapInstance: KakaoMap? = null
     private var targetLatLng: LatLng? = null
     private var bookmarkRepo = BookmarkRepository()
-
     private var lastDetail: SharingItemDetailResult? = null
 
     override fun onCreateView(
@@ -44,7 +43,6 @@ class SharingItemDetailFragment : Fragment() {
     ) = FragmentProductDetailBinding.inflate(inflater, container, false)
         .also { _binding = it }
         .root
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
@@ -91,12 +89,10 @@ class SharingItemDetailFragment : Fragment() {
                 e.printStackTrace()
             }
         }
-
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
     }
-
     private fun bindDetail(d: SharingItemDetailResult?) {
         lastDetail = d
 
@@ -124,10 +120,8 @@ class SharingItemDetailFragment : Fragment() {
             tvSellerName.text    = d?.writerNickname
             // status는 API에서 제공하는 statusLabel 사용
             tvStatus.text        = d?.statusLabel ?: "판매중"
-
             // 인증 상태 표시
             tvVerification.text  = if(d?.writerVerified == true) "본인 인증 완료" else "본인 인증 미완료"
-
             // 프로필 이미지 로딩
             val profileUrl = d?.writerProfileImageUrl
             if (!profileUrl.isNullOrBlank()) {
@@ -140,12 +134,10 @@ class SharingItemDetailFragment : Fragment() {
             } else {
                 sellerProfile.setImageResource(R.drawable.profile_base)
             }
-
             // ViewPager2 상품 이미지 슬라이더
             if (!d?.imageUrls.isNullOrEmpty()) {
                 viewpagerImages.visibility = View.VISIBLE
                 dotsIndicator.visibility = View.VISIBLE
-
                 imageSliderAdapter = ImageSliderAdapter(d.imageUrls)
                 viewpagerImages.adapter = imageSliderAdapter
                 dotsIndicator.attachTo(viewpagerImages)
@@ -190,7 +182,6 @@ class SharingItemDetailFragment : Fragment() {
                 kakaoMapInstance = map
                 val pos = LatLng.from(latitude, longitude)
                 map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 18))
-
                 val lm = map.labelManager ?: return
                 val styles = lm.addLabelStyles(
                     LabelStyles.from(
@@ -202,11 +193,9 @@ class SharingItemDetailFragment : Fragment() {
                 val opts = LabelOptions.from(pos).setStyles(styles)
                 lm.layer?.addLabel(opts)
             }
-
             override fun getZoomLevel() = 18
         })
     }
-
     override fun onResume() { super.onResume(); mapView?.resume() }
     override fun onPause()  { mapView?.pause(); super.onPause() }
     override fun onDestroyView() {
