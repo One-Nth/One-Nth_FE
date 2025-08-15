@@ -1,5 +1,6 @@
 package com.example.onenthapp.feature.item
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.onenthapp.R
+import com.example.onenthapp.SharingSellerProfileActivity
 import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.PlusRepository
 import com.example.onenthapp.data.item.SharingItemDetailResult
@@ -35,6 +37,8 @@ class SharingItemDetailFragment : Fragment() {
     private var targetLatLng: LatLng? = null
     private var bookmarkRepo = BookmarkRepository()
 
+    private var lastDetail: SharingItemDetailResult? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ) = FragmentProductDetailBinding.inflate(inflater, container, false)
@@ -45,6 +49,12 @@ class SharingItemDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
         var currentScraped = requireArguments().getBoolean("initialScraped")
+
+
+        // ✅ 셀러 영역 클릭 시 프로필로 이동 + 가능한 값들 모두 putExtra
+        binding.layoutSellerInfo.setOnClickListener {
+            openSellerProfile(lastDetail, productId)
+        }
 
         fun renderIcon() {
             binding.btnBookmark.setImageResource(
@@ -88,6 +98,8 @@ class SharingItemDetailFragment : Fragment() {
     }
 
     private fun bindDetail(d: SharingItemDetailResult?) {
+        lastDetail = d
+
         val categoryLabel =
             when(d?.itemCategory) {
                 "FOOD" -> "식품"
@@ -200,5 +212,26 @@ class SharingItemDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // ✅ 가능한 값들 모두 안전하게 담아서 넘김 (null-safe)
+    private fun openSellerProfile(detail: SharingItemDetailResult?, productId: Long) {
+        val intent = Intent(requireContext(), SharingSellerProfileActivity::class.java).apply {
+            putExtra("originProductId", productId)                           // 현재 상품 ID
+            detail?.let {
+                putExtra("sellerName", it.writerNickname ?: "")
+                putExtra("sellerProfileImageUrl", it.writerProfileImageUrl ?: "")
+                putExtra("sellerVerified", it.writerVerified == true)
+                putExtra("purchaseMethod", it.purchaseMethod ?: "")
+                putExtra("statusLabel", it.statusLabel ?: "")
+                putExtra("itemCategory", it.itemCategory ?: "")
+                putExtra("price", it.price ?: 0)                              // Int/Long이면 그대로
+                putExtra("quantity", it.quantity ?: 0)
+                putExtra("expirationDate", it.expirationDate ?: "")
+                putExtra("latitude", it.latitude ?: 0.0)
+                putExtra("longitude", it.longitude ?: 0.0)
+            }
+        }
+        startActivity(intent)
     }
 }
