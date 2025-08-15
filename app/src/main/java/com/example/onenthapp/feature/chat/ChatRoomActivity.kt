@@ -97,11 +97,16 @@ class ChatRoomActivity : AppCompatActivity() {
         binding.inputLayoutGone.visibility = View.VISIBLE
         binding.chatMenuContainer.visibility = View.VISIBLE
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.chatMenuContainer, ChatMenuFragment.newInstance(chatRoomId, roomName))
-            .commit()
+        val chatRoomType = roomName.substringAfterLast("-")  // 👈 type만 추출 ("TIP_SHARE" 등)
 
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.chatMenuContainer,
+                ChatMenuFragment.newInstance(chatRoomId, chatRoomType)  // 👈 넘기는 건 type만
+            )
+            .commit()
     }
+
 
     private fun loadMessages() {
         lifecycleScope.launch {

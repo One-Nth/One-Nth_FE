@@ -65,6 +65,7 @@ class BottomChatActionDialogFragment(
                 view.findViewById<View>(R.id.reportOptionsGroup).visibility = View.VISIBLE
                 button.text = "신고하기"
                 button.setBackgroundColor(Color.parseColor("#FF8383"))
+
             }
             ActionType.MUTE -> {
                 title.text = "채팅 알람을 해제하시겠습니까?"
@@ -117,13 +118,14 @@ class BottomChatActionDialogFragment(
                 Log.d("BottomSheetTest", "sheet found")
 
                 val layoutParams = sheet.layoutParams
-                layoutParams.height = (resources.displayMetrics.heightPixels * 0.5).toInt()
+                layoutParams.height = (resources.displayMetrics.heightPixels * if (type == ActionType.REPORT) 0.7 else 0.5).toInt()
                 sheet.layoutParams = layoutParams
 
                 sheet.setBackgroundColor(Color.TRANSPARENT)
             } ?: Log.e("BottomSheetTest", "sheet == null")
         } ?: Log.e("BottomSheetTest", "dialog == null")
     }
+
 
 
 }
