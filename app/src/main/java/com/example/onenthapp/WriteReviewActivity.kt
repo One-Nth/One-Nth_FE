@@ -73,9 +73,9 @@ class WriteReviewActivity : AppCompatActivity() {
 
         submitButton.setOnClickListener {
             val content = reviewEditText.text.toString()
-            val rate = ratingBar.rating.toInt()
+            val rate = ratingBar.rating
 
-            if (rate == 0) {
+            if (rate == 0.0f) {
                 Toast.makeText(this, "별점을 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -158,7 +158,7 @@ class WriteReviewActivity : AppCompatActivity() {
     fun submitPurchaseReview(
         purchaseItemId: Long,
         content: String,
-        rate: Int,
+        rate: Float,
         imageUris: List<Uri>?
     ) {
         val reviewJson = Gson().toJson(ReviewBody(content, rate))
@@ -205,7 +205,7 @@ class WriteReviewActivity : AppCompatActivity() {
     fun submitSharingReview(
         sharingItemId: Long,
         content: String,
-        rate: Int,
+        rate: Float,
         imageUris: List<Uri>?
     ) {
         val reviewJson = Gson().toJson(ReviewBody(content, rate))
