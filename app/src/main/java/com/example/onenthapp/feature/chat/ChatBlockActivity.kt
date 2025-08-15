@@ -196,7 +196,7 @@ class ChatBlockActivity : AppCompatActivity() {
                                 imageUrl = it.itemImageUrl,
                                 itemId = it.itemId,
                                 itemType = it.itemType,
-//                                dealConfirmationId = it.dealConfirmationid
+                                dealConfirmationId = it.dealConfirmationid
                             )
                         }
 
