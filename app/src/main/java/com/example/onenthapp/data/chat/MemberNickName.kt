@@ -9,7 +9,7 @@ data class MemberNickName(
 
 data class Member(
     val memberId: Int,
-    val mame: String,
+    val nickname: String,
     val profileImageUrl: String? // null 허용
 )
 
