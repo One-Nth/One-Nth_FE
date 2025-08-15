@@ -2,6 +2,7 @@ package com.example.onenthapp.feature.item
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -177,6 +178,7 @@ class SharingItemDetailFragment : Fragment() {
             } else {
                 sellerProfile.setImageResource(R.drawable.profile_base)
             }
+
             // ViewPager2 상품 이미지 슬라이더
             if (!d?.imageUrls.isNullOrEmpty()) {
                 viewpagerImages.visibility = View.VISIBLE
@@ -255,6 +257,7 @@ class SharingItemDetailFragment : Fragment() {
         val intent = Intent(requireContext(), SharingSellerProfileActivity::class.java).apply {
             putExtra("originProductId", originProductId)
             putExtra("sellerId", d.writerid)
+            Log.d("ItemDetail", "open profile sellerId=${d?.writerid}")
             putExtra("sellerName", d.writerNickname ?: "")
             putExtra("sellerProfileImageUrl", d.writerProfileImageUrl ?: "")
             putExtra("sellerVerified", d.writerVerified == true)
