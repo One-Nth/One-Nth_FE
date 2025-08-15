@@ -19,6 +19,7 @@ import com.example.onenthapp.data.item.GroupPurchaseDetailResult
 import com.example.onenthapp.data.item.PlusRepository
 import com.example.onenthapp.databinding.FragmentProductDetailBinding
 import com.example.onenthapp.feature.chat.ChatRoomActivity
+import com.example.onenthapp.utils.ShareDialogUtil.showShareDialog
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -93,6 +94,12 @@ class GroupPurchaseDetailFragment : Fragment() {
 
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        // 공유 버튼 클릭 리스너 추가
+        binding.btnShare.setOnClickListener {
+            val shareUrl = "https://onenthapp.com/group-purchase/${productId}"
+            showShareDialog(shareUrl, "같이사요 상품을 공유하시겠습니까?")
         }
     }
 
