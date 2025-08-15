@@ -34,4 +34,35 @@ class MapRepository {
             }
         } else emptyList()
     }
+
+    // 할인정보 게시판과 맛집 게시판용 마커 관련 함수들
+    suspend fun fetchPostMarkers(markerType: String, regionId: Long?): List<GroupedPostMarker> =
+        withContext(Dispatchers.IO) {
+            val r = api.getPostMarkers(markerType, regionId)
+            if (r.isSuccess && r.result != null) r.result.groupedMarkers else emptyList()
+        }
+
+    suspend fun fetchPostMarkerDetails(
+        markerType: String,
+        postIds: List<Long>
+    ): List<PostMarkerPreview> = withContext(Dispatchers.IO) {
+        val resp = api.getPostMarkerDetails(markerType, postIds)
+        if (resp.isSuccess && resp.result != null) {
+            val dtos = resp.result.postMarkerDetails
+            // 응답에 id가 없으니 요청 순서대로 zip
+            dtos.mapIndexedNotNull { idx, d ->
+                val id = postIds.getOrNull(idx) ?: return@mapIndexedNotNull null
+                PostMarkerPreview(
+                    id = id,
+                    placeName = d.placeName,
+                    title = d.title,
+                    address = d.address,
+                    createdAt = d.createdAt,
+                    latitude = d.latitude,
+                    longitude = d.longitude,
+                    scraped = d.scraped
+                )
+            }
+        } else emptyList()
+    }
 }

@@ -1,15 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.kakao.vectormap.MapView
-        android:id="@+id/map_view_display"
+    android:layout_height="match_parent">
+
+    <!-- ─────── 기존 ConstraintLayout ─────── -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/main_white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_myregion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:drawableStartCompat="@drawable/ic_map_pin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="OO동"
+            android:drawablePadding="6dp"
+            android:textSize="15sp"
+            android:elevation="8dp"
+            android:fontFamily="@font/pretendard_bold"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="30dp"
+            android:textColor="@color/main_green" />
+
+        <com.kakao.vectormap.MapView
+            android:id="@+id/map_view_display"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 5) 검색결과 바텀 시트 추가 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_sheet"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="vertical"
+        android:background="@drawable/bg_bottom_sheet"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_hideable="false"
+        app:behavior_skipCollapsed="false"
+        app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
+        app:behavior_halfExpandedRatio="0.4"
+        app:behavior_fitToContents="false"
+        app:behavior_expandedOffset="0dp"
+        android:elevation="20dp">
+        
+        <View
+            android:id="@+id/scroll_bar"
+            android:layout_width="80dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@id/bottom_sheet"
+            app:layout_constraintStart_toStartOf="@id/bottom_sheet"
+            app:layout_constraintEnd_toEndOf="@id/bottom_sheet"
+            android:background="@drawable/ic_scrollbar_bar"/>
+
+        <FrameLayout
+            android:id="@+id/midContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            
+            <include
+                layout="@layout/item_marker_detail"
+                android:id="@+id/post_preview_card" />
+                
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

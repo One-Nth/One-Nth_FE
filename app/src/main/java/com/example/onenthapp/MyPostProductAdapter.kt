@@ -42,7 +42,7 @@ class MyPostProductAdapter(
 
         fun bind(item: MyPostProductItem, pos: Int) {
             tvName.text = item.productName
-            tvInfo.text = "가격 ${item.price.formatWon()}"
+            tvInfo.text = "${item.price.formatWon()}"
 
 
             val url = item.imageUrl

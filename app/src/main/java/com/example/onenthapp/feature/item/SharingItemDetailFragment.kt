@@ -1,6 +1,5 @@
 package com.example.onenthapp.feature.item
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.onenthapp.R
+import com.example.onenthapp.SharingSellerProfileActivity
 import com.example.onenthapp.RetrofitInstance.messageApi
 import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.PlusRepository
 import com.example.onenthapp.data.item.SharingItemDetailResult
 import com.example.onenthapp.databinding.FragmentProductDetailBinding
-import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -87,6 +86,7 @@ class SharingItemDetailFragment : Fragment() {
         }
     }
     private fun bindDetail(d: SharingItemDetailResult?) {
+        lastDetail = d
 
         val categoryLabel =
             when(d?.itemCategory) {
@@ -162,37 +162,6 @@ class SharingItemDetailFragment : Fragment() {
         } else {
             binding.offlinePlace.visibility = View.GONE
         }
-        binding.btnChat.setOnClickListener {
-            val writerId = 1 ?: return@setOnClickListener
- // 실제 아이디로 바꿔야함
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    val response = messageApi.createChatRoom(
-                        targetMemberId = writerId,
-                        chatRoomType = "DEAL"
-                    )
-
-                    if (response.isSuccessful && response.body() != null) {
-                        val chatRoomName = response.body()!!.result.chatRoomName
-
-                        // ChatRoomActivity로 이동
-                        val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
-                            putExtra("chatRoomName", chatRoomName)
-                        }
-                        startActivity(intent)
-                    } else {
-                        Toast.makeText(requireContext(), "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
-                    }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-
-
     }
 
     private fun startMap(latitude: Double, longitude: Double) {

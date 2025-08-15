@@ -17,4 +17,17 @@ interface MapMarkerApi {
         @Query("itemIds") itemIds: List<Long>            // ?itemIds=1&itemIds=3...
     ): GenericResponse<ItemMarkerDetailResult>
 
+    // 할인정보 게시판과 맛집 게시판용 마커 API
+    @GET("map/markers/posts")
+    suspend fun getPostMarkers(
+        @Query("markerType") markerType: String,         // "DISCOUNT"/"RESTAURANT"
+        @Query("regionId") regionId: Long? = null        // 선택적
+    ): GenericResponse<PostMarkersResult>
+
+    @GET("map/markers/posts/details")
+    suspend fun getPostMarkerDetails(
+        @Query("markerType") markerType: String,         // "DISCOUNT"/"RESTAURANT"
+        @Query("postIds") postIds: List<Long>            // ?postIds=1&postIds=3...
+    ): GenericResponse<PostMarkerDetailResult>
+
 }

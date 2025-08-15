@@ -18,13 +18,20 @@ class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
     private lateinit var adapter: MyPostProductAdapter
     private val repo by lazy { PostRepository(RetrofitInstance.memberApi) }
 
+    // ✅ 검색 상태
+    private var fullList: List<MyPostProductItem> = emptyList()
+    private var currentQuery: String = ""
+
+    private val SEARCH_KEY = "GLOBAL_SEARCH_QUERY"
+    private val SEARCH_VALUE_KEY = "q"
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = view.findViewById(R.id.recyclerViewMyPostProduct)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // ✅ 이 화면은 '내가 쓴 상품'이므로 삭제 버튼 노출 + 즉시 삭제 콜백
+        // ✅ 내 상품 화면: 삭제 버튼 노출 + 즉시 삭제
         adapter = MyPostProductAdapter(
             items = emptyList(),
             showDelete = true
@@ -32,6 +39,12 @@ class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
             deleteNow(item, position)
         }
         recyclerView.adapter = adapter
+
+        // ✅ 검색어 브로드캐스트 수신 → 상품명 기준 필터
+        parentFragmentManager.setFragmentResultListener(SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
+            currentQuery = bundle.getString(SEARCH_VALUE_KEY).orEmpty()
+            adapter.submitList(applyQuery(fullList, currentQuery))
+        }
 
         loadPage(page = 1, size = 10)
     }
@@ -51,7 +64,9 @@ class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
                     size = size
                 ).result?.items.orEmpty()
             }.onSuccess { items ->
-                adapter.submitList(items)
+                // ✅ 전체 리스트 유지해두고, 항상 현재 검색어로 필터해서 노출
+                fullList = items
+                adapter.submitList(applyQuery(fullList, currentQuery))
             }.onFailure { e ->
                 e.printStackTrace()
                 Toast.makeText(requireContext(), "불러오기 실패: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -59,13 +74,14 @@ class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
         }
     }
 
-    /** 확인 없이 즉시 삭제: UI 먼저 제거 → API 호출 → 실패 시 롤백 */
+    /** 확인 없이 즉시 삭제: UI 먼저 제거 → API → 실패 시 롤백 */
     private fun deleteNow(item: MyPostProductItem, position: Int) {
-        // 현재 리스트 스냅샷(롤백용) 확보
-        val before = adapter.currentItems().toMutableList()
+        val beforeAdapterItems = adapter.currentItems().toMutableList()
+        val beforeFullList = fullList.toMutableList()
 
-        // 옵티미스틱 제거
+        // 화면/원본에서 낙관적 제거
         adapter.removeAt(position)
+        fullList = fullList.filterNot { it.itemId == item.itemId }
 
         viewLifecycleOwner.lifecycleScope.launch {
             runCatching { repo.deleteMyItem(item).getOrThrow() }
@@ -74,10 +90,26 @@ class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
                 }
                 .onFailure { e ->
                     // 실패 시 롤백
-                    adapter.submitList(before)
+                    adapter.submitList(beforeAdapterItems)
+                    fullList = beforeFullList
                     Toast.makeText(requireContext(), "삭제 실패: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
-}
 
+    /** ✅ ‘상품명’만 대상으로 필터 */
+    private fun applyQuery(src: List<MyPostProductItem>, q: String): List<MyPostProductItem> {
+        if (q.isBlank()) return src
+        val needle = q.trim().lowercase()
+
+        return src.filter { item ->
+            // 여기에 있는 후보 중 실제 존재하는 필드만 남겨도 됩니다.
+            val candidates = listOfNotNull(
+                item.productName,
+            )
+            candidates.any { it.contains(needle, ignoreCase = true) }
+        }
+    }
+
+
+}

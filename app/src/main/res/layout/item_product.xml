@@ -29,7 +29,7 @@
             android:layout_marginEnd="12dp"
             android:scaleType="centerCrop"
             android:clipToOutline="true"
-            android:src="@drawable/rectangle_11" />
+            android:background="@drawable/rectangle_11" /> />
 
         <!-- 상품 정보 -->
         <LinearLayout

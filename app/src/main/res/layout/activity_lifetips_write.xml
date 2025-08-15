@@ -2,16 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_life_tips_search"
+    android:id="@+id/layout_life_tips_common"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_white"
-    android:orientation="vertical"
-    tools:context=".LifeTipsSearchActivity">
+    android:orientation="vertical">
 
     <!-- 툴바 -->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_search_result"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/main_white"
@@ -21,21 +20,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- 뒤로가기 버튼 -->
             <ImageView
                 android:id="@+id/ivBack"
                 android:layout_width="31dp"
                 android:layout_height="31dp"
-                android:layout_marginStart="0dp"
                 android:contentDescription="뒤로가기"
                 android:src="@drawable/humbleicons_arrow_up"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- 검색어 -->
             <TextView
-                android:id="@+id/tvSearchKeyword"
+                android:id="@+id/tvTitleBar"
                 style="@style/PretendardSubtitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,7 +42,7 @@
                 app:layout_constraintStart_toEndOf="@id/ivBack"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
+            <!-- 우측 액션(올리기/수정 등) -->
             <TextView
                 android:id="@+id/iv_notification"
                 style="@style/PretendardBody5"
@@ -58,19 +54,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <View
-        android:id="@+id/viewToolbarDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="15dp"
-        android:background="#CCCCCC"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_search_result" />
+        android:background="#CCCCCC" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -83,7 +74,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- 사진 추가 영역 -->
+            <!-- 사진 추가 -->
             <LinearLayout
                 android:id="@+id/photoRow"
                 android:layout_width="match_parent"
@@ -91,7 +82,6 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <!-- 고정 카메라 타일 -->
                 <LinearLayout
                     android:id="@+id/cameraTile"
                     android:layout_width="116dp"
@@ -112,16 +102,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="0/10"
+                        android:text="0/5"
                         android:textColor="@color/text_btn_ok" />
                 </LinearLayout>
 
-                <!-- 오른쪽 썸네일 스크롤 -->
                 <HorizontalScrollView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fillViewport="false"
                     android:scrollbars="none">
 
                     <LinearLayout
@@ -132,7 +120,6 @@
                 </HorizontalScrollView>
             </LinearLayout>
 
-
             <!-- 제목 / 내용 -->
             <EditText
                 android:id="@+id/etTitle"
@@ -141,38 +128,38 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"
-                android:gravity="start|center_vertical"
                 android:hint="제목"
-                android:inputType="textMultiLine"
                 android:padding="8dp"
+                android:inputType="textMultiLine"
+                android:gravity="start|center_vertical"
                 android:textAlignment="viewStart"
-                android:textColor="@color/text_btn_ok"
+                android:textColorHint="@color/splash_gray"
+                android:textColor="@color/main_black"
                 android:textSize="16sp" />
-
 
             <EditText
                 android:id="@+id/etContent"
                 style="@style/PretendardSubtitle2"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_marginTop="0dp"
                 android:background="@android:color/transparent"
                 android:gravity="start|top"
                 android:hint="내용 입력하기"
-                android:inputType="textMultiLine"
-                android:padding="8dp"
                 android:textAlignment="viewStart"
-                android:textColor="@color/text_btn_ok"
+                android:inputType="textMultiLine"
+                android:overScrollMode="ifContentScrolls"
+                android:padding="8dp"
+                android:textColorHint="@color/splash_gray"
+                android:textColor="@color/main_black"
                 android:textSize="16sp" />
 
-
-            <!-- 링크 삽입 -->
+            <!-- 구분선 -->
             <View
-                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="7dp"
                 android:background="@color/main_gray" />
 
+            <!-- 링크 섹션 (LIFE_TIP 전용) -->
             <LinearLayout
                 android:id="@+id/sectionLink"
                 android:layout_width="match_parent"
@@ -192,10 +179,11 @@
 
                 <LinearLayout
                     android:id="@+id/linkInputContainer"
-                    android:layout_width="332dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_search_bar"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -208,7 +196,6 @@
                         android:src="@drawable/ic_search_glasses"
                         app:tint="@color/text_search" />
 
-                    <!-- ✅ 액티비티 코드와 매칭: etLink -->
                     <EditText
                         android:id="@+id/etLink"
                         android:layout_width="0dp"
@@ -216,22 +203,33 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:hint="링크를 삽입하세요"
-                        android:imeOptions="actionSearch"
-                        android:inputType="text"
+                        android:hint="링크를 입력하고 엔터로 확정"
+                        android:imeOptions="actionDone"
+                        android:inputType="textUri"
                         android:textColor="@color/main_black"
                         android:textColorHint="@color/text_search"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:singleLine="true"
+                app:singleSelection="true"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp" />
 
-            <!-- 장소 추가하기 섹션 (카페, 동네 게시판용) -->
+            <!-- 장소 섹션 (DISCOUNT/RESTAURANT 전용) -->
             <LinearLayout
                 android:id="@+id/sectionLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"> <!-- 기본적으로 숨김 -->
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tvLocationHeader"
@@ -240,35 +238,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
-                    android:drawablePadding="2dp"
                     android:text="장소 추가하기"
-                    android:textColor="@color/main_black"
-                    app:drawableStartCompat="@drawable/ic_gps_black" />
+                    android:textColor="@color/main_black" />
 
-                <!-- 주소지 선택 오버레이 -->
-                <RelativeLayout
-                    android:id="@+id/selectedLocationContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:padding="12dp"
-                    android:visibility="gone"> <!-- 장소가 선택되면 visible -->
-
-                    <TextView
-                        android:id="@+id/tvSelectedLocationName"
-                        style="@style/PretendardBody2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:textColor="@color/main_black"
-                        tools:text="주소 선택 오버레이 구현 예정" />
-                </RelativeLayout>
-
-
-                <!-- 장소 검색/선택 버튼 -->
                 <LinearLayout
                     android:id="@+id/locationSearchContainer"
                     android:layout_width="match_parent"
@@ -277,8 +249,6 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_search_bar"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="12dp"
@@ -289,7 +259,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_search_glasses"
-                        app:tint="@color/text_search" /> <!-- 아이콘 색상 변경 -->
+                        app:tint="@color/text_search" />
 
                     <EditText
                         android:id="@+id/etLocation"
@@ -298,27 +268,29 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:hint="주소를 입력하세요"
-                        android:imeOptions="actionSearch"
+                        android:hint="주소를 입력하고 엔터로 확정"
+                        android:imeOptions="actionDone"
                         android:inputType="text"
                         android:textColor="@color/main_black"
                         android:textColorHint="@color/text_search"
                         android:textSize="14sp" />
                 </LinearLayout>
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupSelectedLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:chipSpacingHorizontal="8dp"
-                    app:chipSpacingVertical="8dp"
-                    app:singleSelection="true" />
-
             </LinearLayout>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:singleLine="true"
+                app:singleSelection="true"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp" />
+
             <!-- 태그 -->
             <View
-                android:id="@+id/divider2"
                 android:layout_width="match_parent"
                 android:layout_height="7dp"
                 android:layout_marginTop="60dp"
@@ -336,10 +308,11 @@
 
             <LinearLayout
                 android:id="@+id/tagsInputContainer"
-                android:layout_width="332dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
                 android:background="@drawable/bg_search_bar"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -353,7 +326,6 @@
                     android:text="#"
                     android:textColor="@color/main_black" />
 
-                <!-- ✅ 액티비티 코드와 매칭: etTags -->
                 <EditText
                     android:id="@+id/etTags"
                     android:layout_width="0dp"
@@ -361,9 +333,10 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="태그를 입력하세요 (쉼표로 구분)"
-                    android:imeOptions="actionSearch"
+                    android:hint="태그를 입력하고 엔터/쉼표로 확정"
+                    android:imeOptions="actionDone"
                     android:inputType="text"
+                    android:singleLine="true"
                     android:textColor="@color/main_black"
                     android:textColorHint="@color/text_search"
                     android:textSize="14sp" />
@@ -373,10 +346,11 @@
                 android:id="@+id/chipGroupTags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 app:chipSpacingHorizontal="8dp"
-                app:chipSpacingVertical="8dp"
-                app:singleLine="false" />
+                app:chipSpacingVertical="8dp" />
 
         </LinearLayout>
     </ScrollView>

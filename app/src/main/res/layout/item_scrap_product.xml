@@ -21,7 +21,7 @@
             android:layout_width="86dp"
             android:layout_height="88dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/rectangle_11"
+            android:background="@drawable/rectangle_11"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

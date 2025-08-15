@@ -233,8 +233,18 @@
                         android:textColor="@color/main_black"
                         android:textColorHint="@color/text_search"
                         android:textSize="14sp" />
+
                 </LinearLayout>
             </LinearLayout>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp"
+                app:singleSelection="true" />
 
             <!-- 장소 추가하기 섹션 (카페, 동네 게시판용) -->
             <LinearLayout
@@ -318,7 +328,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupSelectedLocation"
+                    android:id="@+id/chipGroupLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"

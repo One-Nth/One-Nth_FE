@@ -1,5 +1,6 @@
 package com.example.onenthapp.feature.item
 
+import android.content.Intent
 import com.example.onenthapp.feature.item.ImageSliderAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.onenthapp.PurchaseSellerProfileActivity
 import com.example.onenthapp.R
 import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.GroupPurchaseDetailResult
@@ -36,6 +38,7 @@ class GroupPurchaseDetailFragment : Fragment() {
     private var targetLatLng: LatLng? = null
     private var bookmarkRepo = BookmarkRepository()
 
+    private var lastDetail: GroupPurchaseDetailResult? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -47,6 +50,14 @@ class GroupPurchaseDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val productId = requireArguments().getLong("productId")
         var currentScraped = requireArguments().getBoolean("initialScraped")
+
+        // ✅ 프로필 영역/화살표/닉네임 클릭 → PurchaseSellerProfileActivity
+        val goSeller = View.OnClickListener { openPurchaseSellerProfile(lastDetail, productId) }
+        binding.layoutSellerInfo.setOnClickListener(goSeller)
+        binding.profileArrow.setOnClickListener(goSeller)
+        binding.sellerProfile.setOnClickListener(goSeller)
+        binding.tvSellerName.setOnClickListener(goSeller)
+
         fun renderIcon() {
             binding.btnBookmark.setImageResource(
                 if (currentScraped) R.drawable.ic_bookmark_on else R.drawable.ic_bookmark_off
@@ -84,6 +95,7 @@ class GroupPurchaseDetailFragment : Fragment() {
     }
 
     private fun bindDetail(d: GroupPurchaseDetailResult?) {
+        lastDetail = d
         val categoryLabel =
             when(d?.itemCategory) {
                 "FOOD" -> "식품"
@@ -179,5 +191,29 @@ class GroupPurchaseDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // ✅ 프로필 화면으로 이동 (같이사요 전용)
+    private fun openPurchaseSellerProfile(d: GroupPurchaseDetailResult?, originProductId: Long) {
+        val intent = Intent(requireContext(), PurchaseSellerProfileActivity::class.java).apply {
+            putExtra("originProductId", originProductId)
+
+            d?.let {
+                putExtra("sellerId", it.writerid)
+                putExtra("sellerName", it.writerNickname ?: "")
+                putExtra("sellerProfileImageUrl", it.writerProfileImageUrl ?: "")
+                putExtra("sellerVerified", it.writerVerified == true)
+                putExtra("purchaseMethod", it.purchaseMethod ?: "")
+                putExtra("statusLabel", it.statusLabel ?: "")
+                putExtra("itemCategory", it.itemCategory ?: "")
+                putExtra("price", it.price ?: 0)
+                putExtra("expirationDate", it.expirationDate ?: "")
+                putExtra("latitude", it.latitude ?: 0.0)
+                putExtra("longitude", it.longitude ?: 0.0)
+                // 판매자 식별자 필드가 있다면 함께:
+                // putExtra("sellerId", it.writerMemberId ?: -1L)
+            }
+        }
+        startActivity(intent)
     }
 }

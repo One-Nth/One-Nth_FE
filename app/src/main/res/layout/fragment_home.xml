@@ -54,6 +54,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="7dp"/>
 
+
                 <ImageButton
                     android:id="@+id/bt_notification"
                     android:layout_width="18dp"
@@ -61,7 +62,6 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="179dp"
                     android:src="@drawable/ic_alarmbell" />
-
             </LinearLayout>
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -205,7 +205,6 @@
                 layout="@layout/item_search_result"
                 android:id="@+id/preview_card"/>
         </FrameLayout>
-        ```
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

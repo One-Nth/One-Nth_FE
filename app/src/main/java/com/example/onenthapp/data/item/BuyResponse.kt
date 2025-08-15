@@ -13,7 +13,7 @@ data class BuyResult(
     val purchaseItemId: Long
 )
 data class GroupPurchaseDetailResult(
-    val id: Long,
+    val writerid: Long,
     val title: String,
     val imageUrls: List<String>,
     val purchaseUrl : String,
