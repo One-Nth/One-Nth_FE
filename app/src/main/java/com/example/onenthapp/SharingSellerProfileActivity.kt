@@ -6,6 +6,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.bumptech.glide.Glide
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.util.TokenManager
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.launch
@@ -25,6 +27,7 @@ import kotlinx.coroutines.launch
 class SharingSellerProfileActivity : AppCompatActivity() {
 
     private lateinit var buyerAdapter: BuyerReviewAdapter
+    private lateinit var sellerItemAdapter: SellerItemAdapter
 
     // 뷰 참조
     private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.topAppBar) }
@@ -32,6 +35,7 @@ class SharingSellerProfileActivity : AppCompatActivity() {
     private val tvNickname by lazy { findViewById<TextView>(R.id.nickname) }
 
     private val rvBuyerReviews by lazy { findViewById<RecyclerView>(R.id.buyerReviewRecyclerView) }
+    private val rvSaleItems by lazy { findViewById<RecyclerView>(R.id.saleItemsRecyclerView) }
     private val scrollBar by lazy { findViewById<View>(R.id.scrollBar) }
 
     private val tvSellCount by lazy { findViewById<TextView>(R.id.sellCount) }
@@ -69,6 +73,23 @@ class SharingSellerProfileActivity : AppCompatActivity() {
             }
         }
 
+        // ▼ 판매 물품 전체보기(화살표) 이동
+        findViewById<View>(R.id.btnGoAllItems)?.setOnClickListener {
+            val id = sellerId
+            val name = sellerName
+            if (id != null) {
+                startActivity(Intent(this, SellerItemDetailActivity::class.java).apply {
+                    putExtra("sellerId", id)
+                    putExtra("sellerName", name)
+                    putExtra("itemType", "sharing") // 함께나눠요
+                })
+            } else {
+                Toast.makeText(this, "판매자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        } ?: run {
+            Log.e("SharingSellerProfile", "btnGoAllItems not found in layout")
+        }
+
         // 상단 프로필 초기 세팅 (넘어온 값 우선)
         supportActionBar?.title = if (sellerName.isNotBlank()) sellerName else "프로필"
         if (sellerName.isNotBlank()) tvNickname.text = sellerName
@@ -92,9 +113,18 @@ class SharingSellerProfileActivity : AppCompatActivity() {
         }
         attachScrollBar(rvBuyerReviews, scrollBar)
 
+        // 판매 물품 리스트(가로)
+        sellerItemAdapter = SellerItemAdapter()
+        rvSaleItems.apply {
+            adapter = sellerItemAdapter
+            layoutManager = LinearLayoutManager(this@SharingSellerProfileActivity, LinearLayoutManager.HORIZONTAL, false)
+            // RecyclerView 최소 높이 설정
+            minimumHeight = (220 * resources.displayMetrics.density).toInt() // 220dp
+        }
+
         // 데이터 로드: sellerId 있으면 타겟 유저의 데이터 로딩
         sellerId?.let {
-            loadTradeSummary(it)
+            loadSellerProfile(it)
             loadBuyerReviews(it)
         }
     }
@@ -119,38 +149,39 @@ class SharingSellerProfileActivity : AppCompatActivity() {
         })
     }
 
-    // 판매/리뷰 요약
-    private fun loadTradeSummary(targetUserId: Long) {
+    // 판매자 프로필 로드 (판매/리뷰 요약 + 판매 물품)
+    private fun loadSellerProfile(targetUserId: Long) {
+        val token = TokenManager.getAccessToken()
         lifecycleScope.launch {
             try {
-                val resp = memberApi.getUserTradeHistory(targetUserId)
+                val resp = memberApi.getSellerProfile("Bearer ${token ?: ""}", targetUserId)
                 if (resp.isSuccessful && resp.body()?.isSuccess == true) {
                     val r = resp.body()!!.result
 
-                    tvSellCount.text = r.totalDealsCount.toString()
-                    tvReviewCount.text = r.reviewCount.toString()
-
-                    val avg = when {
-                        r.reviewCount <= 0 -> 0f
-                        r.totalRating > 5f -> (r.totalRating / r.reviewCount) // 합계로 내려온 경우 가정
-                        else -> r.totalRating                                // 이미 평균인 경우
-                    }.coerceIn(0f, 5f)
-
+                    // 프로필 정보
+                    tvSellCount.text = r.totalSalesCount.toString()
+                    tvReviewCount.text = r.totalReviewCount.toString()
                     ratingSummary.setIsIndicator(true)
-                    ratingSummary.rating = avg
+                    ratingSummary.rating = r.averageRating
+
+                    // 판매 물품 리스트 업데이트
+                    sellerItemAdapter.updateList(r.items)
+                    
                 } else {
                     tvSellCount.text = "0"
                     tvReviewCount.text = "0"
                     ratingSummary.setIsIndicator(true)
                     ratingSummary.rating = 0f
-                    Log.e("SellerProfile", "TradeSummary 실패: ${resp.errorBody()?.string()}")
+                    sellerItemAdapter.updateList(emptyList())
+                    Log.e("SellerProfile", "SellerProfile 실패: ${resp.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 tvSellCount.text = "0"
                 tvReviewCount.text = "0"
                 ratingSummary.setIsIndicator(true)
                 ratingSummary.rating = 0f
-                Log.e("SellerProfile", "TradeSummary 오류: ${e.message}")
+                sellerItemAdapter.updateList(emptyList())
+                Log.e("SellerProfile", "SellerProfile 오류: ${e.message}")
             }
         }
     }
@@ -201,4 +232,7 @@ class SharingSellerProfileActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         finish(); return true
     }
+
 }
+
+

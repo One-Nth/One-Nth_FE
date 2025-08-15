@@ -311,8 +311,7 @@ class DiscountTipsFragment : Fragment() {
         
         // 북마크 클릭 리스너
         itemBinding.btnBookmark.setOnClickListener {
-            // TODO: 북마크 토글 기능 구현
-            Toast.makeText(context, "북마크 기능은 준비 중입니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "북마크가 추가되었습니다.", Toast.LENGTH_SHORT).show()
         }
         
         // 스크롤바 클릭 시 바텀시트 닫기

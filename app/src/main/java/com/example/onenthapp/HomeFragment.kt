@@ -265,12 +265,10 @@ class HomeFragment : Fragment() {
             }
 
             override fun getPosition(): com.kakao.vectormap.LatLng {
-                // TODO("Not yet implemented")
                 return com.kakao.vectormap.LatLng.from(37.5665, 126.9780) // 초기 위치 (예: 서울 시청)
             }
 
             override fun getZoomLevel(): Int {
-                // TODO("Not yet implemented")
                 return 17 // 초기 줌 레벨
             }
         })

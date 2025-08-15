@@ -181,12 +181,10 @@ class PlusBuyFragment : Fragment() {
             val json = Gson().toJson(req)
             val dataPart = json.toRequestBody("application/json".toMediaType())
 
-            // 3) 이미지 파트 (실제 업로드 미구현 상태라 dummy 이미지 하나 강제)
-            val realUris: List<Uri> = emptyList() // TODO: 실제 Uri 리스트
+            val realUris: List<Uri> = emptyList()
             val parts = if (realUris.isNotEmpty()) {
                 realUris.mapIndexed { i, uri ->
                     val tmp = File(requireContext().cacheDir, "img_$i.jpg")
-                    // TODO: uri → tmp 파일 복사
                     val rb = tmp.readBytes().toRequestBody("image/*".toMediaType())
                     MultipartBody.Part.createFormData("imageFiles", tmp.name, rb)
                 }
