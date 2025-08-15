@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.RatingBar
 
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,6 +67,18 @@ class PurchaseSellerProfileActivity : AppCompatActivity() {
         // val expirationDate  = intent.getStringExtra("expirationDate").orEmpty()
         // val latitude        = intent.getDoubleExtra("latitude", 0.0)
         // val longitude       = intent.getDoubleExtra("longitude", 0.0)
+
+        // ▼ 구매자거래후기 전체보기(화살표) 이동
+        findViewById<View>(R.id.btnGoAllReviews).setOnClickListener {
+            val id = sellerId
+            if (id != null) {
+                startActivity(Intent(this, BuyerReviewDetailActivity::class.java).apply {
+                    putExtra("userId", id)   // ✅ 동일 키
+                })
+            } else {
+                Toast.makeText(this, "판매자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // Header bind
         if (sellerName.isNotBlank()) {

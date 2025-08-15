@@ -1,5 +1,6 @@
 package com.example.onenthapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -8,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +56,18 @@ class SharingSellerProfileActivity : AppCompatActivity() {
         val sellerName          = intent.getStringExtra("sellerName").orEmpty()
         val sellerProfileUrl    = intent.getStringExtra("sellerProfileImageUrl").orEmpty()
         val sellerVerified      = intent.getBooleanExtra("sellerVerified", false)
+
+        // ▼ 구매자거래후기 전체보기(화살표) 이동
+        findViewById<View>(R.id.btnGoAllReviews).setOnClickListener {
+            val id = sellerId
+            if (id != null) {
+                startActivity(Intent(this, BuyerReviewDetailActivity::class.java).apply {
+                    putExtra("userId", id)   // ✅ BuyerReviewDetailActivity가 기대하는 키 이름과 통일
+                })
+            } else {
+                Toast.makeText(this, "판매자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // 상단 프로필 초기 세팅 (넘어온 값 우선)
         supportActionBar?.title = if (sellerName.isNotBlank()) sellerName else "프로필"
