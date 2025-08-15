@@ -1,15 +1,9 @@
 package com.example.onenthapp
 
 import CommentAdapter
-import android.app.Dialog
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -24,6 +18,7 @@ import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
 import com.example.onenthapp.data.post.PostDetailResponse
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
 import com.example.onenthapp.util.TokenManager
+import com.example.onenthapp.utils.ShareDialogUtil
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
@@ -366,24 +361,8 @@ class LifeTipsDetailActivity : AppCompatActivity() {
 
     /** 공유 팝업 */
     private fun showSharePopup() {
-        val dialog = Dialog(this)
-        val view = LayoutInflater.from(this).inflate(R.layout.share_nwon_popup, null)
-        dialog.setContentView(view)
-        dialog.setCancelable(true)
-
-        val link = "https://yourapp.com/post/$postId"
-        view.findViewById<EditText?>(R.id.shareLinkEditText)?.setText(link)
-        view.findViewById<ViewGroup?>(R.id.copyButton)?.setOnClickListener {
-            copyToClipboard("post_link", link)
-            Toast.makeText(this, "링크가 복사되었습니다.", Toast.LENGTH_SHORT).show()
-        }
-        view.findViewById<ViewGroup?>(R.id.closeButton)?.setOnClickListener { dialog.dismiss() }
-        dialog.show()
-    }
-
-    private fun copyToClipboard(label: String, text: String) {
-        val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        cm.setPrimaryClip(ClipData.newPlainText(label, text))
+        val shareUrl = "https://onenthapp.com/post/$postId"
+        ShareDialogUtil.showShareDialog(this, shareUrl, "해당 글을 공유하시겠습니까?")
     }
 
     private fun bindDetail(d: PostDetailResponse.Detail) {

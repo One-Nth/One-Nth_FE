@@ -16,6 +16,7 @@ import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.PlusRepository
 import com.example.onenthapp.data.item.SharingItemDetailResult
 import com.example.onenthapp.databinding.FragmentProductDetailBinding
+import com.example.onenthapp.utils.ShareDialogUtil.showShareDialog
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -92,6 +93,12 @@ class SharingItemDetailFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        // 공유 버튼 클릭 리스너 추가
+        binding.btnShare.setOnClickListener {
+            val shareUrl = "https://onenthapp.com/sharing/${productId}"
+            showShareDialog(shareUrl, "상품을 공유하시겠습니까?")
+        }
     }
     private fun bindDetail(d: SharingItemDetailResult?) {
         lastDetail = d
@@ -121,7 +128,7 @@ class SharingItemDetailFragment : Fragment() {
             // status는 API에서 제공하는 statusLabel 사용
             tvStatus.text        = d?.statusLabel ?: "판매중"
             // 인증 상태 표시
-            tvVerification.text  = if(d?.writerVerified == true) "본인 인증 완료" else "본인 인증 미완료"
+            tvVerification.text  = if(d?.writerVerified == true) "지역 인증 완료" else "지역 인증 미완료"
             // 프로필 이미지 로딩
             val profileUrl = d?.writerProfileImageUrl
             if (!profileUrl.isNullOrBlank()) {

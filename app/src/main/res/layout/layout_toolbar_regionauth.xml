@@ -1,0 +1,36 @@
+<LinearLayout
+    android:id="@+id/layout_app_bar"
+    android:layout_width="match_parent"
+    android:layout_height="94dp"
+    android:gravity="center_vertical"
+    android:background="@color/main_white"
+    android:paddingHorizontal="12dp"
+    android:elevation="4dp"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="31dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/ic_left"
+        />
+    <TextView
+        android:textColor="@color/main_green"
+        android:textSize="20sp"
+        android:fontFamily="@font/pretendard_bold"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:text="우리 동네 인증하기"
+        />
+    <TextView
+        android:textColor="@color/transparent"
+        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="임시저장"
+        />
+</LinearLayout>

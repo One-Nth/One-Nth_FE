@@ -119,7 +119,7 @@ class ChatCheckActivity : AppCompatActivity() {
                     val body = response.body()
                     if(body != null && body.isSuccess && body.result != null){
                         val products = body.result.map {
-                            ProductItem(it.itemName, it.itemImageUrl, it.itemId, it.itemType)
+                            ProductItem(it.itemName, it.itemImageUrl, it.itemId, it.itemType, -1)
                         }
                         setupProductDropdown(products)
                         binding.productDropdown.showDropDown()
