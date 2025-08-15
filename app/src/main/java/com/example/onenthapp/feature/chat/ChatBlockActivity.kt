@@ -167,7 +167,7 @@ class ChatBlockActivity : AppCompatActivity() {
                     val body = response.body()
                     if (body?.isSuccess == true && !body.result.isNullOrEmpty()) {
                         val firstItem = body.result[0] // 필요 시 선택 로직 변경
-                        dealConfirmationId = firstItem.dealConfirmationid
+                        dealConfirmationId = firstItem.dealConfirmationId
 
                         // UI에 상품 보여주기 등 추가 작업 가능
                     } else {
@@ -196,7 +196,7 @@ class ChatBlockActivity : AppCompatActivity() {
                                 imageUrl = it.itemImageUrl,
                                 itemId = it.itemId,
                                 itemType = it.itemType,
-                                dealConfirmationId = it.dealConfirmationid
+                                dealConfirmationId = it.dealConfirmationId
                             )
                         }
 

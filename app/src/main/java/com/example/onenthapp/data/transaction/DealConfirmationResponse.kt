@@ -7,7 +7,7 @@ data class DealConfirmationResponse(
     val result: List<ConfirmationList>?
 )
 data class ConfirmationList(
-    val dealConfirmationid: Int,
+    val dealConfirmationId: Int,
     val itemId: Int,
     val itemType: String,
     val itemName: String,

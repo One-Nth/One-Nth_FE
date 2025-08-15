@@ -6,7 +6,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="341dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/rectangle_59"
     android:padding="14dp">
@@ -121,7 +121,7 @@
         android:text="버튼"
         style="@style/PretendardBody5"
         android:textSize="15dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
         android:backgroundTint="@color/main_green"
         android:textColor="@android:color/white"/>

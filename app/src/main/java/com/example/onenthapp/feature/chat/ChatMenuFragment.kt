@@ -24,7 +24,6 @@ class ChatMenuFragment : Fragment() {
         }
     }
 
-
     private var chatRoomId: Int = -1
     private lateinit var roomName: String
 
@@ -37,7 +36,6 @@ class ChatMenuFragment : Fragment() {
         roomName = arguments?.getString(ARG_ROOM_NAME) ?: ""
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -46,29 +44,42 @@ class ChatMenuFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val chatRoomType = roomName.substringAfterLast("-")
+
+        if (chatRoomType == "TIP_SHARE") {
+            binding.chatMenuCheck.visibility = View.GONE
+            binding.chatMenuBlock.visibility = View.GONE
+        }
+
+        // 🔘 알람 설정
         binding.chatMenuAlarm.setOnClickListener {
             BottomChatActionDialogFragment(BottomChatActionDialogFragment.ActionType.MUTE)
                 .show(parentFragmentManager, "MuteDialog")
         }
 
+        // 🔘 체크 리스트 이동
         binding.chatMenuCheck.setOnClickListener {
             val intent = Intent(requireContext(), ChatCheckActivity::class.java)
-            intent.putExtra("roomName", roomName)  // roomName 전달
+            intent.putExtra("roomName", roomName)
             startActivity(intent)
         }
 
+        // 🔘 차단
         binding.chatMenuBlock.setOnClickListener {
             val intent = Intent(requireContext(), ChatBlockActivity::class.java)
-            intent.putExtra("roomName", roomName)  // roomName 전달
+            intent.putExtra("roomName", roomName)
             startActivity(intent)
         }
 
-
+        // 🔘 신고
         binding.chatMenuDeclare.setOnClickListener {
             BottomChatActionDialogFragment(BottomChatActionDialogFragment.ActionType.REPORT)
                 .show(parentFragmentManager, "DeclareDialog")
         }
 
+        // 🔘 채팅방 나가기
         binding.chatMenuExit.setOnClickListener {
             BottomChatActionDialogFragment.newInstance(
                 chatRoomId,
@@ -76,7 +87,6 @@ class ChatMenuFragment : Fragment() {
                 BottomChatActionDialogFragment.ActionType.EXIT
             ).show(parentFragmentManager, "ExitDialog")
         }
-
     }
 
     override fun onDestroyView() {
