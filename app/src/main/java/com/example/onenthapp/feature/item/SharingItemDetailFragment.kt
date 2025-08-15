@@ -1,5 +1,6 @@
 package com.example.onenthapp.feature.item
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.PlusRepository
 import com.example.onenthapp.data.item.SharingItemDetailResult
 import com.example.onenthapp.databinding.FragmentProductDetailBinding
+import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -86,6 +88,30 @@ class SharingItemDetailFragment : Fragment() {
         }
     }
     private fun bindDetail(d: SharingItemDetailResult?) {
+
+        binding.btnChat.setOnClickListener {
+            val targetMemberId = d?.writerid ?: return@setOnClickListener
+            val chatRoomType = "SHARING" // 또는 "GROUP_PURCHASE" 등
+
+            lifecycleScope.launch {
+                try {
+                    val response = messageApi.createChatRoom(targetMemberId.toInt(), chatRoomType)
+                    if (response.isSuccessful && response.body() != null) {
+                        // roomId는 필요 없다고 하셨으니 생략
+                        val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
+                            putExtra("targetMemberId", targetMemberId)
+                        }
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(requireContext(), "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
+                    e.printStackTrace()
+                }
+            }
+        }
+
 
         val categoryLabel =
             when(d?.itemCategory) {
