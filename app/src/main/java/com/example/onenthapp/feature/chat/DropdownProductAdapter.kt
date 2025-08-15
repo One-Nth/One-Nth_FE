@@ -14,7 +14,8 @@ data class ProductItem(
     val name: String,
     val imageUrl: String,
     val itemId: Int,
-    val itemType: String
+    val itemType: String,
+    val dealConfirmationId: Int
 )
 
 class DropdownProductAdapter(

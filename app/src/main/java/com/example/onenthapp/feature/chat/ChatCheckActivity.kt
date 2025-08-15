@@ -1,6 +1,7 @@
 package com.example.onenthapp.feature.chat
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ArrayAdapter
@@ -17,6 +18,7 @@ import com.example.onenthapp.chat.ProductItem
 import com.example.onenthapp.data.transaction.DealCompletionRequest
 import com.example.onenthapp.databinding.ActivityChatCheckBinding
 import kotlinx.coroutines.launch
+// 거래 확정 (먼저)
 
 class ChatCheckActivity : AppCompatActivity() {
 
@@ -72,6 +74,7 @@ class ChatCheckActivity : AppCompatActivity() {
 
         // 거래 확정 버튼 클릭 (아래에 버튼 아이디 confirmDealBtn 으로 가정)
         binding.completeButton.setOnClickListener {
+
             confirmDeal()
         }
     }
@@ -118,8 +121,13 @@ class ChatCheckActivity : AppCompatActivity() {
                 if(response.isSuccessful){
                     val body = response.body()
                     if(body != null && body.isSuccess && body.result != null){
+                        Log.d("ChatCheck", "Fetched products:")
+                        body.result.forEach {
+                            Log.d("ChatCheck", "name=${it.itemName}, id=${it.itemId}, type=${it.itemType}")
+                        }
+
                         val products = body.result.map {
-                            ProductItem(it.itemName, it.itemImageUrl, it.itemId, it.itemType)
+                            ProductItem(it.itemName, it.itemImageUrl, it.itemId,  it.itemType, 0)
                         }
                         setupProductDropdown(products)
                         binding.productDropdown.showDropDown()
@@ -142,6 +150,8 @@ class ChatCheckActivity : AppCompatActivity() {
 
         binding.productDropdown.setOnItemClickListener { _, _, position, _ ->
             val selected = products[position]
+            Log.d("ChatCheck", "Selected product: $selected")
+
             selectedProductItem = selected
 
             // 상품 정보 UI (R.id.itemDropdownProduct 내부 아이템)
@@ -213,11 +223,19 @@ class ChatCheckActivity : AppCompatActivity() {
             originalPrice = originalPrice// 여기 추가
         )
 
+        // 🔍 요청 로그 출력
+         Log.d("ChatCheck", "request: $request")
+
         lifecycleScope.launch {
             try {
                 val response = RetrofitInstance.transactionApi.confirmationTransaction(roomName, request)
                 if(response.isSuccessful){
                     val body = response.body()
+                    android.util.Log.d("ChatCheck", "isSuccessful: ${response.isSuccessful}")
+                    android.util.Log.d("ChatCheck", "code: ${response.code()}")
+                    android.util.Log.d("ChatCheck", "body: ${response.body()}")
+                    android.util.Log.d("ChatCheck", "errorBody: ${response.errorBody()?.string()}")
+
                     if(body?.isSuccess == true){
                         Toast.makeText(this@ChatCheckActivity, "거래가 성공적으로 확정되었습니다.", Toast.LENGTH_SHORT).show()
                         finish()
