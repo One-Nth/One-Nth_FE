@@ -199,6 +199,7 @@ class GroupPurchaseDetailFragment : Fragment() {
             putExtra("originProductId", originProductId)
 
             d?.let {
+                putExtra("sellerId", it.writerid)
                 putExtra("sellerName", it.writerNickname ?: "")
                 putExtra("sellerProfileImageUrl", it.writerProfileImageUrl ?: "")
                 putExtra("sellerVerified", it.writerVerified == true)

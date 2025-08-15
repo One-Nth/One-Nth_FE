@@ -199,6 +199,7 @@ class PurchaseSellerProfileActivity : AppCompatActivity() {
         }
     }
 
+
     // 액션바 업 버튼
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) { finish(); true } else super.onOptionsItemSelected(item)

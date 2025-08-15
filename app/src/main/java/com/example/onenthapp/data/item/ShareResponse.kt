@@ -14,7 +14,7 @@ data class ShareResult(
 )
 
 data class SharingItemDetailResult(
-    val id: Int,
+    val writerid: Long,
     val title: String,
     val quantity: Int,
     val price: Int,

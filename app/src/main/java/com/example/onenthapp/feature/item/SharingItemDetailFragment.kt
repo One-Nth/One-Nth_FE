@@ -203,6 +203,7 @@ class SharingItemDetailFragment : Fragment() {
         val intent = Intent(requireContext(), SharingSellerProfileActivity::class.java).apply {
             putExtra("originProductId", productId)                           // 현재 상품 ID
             detail?.let {
+                putExtra("sellerId", it.writerid)
                 putExtra("sellerName", it.writerNickname ?: "")
                 putExtra("sellerProfileImageUrl", it.writerProfileImageUrl ?: "")
                 putExtra("sellerVerified", it.writerVerified == true)
