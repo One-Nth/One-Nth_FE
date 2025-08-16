@@ -21,7 +21,9 @@
             app:navigationIcon="@drawable/humbleicons_arrow_up"
             app:title="프로필"
             app:titleTextColor="@color/main_black"
-            app:titleTextAppearance="@style/PretendardSubtitle2" />
+            app:titleTextAppearance="@style/PretendardSubtitle2"
+            app:titleMarginStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"/>
 
         <!-- 상단 프로필 영역 -->
         <LinearLayout
