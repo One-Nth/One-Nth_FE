@@ -22,7 +22,9 @@
             app:navigationIcon="@drawable/humbleicons_arrow_up"
             app:title="내 거래내역 및 후기"
             app:titleTextColor="@color/main_black"
-            app:titleTextAppearance="@style/PretendardSubtitle2" />
+            app:titleTextAppearance="@style/PretendardSubtitle2"
+            app:titleMarginStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"/>
 
 
         <!-- 거래 내역 요약 -->
