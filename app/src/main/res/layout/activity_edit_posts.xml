@@ -382,7 +382,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="태그를 입력하세요 (쉼표로 구분)"
+                    android:hint="태그 입력, 최대 5개까지"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:textColor="@color/main_black"

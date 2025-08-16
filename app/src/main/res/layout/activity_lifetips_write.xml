@@ -203,7 +203,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:hint="링크를 입력하고 엔터로 확정"
+                        android:hint="링크를 삽입하세요"
                         android:imeOptions="actionDone"
                         android:inputType="textUri"
                         android:textColor="@color/main_black"
@@ -238,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="장소 추가하기"
+                    android:text="위치를 입력하세요"
                     android:textColor="@color/main_black" />
 
                 <LinearLayout
@@ -333,7 +333,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="태그를 입력하고 엔터/쉼표로 확정"
+                    android:hint="태그 입력, 최대 5개까지"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:singleLine="true"

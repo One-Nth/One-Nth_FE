@@ -85,6 +85,15 @@ class CreateLifePostActivity : AppCompatActivity() {
         val postType: PostType = parsePostType(intent.getStringExtra("postType"))
         applyUiFor(postType)
 
+        // ✅ 태그 입력은 단일 라인 + actionDone 강제
+        binding.etTags.apply {
+            isSingleLine = true
+            maxLines = 1
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            inputType = android.text.InputType.TYPE_CLASS_TEXT
+            setHorizontallyScrolling(false)
+        }
+
         // 상단바
         binding.ivBack.setOnClickListener { finish() }
         binding.ivNotification.setOnClickListener { submit(postType) }
@@ -121,37 +130,48 @@ class CreateLifePostActivity : AppCompatActivity() {
 
     // ------- 태그 -------
     private fun setupTagInput(): Unit = with(binding) {
-        etTags.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) { addTagFromInput(); true } else false
+        // 엔터/Done → 확정 후 비우기 (기존)
+        etTags.onConfirmClear { value ->
+            addTagIfPossible(value)
         }
-        etTags.setOnKeyListener { _, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) { addTagFromInput(); true } else false
-        }
+
+        // 스페이스/콤마/엔터(개행) 자동 확정
         etTags.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val str: String = s?.toString().orEmpty()
-                if (str.endsWith(" ") || str.endsWith(",")) addTagFromInput()
+                val str = s?.toString().orEmpty()
+
+                // ✅ 엔터가 개행으로 들어오는 케이스 처리
+                if (str.contains('\n')) {
+                    val v = str.replace("\n", "")
+                    if (v.isNotBlank()) addTagIfPossible(v)
+                    etTags.text?.clear()
+                    return
+                }
+
+                // 스페이스/콤마로 자동 확정
+                if (str.endsWith(" ") || str.endsWith(",")) {
+                    addTagIfPossible(str.removeSuffix(" ").removeSuffix(","))
+                    etTags.text?.clear()
+                }
             }
             override fun afterTextChanged(s: Editable?) {}
         })
     }
 
-    private fun addTagFromInput(): Unit {
-        val raw: String = binding.etTags.text?.toString()?.trim()?.removeSuffix(",").orEmpty()
-        val clean: String = raw.removePrefix("#").trim()
-        if (clean.isBlank()) { binding.etTags.text?.clear(); return }
+
+    private fun addTagIfPossible(raw: String) {
+        val clean = raw.removePrefix("#").trim()
+        if (clean.isBlank()) return
         if (tagList.size >= maxTags) {
             Toast.makeText(this, "태그는 최대 ${maxTags}개까지 가능합니다.", Toast.LENGTH_SHORT).show()
-            binding.etTags.text?.clear(); return
+            return
         }
-        if (tagList.any { it.equals(clean, ignoreCase = true) }) {
-            binding.etTags.text?.clear(); return
-        }
+        if (tagList.any { it.equals(clean, ignoreCase = true) }) return
         tagList.add(clean)
         addTagChip(clean)
-        binding.etTags.text?.clear()
     }
+
 
     private fun addTagChip(tag: String): Unit {
         val chip: Chip = Chip(this).apply {
@@ -367,10 +387,10 @@ class CreateLifePostActivity : AppCompatActivity() {
                 if (resp.isSuccessful) {
                     val body = resp.body()
                     if (body?.isSuccess == true) {
-                        Toast.makeText(this@CreateLifePostActivity, "등록 완료 (id=${body.result?.postId})", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CreateLifePostActivity, "등록 완료", Toast.LENGTH_SHORT).show()
                         finish()
                     } else {
-                        Toast.makeText(this@CreateLifePostActivity, "등록 실패: [${body?.code}] ${body?.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@CreateLifePostActivity, "등록 실패", Toast.LENGTH_LONG).show()
                     }
                 } else {
                     val err: String? = resp.errorBody()?.string()
@@ -407,6 +427,26 @@ class CreateLifePostActivity : AppCompatActivity() {
         }
         return parts
     }
+
+    private fun EditText.onConfirmClear(
+        confirm: (String) -> Unit
+    ) {
+        fun runConfirm(view: View): Boolean {
+            val value = text?.toString()?.trim().orEmpty()
+            if (value.isNotEmpty()) confirm(value)
+            text?.clear()                 // ✅ 엔터 후 항상 비우기
+            view.hideKeyboard()
+            return true
+        }
+
+        setOnEditorActionListener { v, actionId, event ->
+            if (isDoneOrEnter(actionId, event)) runConfirm(v) else false
+        }
+        setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) runConfirm(v) else false
+        }
+    }
+
 
     // ------- 공용 헬퍼 -------
     private fun isDoneOrEnter(actionId: Int, event: KeyEvent?): Boolean =
