@@ -106,6 +106,9 @@
         <activity
             android:name=".SellerItemDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".FilteredBuyerReviewsActivity"
+            android:exported="false" />
 
     </application>
 </manifest>

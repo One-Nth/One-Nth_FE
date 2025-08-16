@@ -1,3 +1,5 @@
+package com.example.onenthapp.feature.item
+
 import android.content.Intent
 import com.example.onenthapp.feature.item.ImageSliderAdapter
 import android.os.Bundle
@@ -28,6 +30,7 @@ import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import kotlinx.coroutines.launch
+
 
 class GroupPurchaseDetailFragment : Fragment() {
     private var _binding: FragmentProductDetailBinding? = null
