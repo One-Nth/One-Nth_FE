@@ -13,16 +13,28 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.onenthapp.data.nwonsaved.MyHistoryItem
 
-class NwonSavedItemAdapter :
-    ListAdapter<MyHistoryItem, NwonSavedItemAdapter.ItemViewHolder>(DiffCallback()) {
+class NwonSavedItemAdapter(
+    private val onItemClick: ((MyHistoryItem) -> Unit)? = null
+) : ListAdapter<MyHistoryItem, NwonSavedItemAdapter.ItemViewHolder>(DiffCallback()) {
 
     companion object {
         private const val TAG = "NwonSavedItemAdapter"
+
+        class DiffCallback : DiffUtil.ItemCallback<MyHistoryItem>() {
+            override fun areItemsTheSame(oldItem: MyHistoryItem, newItem: MyHistoryItem): Boolean {
+                return oldItem.itemId == newItem.itemId
+            }
+
+            override fun areContentsTheSame(oldItem: MyHistoryItem, newItem: MyHistoryItem): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         Log.d(TAG, "onCreateViewHolder 호출")
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_my_history, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_my_history, parent, false)
         return ItemViewHolder(view)
     }
 
@@ -42,7 +54,7 @@ class NwonSavedItemAdapter :
         super.submitList(list)
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ivImage: ImageView = itemView.findViewById(R.id.ivItemImage)
         private val tvName: TextView = itemView.findViewById(R.id.tvItemName)
         private val tvDetails: TextView? = itemView.findViewById(R.id.tvItemDetail)
@@ -52,6 +64,13 @@ class NwonSavedItemAdapter :
             Log.d("ItemViewHolder", "ivImage 찾기: ${if (ivImage != null) "성공" else "실패"}")
             Log.d("ItemViewHolder", "tvName 찾기: ${if (tvName != null) "성공" else "실패"}")
             Log.d("ItemViewHolder", "tvDetails 찾기: ${if (tvDetails != null) "성공" else "실패"}")
+
+            itemView.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick?.invoke(getItem(position))
+                }
+            }
         }
 
         fun bind(item: MyHistoryItem) {
@@ -79,17 +98,4 @@ class NwonSavedItemAdapter :
         }
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<MyHistoryItem>() {
-        override fun areItemsTheSame(oldItem: MyHistoryItem, newItem: MyHistoryItem): Boolean {
-            val result = oldItem.itemId == newItem.itemId
-            Log.d("DiffCallback", "areItemsTheSame: $result")
-            return result
-        }
-
-        override fun areContentsTheSame(oldItem: MyHistoryItem, newItem: MyHistoryItem): Boolean {
-            val result = oldItem == newItem
-            Log.d("DiffCallback", "areContentsTheSame: $result")
-            return result
-        }
-    }
 }

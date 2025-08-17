@@ -14,10 +14,10 @@
 
         <!-- 프로필 이미지 (회색 원으로 대체) -->
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/circle_gray" />
+            android:background="@drawable/chat_profile"  />
 
         <!-- 말풍선 -->
         <TextView
@@ -27,6 +27,16 @@
             android:background="@drawable/bg_chat_bubble"
             android:padding="10dp"
             android:textColor="#ffffff" />
+        <!-- 시간 -->
+        <TextView
+            android:id="@+id/leftMessageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="오후 7:30"
+            android:textSize="12sp"
+            android:textColor="#cccccc"
+            android:layout_marginStart="4dp"
+            android:gravity="bottom|center_vertical" />
     </LinearLayout>
 
     <Space
@@ -41,6 +51,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <!-- 시간 -->
+        <TextView
+            android:id="@+id/rightMessageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="오후 7:40"
+            android:textSize="12sp"
+            android:textColor="#999999"
+            android:layout_marginStart="4dp"
+            android:gravity="bottom|center_vertical" />
         <!-- 말풍선 -->
         <TextView
             android:id="@+id/rightMessage"
@@ -49,6 +69,7 @@
             android:background="@drawable/bg_chat_bubble_received"
             android:padding="10dp"
             android:textColor="#111111" />
+
     </LinearLayout>
 
 </LinearLayout>

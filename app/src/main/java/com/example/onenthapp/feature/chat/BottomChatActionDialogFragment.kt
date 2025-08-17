@@ -70,7 +70,7 @@ class BottomChatActionDialogFragment(
             ActionType.MUTE -> {
                 title.text = "채팅 알람을 해제하시겠습니까?"
                 description.text = "채팅 알람을 해제하면 거래 확정 및 완료 알림을\n받아볼 수 없어요."
-                button.text = "작성하기"
+                button.text = "해제하기"
             }
             ActionType.EXIT -> {
                 title.text = "해당 채팅방을 나가시겠습니까?"
@@ -118,7 +118,7 @@ class BottomChatActionDialogFragment(
                 Log.d("BottomSheetTest", "sheet found")
 
                 val layoutParams = sheet.layoutParams
-                layoutParams.height = (resources.displayMetrics.heightPixels * if (type == ActionType.REPORT) 0.7 else 0.5).toInt()
+                layoutParams.height = (resources.displayMetrics.heightPixels * if (type == ActionType.REPORT) 0.5 else 0.5).toInt()
                 sheet.layoutParams = layoutParams
 
                 sheet.setBackgroundColor(Color.TRANSPARENT)

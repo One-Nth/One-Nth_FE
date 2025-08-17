@@ -1,20 +1,26 @@
 package com.example.onenthapp.feature.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.Toolbar
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.onenthapp.R
 import com.example.onenthapp.RetrofitInstance
+import com.example.onenthapp.chat.CancelDealActivity
 import com.example.onenthapp.data.chat.ChatMessage
 import com.example.onenthapp.databinding.ActivityChatRoomBinding
 import com.example.onenthapp.databinding.ChatTopToolbarBinding
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class ChatRoomActivity : AppCompatActivity() {
 
@@ -35,6 +41,50 @@ class ChatRoomActivity : AppCompatActivity() {
     private var peerNickname: String = "익명"
     private var roomName: String = ""
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == RESULT_OK && data?.getBooleanExtra("dealConfirmed", false) == true) {
+            val itemName = data.getStringExtra("itemName") ?: ""
+            val isWriter = data.getBooleanExtra("isWriter", false)
+
+            // 🔸 Toolbar 타이틀에서 닉네임 가져오기
+            val opponentNickname = findViewById<Toolbar>(R.id.chatTopToolbar).title?.toString() ?: "상대방"
+
+            showDealConfirmedUI(isWriter, itemName, opponentNickname)
+        }
+    }
+
+
+    private fun showDealConfirmedUI(
+        isWriter: Boolean, // 내가 작성자인지
+        itemName: String,  // 예: "두루마리 휴지"
+        opponentNickname: String // 예: "홍길동"
+    ) {
+        findViewById<ImageView>(R.id.img_bottom_box).visibility = View.VISIBLE
+        findViewById<TextView>(R.id.cancel_notification).apply {
+            visibility = View.VISIBLE
+            text = if (isWriter) {
+                "\"$itemName\"의 거래 확정 폼을 작성했어요."
+            } else {
+                "$opponentNickname 님이 \"$itemName\"의 거래 확정 폼을 작성했어요."
+            }
+        }
+        findViewById<ImageView>(R.id.check_deal_cancel_btn).visibility = View.VISIBLE
+
+        findViewById<ImageView>(R.id.check_deal_cancel_btn).setOnClickListener {
+            val intent = Intent(this, CancelDealActivity::class.java)
+            intent.putExtra("roomName", roomName)
+            intent.putExtra("isWriter", isWriter) // 🔥 작성자 여부 전달
+            startActivity(intent)
+
+        }
+
+    }
+
+
+
+// 수정 필요
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatRoomBinding.inflate(layoutInflater)
@@ -56,6 +106,7 @@ class ChatRoomActivity : AppCompatActivity() {
             memberId = myMemberId
         ) { message ->
             runOnUiThread {
+                handleIncomingWebSocketMessage(message)
 //                chatAdapter.addMessage(message)
                 binding.chatRecyclerView.scrollToPosition(chatAdapter.itemCount - 1)
             }
@@ -77,6 +128,27 @@ class ChatRoomActivity : AppCompatActivity() {
         webSocketClient.close()
     }
 
+    private fun handleIncomingWebSocketMessage(message: ChatMessage) {
+        try {
+            // ChatMessage.content는 전체 JSON 문자열이어야 함
+            val json = JSONObject(message.content)
+
+            val contentType = json.optString("content")
+            if (contentType == "거래확정 폼이 작성 됨") {
+                val itemName = json.optString("itemName", "물품")
+                val senderId = json.optInt("sendMemberId", -1)
+
+                val isWriter = senderId == myMemberId
+                val opponentNickname = toolbarBinding.title.text.toString()
+
+                showDealConfirmedUI(isWriter, itemName, opponentNickname)
+            }
+        } catch (e: Exception) {
+            Log.e("WebSocket", "거래확정 메시지 파싱 실패: ${e.message}")
+        }
+    }
+
+
     private fun setupToolbar(peerNickname: String) {
         toolbarBinding.title.text = peerNickname
         toolbarBinding.btnLeft.setOnClickListener { finish() }
@@ -97,12 +169,11 @@ class ChatRoomActivity : AppCompatActivity() {
         binding.inputLayoutGone.visibility = View.VISIBLE
         binding.chatMenuContainer.visibility = View.VISIBLE
 
-        val chatRoomType = roomName.substringAfterLast("-")  // 👈 type만 추출 ("TIP_SHARE" 등)
 
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.chatMenuContainer,
-                ChatMenuFragment.newInstance(chatRoomId, chatRoomType)  // 👈 넘기는 건 type만
+                ChatMenuFragment.newInstance(chatRoomId, roomName)  // 👈 넘기는 건 type만
             )
             .commit()
     }

@@ -102,8 +102,17 @@ class HomeFragment : Fragment() {
 
         binding.btNotification.setOnClickListener {
             val intent = Intent(requireContext(), AlarmActivity::class.java)
+
+            // 현재 탭 타입에 따라 alarm_type 넘기기
+            val alarmType = when (sharedViewModel.currentHomeTab.value) {
+                HomeTabType.BUY, HomeTabType.SHARE -> "N1"
+                else -> "TIP" // TIPFragment 등에서 탭 변경 시 따로 처리해도 됨
+            }
+
+            intent.putExtra("alarm_type", alarmType)
             startActivity(intent)
         }
+
 
         // MapView 시작
         kakaoMapView?.start(object : MapLifeCycleCallback() {

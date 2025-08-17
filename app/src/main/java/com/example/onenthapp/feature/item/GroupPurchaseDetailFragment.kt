@@ -1,3 +1,5 @@
+package com.example.onenthapp.feature.item
+
 import android.content.Intent
 import com.example.onenthapp.feature.item.ImageSliderAdapter
 import android.os.Bundle

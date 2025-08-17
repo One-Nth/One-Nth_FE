@@ -31,8 +31,8 @@ class AlarmActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         // 탭 추가
-        tabLayout.addTab(tabLayout.newTab().setText("같이사요"))
-        tabLayout.addTab(tabLayout.newTab().setText("함께나눠요"))
+        tabLayout.addTab(tabLayout.newTab().setText("N분의 1"))
+        tabLayout.addTab(tabLayout.newTab().setText("꿀팁 N분의 1"))
 
         // 탭 클릭 리스너
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -55,15 +55,15 @@ class AlarmActivity : AppCompatActivity() {
     private fun getBuyTogetherData(): List<AlarmItem> {
         return listOf(
             AlarmItem("같이사요 - 알림 1", "방금 전", R.drawable.notification_ic_1),
-            AlarmItem("같이사요 - 알림 2", "1분 전", R.drawable.notification_ic_1),
+            AlarmItem("함께나눠요 - 알림 2", "1분 전", R.drawable.notification_ic_1),
             AlarmItem("같이사요 - 알림 3", "3분 전", R.drawable.notification_ic_1)
         )
     }
 
     private fun getShareTogetherData(): List<AlarmItem> {
         return listOf(
-            AlarmItem("함께나눠요 - 알림 1", "2초 전", R.drawable.notification_ic_2),
-            AlarmItem("함께나눠요 - 알림 2", "5분 전", R.drawable.notification_ic_2)
+            AlarmItem("생활 정보 - 알림 1", "2초 전", R.drawable.notification_ic_2),
+            AlarmItem("우리동네 맛집/카페 - 알림 2", "5분 전", R.drawable.notification_ic_2)
         )
     }
 
