@@ -238,8 +238,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="위치를 입력하세요"
-                    android:textColor="@color/main_black" />
+                    android:text="장소 추가하기"
+                    android:drawableTint="@color/main_black"
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/main_black"
+                    app:drawableStartCompat="@drawable/ic_gps_black"
+                    tools:ignore="UseCompatTextViewDrawableXml" />
 
                 <LinearLayout
                     android:id="@+id/locationSearchContainer"
