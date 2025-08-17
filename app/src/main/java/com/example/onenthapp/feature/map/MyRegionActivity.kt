@@ -96,7 +96,11 @@ class MyRegionActivity : AppCompatActivity() {
 //        }
         // 주소 검색 결과
         adapter = RegionSuggestionAdapter(
-            onClick = { vm.add(it.regionId) },
+            onClick = { region -> 
+                vm.add(region.regionId)
+                // 추가된 지역으로 즉시 지도 이동
+                moveToRegion(region.regionName)
+            },
             onEndReached = { vm.loadMore() }
         )
         b.rvSuggestions.layoutManager = LinearLayoutManager(this)
@@ -124,29 +128,39 @@ class MyRegionActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 try {
-                    // 서버가 이해하는 enum 형태로 요청
-                    val groups = mapRepo.fetchItemMarker(markerType = "PURCHASEITEM", regionId = main.regionId)
-                    if (groups.isNotEmpty()) {
-                        val lat = groups.first().latitude
-                        val lng = groups.first().longitude
-                        updateMapCenterAndMarker(lat, lng)
-                    } else {
-                        // 해당 지역에 그룹 마커 없음: 유지 or 기본값
+                    // 지역 중심 좌표 조회 API 사용
+                    val centerResult = vm.repo.getRegionCenter(main.regionName)
+                    centerResult?.let { center ->
+                        updateMapCenterAndMarker(center.latitude, center.longitude, main.regionName)
                     }
                 } catch (e: Exception) {
-                    // 400 등 네트워크 예외가 여기로 들어옴
-                    Log.e("MyRegionActivity", "markers fetch failed", e)
+                    Log.e("MyRegionActivity", "지역 중심 좌표 조회 실패", e)
                     Toast.makeText(this@MyRegionActivity, "지도를 불러오지 못했어요.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    private fun updateMapCenterAndMarker(latitude: Double, longitude: Double) {
+    private fun moveToRegion(regionName: String) {
+        lifecycleScope.launch {
+            try {
+                val centerResult = vm.repo.getRegionCenter(regionName)
+                centerResult?.let { center ->
+                    updateMapCenterAndMarker(center.latitude, center.longitude, regionName)
+                }
+            } catch (e: Exception) {
+                Log.e("MyRegionActivity", "지역 중심 좌표 조회 실패: $regionName", e)
+            }
+        }
+    }
+
+    private fun updateMapCenterAndMarker(latitude: Double, longitude: Double, regionName: String? = null) {
         val map = kakaoMap ?: return
         val pos = LatLng.from(latitude, longitude)
-        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 15))
-        val dong = vm.mainRegion.value?.regionName?.let { extractDong(it) } ?: "OO동"
+        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 17))
+        val dong = regionName?.let { extractDong(it) } 
+            ?: vm.mainRegion.value?.regionName?.let { extractDong(it) } 
+            ?: "OO동"
 
         // 센터 마커 하나만 유지
         markerLabelLayer?.removeAll()

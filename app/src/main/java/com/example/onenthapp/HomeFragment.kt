@@ -137,7 +137,7 @@ class HomeFragment : Fragment() {
                         LatLng.from(
                             37.5665,
                             126.9780
-                        ), 17
+                        ), 14
                     )
                 )
                 kakaoMapInstance?.labelManager?.let { lm ->
@@ -162,6 +162,10 @@ class HomeFragment : Fragment() {
                     handleLabelClick(label)
                     true
                 }
+
+                // 초기 로딩 (현재 탭으로)
+                val currentTab = sharedViewModel.currentHomeTab.value ?: HomeTabType.BUY
+                loadMarkersByTab(currentTab)
 
                 // SharedViewModel 의 탭 변경 감지 → 마커 다시 불러오기
                 sharedViewModel.currentHomeTab.observe(viewLifecycleOwner) { tab ->
@@ -229,7 +233,19 @@ class HomeFragment : Fragment() {
                     val dong = main?.regionName?.let { extractDong(it) } ?: "OO동"
                     binding.tvMyregion.text = dong
 
-                    // 2) 마커 로딩
+                    // 2) 메인 지역 중심 좌표로 지도 이동
+                    main?.let { region ->
+                        try {
+                            val centerResult = myRegionRepo.getRegionCenter(region.regionName)
+                            centerResult?.let { center ->
+                                updateMapCenter(center.latitude, center.longitude)
+                            }
+                        } catch (e: Exception) {
+                            Log.e("HomeFragment", "지역 중심 좌표 로드 실패", e)
+                        }
+                    }
+
+                    // 3) 마커 로딩
                     val groups = runCatching {
                         mapRepo.fetchItemMarker(
                             markerType,
@@ -238,34 +254,29 @@ class HomeFragment : Fragment() {
                     }
                         .getOrElse { emptyList() }
 
-                    // 3) 지도 표시
+                    // 4) 지도에 마커 표시
                     markersLayer?.removeAll()
                     label2Group.clear()
                     selectedLabel = null
                     isMidPreviewVisible = false
                     binding.midContainer.isVisible = false
 
-                    if (groups.isNotEmpty()) {
-                        val first = groups.first()
-                        kakaoMapInstance?.moveCamera(
-                            CameraUpdateFactory.newCenterPosition(
-                                LatLng.from(
-                                    first.latitude,
-                                    first.longitude
-                                ), 16
-                            )
-                        )
-                        groups.forEach { g ->
-                            val pos = LatLng.from(g.latitude, g.longitude)
-                            val opts = LabelOptions.from(pos).setRank(0)
-                            defaultStyles?.let { opts.setStyles(it) }
-                            val label = markersLayer?.addLabel(opts)
-                            if (label != null) label2Group[label] = g
-                        }
-                        collapseSheet()
-                        return@launch
+                    groups.forEach { g ->
+                        val pos = LatLng.from(g.latitude, g.longitude)
+                        val opts = LabelOptions.from(pos).setRank(0)
+                        defaultStyles?.let { opts.setStyles(it) }
+                        val label = markersLayer?.addLabel(opts)
+                        if (label != null) label2Group[label] = g
                     }
+                    
+                    collapseSheet()
                 }
+            }
+
+            private fun updateMapCenter(latitude: Double, longitude: Double) {
+                val map = kakaoMapInstance ?: return
+                val pos = LatLng.from(latitude, longitude)
+                map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 16))
             }
 
             private fun extractDong(full: String): String {
@@ -278,7 +289,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun getZoomLevel(): Int {
-                return 17 // 초기 줌 레벨
+                return 14 // 초기 줌 레벨
             }
         })
 
