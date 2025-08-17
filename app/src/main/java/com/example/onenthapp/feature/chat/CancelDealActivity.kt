@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.onenthapp.R
 
 import android.content.Intent
+import android.view.View
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import com.example.onenthapp.MyReviewActivity
 import com.example.onenthapp.NwonSavedActivity
 
@@ -15,15 +17,22 @@ class CancelDealActivity : AppCompatActivity() {
         setContentView(R.layout.activity_cancel_deal)
 
         val roomName = intent.getStringExtra("roomName")
+        val isWriter = intent.getBooleanExtra("isWriter", false)  // 추가: 작성자 여부 받기
 
-        // 후기 남기기 버튼 클릭 시
+        // 작성자면 "판매자 측 과실" 레이아웃 숨기기
+        val dealWriteLayout = findViewById<LinearLayout>(R.id.deal_write)
+        if (isWriter) {
+            dealWriteLayout.visibility = View.GONE
+        } else {
+            dealWriteLayout.visibility = View.VISIBLE
+        }
+
         findViewById<ImageButton>(R.id.btn_review).setOnClickListener {
             val intent = Intent(this, MyReviewActivity::class.java)
-            intent.putExtra("roomName", roomName) // 필요 시 전달
+            intent.putExtra("roomName", roomName)
             startActivity(intent)
         }
 
-        // N원 아꼈어요 보기 버튼 클릭 시
         findViewById<ImageButton>(R.id.btn_savings).setOnClickListener {
             val intent = Intent(this, NwonSavedActivity::class.java)
             startActivity(intent)
@@ -34,4 +43,5 @@ class CancelDealActivity : AppCompatActivity() {
         }
     }
 }
+
 

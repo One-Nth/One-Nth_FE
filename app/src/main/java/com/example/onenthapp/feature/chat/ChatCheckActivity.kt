@@ -1,5 +1,6 @@
 package com.example.onenthapp.feature.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -17,6 +18,7 @@ import com.example.onenthapp.chat.DropdownProductAdapter
 import com.example.onenthapp.chat.ProductItem
 import com.example.onenthapp.data.transaction.DealCompletionRequest
 import com.example.onenthapp.databinding.ActivityChatCheckBinding
+import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
 // 거래 확정 (먼저)
 
@@ -204,15 +206,21 @@ class ChatCheckActivity : AppCompatActivity() {
         val tradeType = if(binding.inpersonButton.currentTextColor == getColor(R.color.main_green)) "IN_PERSON" else "DELIVERY"
 
         // 내 아이디: JWT 토큰에서 추출하거나, 앱 내 저장된 유저 ID 가져오기 (예: myId 변수)
-        val myId = "12" // 예시, 실제로는 로그인된 내 아이디 넣기
+        val myId = TokenManager.getMemberId().toString() // 예시, 실제로는 로그인된 내 아이디 넣기
 
         val otherMemberIdStr = extractOtherMemberId(roomName, myId)
+
+        Log.d("ChatCheck", "roomName: $roomName")
+        Log.d("ChatCheck", "myId: $myId")
+        Log.d("ChatCheck", "otherMemberIdStr (raw): $otherMemberIdStr")
+
         val otherMemberId = otherMemberIdStr?.toIntOrNull()
-        if(otherMemberId == null){
+        Log.d("ChatCheck", "otherMemberId (toIntOrNull): $otherMemberId")
+
+        if (otherMemberId == null) {
             showError("상대 멤버 아이디를 숫자로 변환하지 못했습니다.")
             return
         }
-
 
         val request = DealCompletionRequest(
             itemId = product.itemId,
@@ -238,7 +246,14 @@ class ChatCheckActivity : AppCompatActivity() {
 
                     if(body?.isSuccess == true){
                         Toast.makeText(this@ChatCheckActivity, "거래가 성공적으로 확정되었습니다.", Toast.LENGTH_SHORT).show()
+                        val resultIntent = Intent().apply {
+                            putExtra("dealConfirmed", true)
+                            putExtra("itemName", product.name)
+                            putExtra("isWriter", true) // 내가 작성자니까
+                        }
+                        setResult(RESULT_OK, resultIntent)
                         finish()
+
                     } else {
                         showError("거래 확정 실패: ${body?.message ?: "알 수 없는 오류"}")
                     }

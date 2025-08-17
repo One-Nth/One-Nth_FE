@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.onenthapp.databinding.FragmentTipBinding
+import com.example.onenthapp.feature.alarm.AlarmActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -77,6 +78,13 @@ class TipFragment : Fragment() {
                 performSearch(et.text.toString(), currentBoardType); true
             } else false
         }
+
+        btNotification.setOnClickListener {
+            val intent = Intent(requireContext(), AlarmActivity::class.java)
+            intent.putExtra("alarm_type", "TIP")  // 선택 사항: 어떤 탭에서 왔는지 전달
+            startActivity(intent)
+        }
+
     }
 
     private fun performSearch(query: String, boardType: String) {

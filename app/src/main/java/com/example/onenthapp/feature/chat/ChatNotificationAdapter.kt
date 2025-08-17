@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onenthapp.R
 
@@ -38,11 +39,19 @@ class ChatNotificationAdapter(
             itemView.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    onItemClickListener?.invoke(items[position])
+                    val notification = items[position]
+                    val isBlockedUser = notification.nickname.isNullOrBlank() || notification.nickname == "알 수 없음"
+                    if (isBlockedUser) {
+                        // 차단된 사용자이므로 진입 불가 토스트 띄우기
+                        Toast.makeText(context, "차단된 사용자와의 채팅은 이용할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                    onItemClickListener?.invoke(notification)
                 }
             }
         }
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -52,10 +61,23 @@ class ChatNotificationAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val notification = items[position]
-        holder.nickname.text = notification.nickname
+        val isBlockedUser = notification.nickname.isNullOrBlank() || notification.nickname == "알 수 없음"
+
+        // 닉네임 처리
+        holder.nickname.text = if (isBlockedUser) "차단된 사용자" else notification.nickname
         holder.message.text = notification.message
         holder.time.text = notification.time
+
+        // 배경 처리
+        val backgroundView = holder.itemView.findViewById<View>(R.id.chatnotificationbackground)
+        if (isBlockedUser) {
+            backgroundView.setBackgroundResource(R.drawable.rectangle_45)
+        } else {
+            // 기본 배경으로 복구 (기본 배경 리소스명으로 교체 필요)
+            backgroundView.setBackgroundResource(R.drawable.rectangle_46)
+        }
     }
+
 
     override fun getItemCount(): Int = items.size
 
