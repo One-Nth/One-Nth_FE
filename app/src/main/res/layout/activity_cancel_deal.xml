@@ -87,7 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="욕설/성희롱 등 불쾌한 언행"
+                android:text="사기 거래 의심"
                 android:textSize="16sp"/>
 
             <RadioButton
@@ -108,7 +108,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="사기 거래 의심"
+                android:text="욕설/성희롱 등 불쾌한 언행"
                 android:textSize="16sp"/>
 
             <RadioButton
@@ -129,11 +129,33 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="불쾌한 이미지 전송"
+                android:text="단순 변심"
                 android:textSize="16sp"/>
 
             <RadioButton
                 android:id="@+id/radioOption3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- 신고 항목 3 -->
+        <LinearLayout
+            android:id="@+id/deal_write"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="판매자 측 과실이 확실한 물건 불량"
+                android:textSize="16sp"/>
+
+            <RadioButton
+                android:id="@+id/radioOption4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -143,7 +165,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/frame_427318934__1_"
-        android:layout_marginTop="189dp"
+        android:layout_marginTop="158dp"
         android:paddingBottom="48dp"
         app:layout_constraintTop_toBottomOf="@+id/reportOptionsGroup"
         app:layout_constraintEnd_toEndOf="parent"

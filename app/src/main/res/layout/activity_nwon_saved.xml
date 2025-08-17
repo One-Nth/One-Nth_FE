@@ -295,6 +295,29 @@
                 android:src="@drawable/frame_427318944" />
         </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F4F4F4"
+        android:layout_marginTop="30dp"
+        android:paddingTop="20dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="40dp">
+
+        <TextView
+            style="@style/PretendardSubtitle1"
+            android:id="@+id/editMyReviewText"
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            android:layout_width="336dp"
+            android:layout_height="24dp"
+            android:text="거래한 상품"
+            android:layout_marginBottom="34dp"
+            android:clickable="true"
+            android:textColor="@color/main_black"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvItems"
             android:layout_width="match_parent"
@@ -302,6 +325,7 @@
             android:padding="16dp"
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never" />
+    </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

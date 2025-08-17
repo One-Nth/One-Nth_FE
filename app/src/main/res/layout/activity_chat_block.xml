@@ -1,16 +1,15 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@color/main_white">
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/main_white">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_white">
 
     <!-- 툴바 -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -178,20 +177,20 @@ app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"
         android:layout_marginStart="26dp"
         android:layout_marginTop="20dp"/>
 
-    <!-- 상품 금액 입력 -->
-    <com.google.android.material.textfield.TextInputEditText
-        style="@style/PretendardBody8"
-        android:id="@+id/dateInput"
-        android:layout_width="311dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#f4f4f4"
-        android:paddingStart="12dp"
-        android:text="2000"
-        android:textColor="@color/main_black"
-        app:layout_constraintTop_toBottomOf="@id/deal_date"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="8dp"/>
+        <EditText
+            android:id="@+id/dateInput"
+            style="@style/PretendardBody8"
+            android:layout_width="311dp"
+            android:layout_height="34dp"
+            android:background="#f4f4f4"
+            android:paddingStart="12dp"
+            android:hint="2025-05-28"
+            android:textColor="@color/main_black"
+            android:textColorHint="@color/main_black"
+            app:layout_constraintTop_toBottomOf="@id/deal_date"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="8dp" />
 
     <!-- 상품 금액 라벨 -->
     <TextView
@@ -199,7 +198,7 @@ app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"
         android:id="@+id/deal_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="상품 구매 금액"
+        android:text="상품 구매 수량"
         android:textSize="18sp"
         android:textColor="@color/main_green"
         app:layout_constraintTop_toBottomOf="@id/dateInput"
@@ -208,19 +207,20 @@ app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"
         android:layout_marginTop="20dp"/>
 
     <!-- 상품 금액 입력 -->
-    <com.google.android.material.textfield.TextInputEditText
-        style="@style/PretendardBody8"
-        android:id="@+id/priceInput"
-        android:layout_width="311dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#f4f4f4"
-        android:paddingStart="12dp"
-        android:text="2000"
-        android:textColor="@color/main_black"
-        app:layout_constraintTop_toBottomOf="@id/deal_price"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="8dp"/>
+        <EditText
+            android:id="@+id/priceInput"
+            style="@style/PretendardBody8"
+            android:layout_width="311dp"
+            android:layout_height="34dp"
+            android:background="#f4f4f4"
+            android:paddingStart="12dp"
+            android:hint="구매한 상품의 갯수를 입력해주세요"
+            android:textColor="@color/main_black"
+            android:textColorHint="#AFAFAF"
+            app:layout_constraintTop_toBottomOf="@id/deal_price"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="8dp" />
 
     <!-- 상품 금액 라벨 -->
     <TextView
@@ -228,7 +228,7 @@ app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"
         android:id="@+id/deal_original_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="상품 원가"
+        android:text="상품 구매 금액"
         android:textSize="18sp"
         android:textColor="@color/main_green"
         app:layout_constraintTop_toBottomOf="@id/priceInput"
@@ -237,19 +237,20 @@ app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"
         android:layout_marginTop="20dp"/>
 
     <!-- 상품 금액 입력 -->
-    <com.google.android.material.textfield.TextInputEditText
-        style="@style/PretendardBody8"
-        android:id="@+id/originalpriceInput"
-        android:layout_width="311dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#f4f4f4"
-        android:paddingStart="12dp"
-        android:text="2000"
-        android:textColor="@color/main_black"
-        app:layout_constraintTop_toBottomOf="@id/deal_original_price"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="8dp"/>
+        <EditText
+            android:id="@+id/originalpriceInput"
+            style="@style/PretendardBody8"
+            android:layout_width="311dp"
+            android:layout_height="34dp"
+            android:background="#f4f4f4"
+            android:paddingStart="12dp"
+            android:hint="총 합계 금액을 입력해주세요"
+            android:textColor="@color/main_black"
+            android:textColorHint="#AFAFAF"
+            app:layout_constraintTop_toBottomOf="@id/deal_original_price"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="8dp" />
 
     <TextView
         android:id="@+id/notification_cancel"
@@ -269,11 +270,13 @@ app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"
         android:layout_height="wrap_content"
         android:src="@drawable/deal_complete"
         android:layout_marginStart="41dp"
+        android:layout_marginTop="21dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notification_cancel"
         />
     <ImageView
         android:id="@+id/deal_cancel_btn"
+        android:layout_marginTop="21dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/deal_cancel"

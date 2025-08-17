@@ -167,21 +167,20 @@
         android:layout_marginStart="26dp"
         android:layout_marginTop="31dp"/>
 
-    <!-- 상품 금액 입력 -->
-    <com.google.android.material.textfield.TextInputEditText
-        style="@style/PretendardBody8"
+    <EditText
         android:id="@+id/dateInput"
+        style="@style/PretendardBody8"
         android:layout_width="311dp"
         android:layout_height="34dp"
         android:background="#f4f4f4"
         android:paddingStart="12dp"
-        android:text="25/05/28"
+        android:hint="2025-05-28"
         android:textColor="@color/main_black"
+        android:textColorHint="@color/main_black"
         app:layout_constraintTop_toBottomOf="@id/deal_date"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="26dp"
-        android:layout_marginTop="8dp"/>
-
+        android:layout_marginTop="8dp" />
     <!-- 상품 금액 라벨 -->
     <TextView
         style="@style/PretendardSemibold4"
@@ -197,20 +196,20 @@
         android:layout_marginTop="20dp"/>
 
     <!-- 상품 금액 입력 -->
-    <com.google.android.material.textfield.TextInputEditText
-        style="@style/PretendardBody8"
+    <EditText
         android:id="@+id/priceInput"
+        style="@style/PretendardBody8"
         android:layout_width="311dp"
         android:layout_height="34dp"
         android:background="#f4f4f4"
         android:paddingStart="12dp"
-        android:text="종합 가격을 입력해주세요"
-        android:textColor="#AFAFAF"
+        android:hint="종합 가격을 입력해주세요"
+        android:textColor="@color/main_black"
+        android:textColorHint="#AFAFAF"
         app:layout_constraintTop_toBottomOf="@id/deal_price"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="26dp"
-        android:layout_marginTop="8dp"/>
-
+        android:layout_marginTop="8dp" />
     <!-- 상품 금액 라벨 -->
     <TextView
         style="@style/PretendardSemibold4"
@@ -226,20 +225,20 @@
         android:layout_marginTop="20dp"/>
 
     <!-- 상품 금액 입력 -->
-    <com.google.android.material.textfield.TextInputEditText
-        style="@style/PretendardBody8"
+    <EditText
         android:id="@+id/originalpriceInput"
+        style="@style/PretendardBody8"
         android:layout_width="311dp"
         android:layout_height="34dp"
         android:background="#f4f4f4"
         android:paddingStart="12dp"
-        android:text="단위당 원가를 입력해주세요"
-        android:textColor="#AFAFAF"
+        android:hint="단위당 원가를 입력해주세요"
+        android:textColor="@color/main_black"
+        android:textColorHint="#AFAFAF"
         app:layout_constraintTop_toBottomOf="@id/deal_original_price"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="26dp"
-        android:layout_marginTop="8dp"/>
-
+        android:layout_marginTop="8dp" />
     <!-- 거래 완료 버튼 -->
     <Button
         android:id="@+id/completeButton"
