@@ -3,7 +3,7 @@ package com.example.onenthapp.model
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.onenthapp.data.AuthRepository
+import com.example.onenthapp.data.login.AuthRepository
 import kotlinx.coroutines.launch
 
 class PasswordResetViewModel(private val repo: AuthRepository) : ViewModel() {

@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.signup
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,7 +11,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.onenthapp.data.AuthRepository
+import com.example.onenthapp.R
+import com.example.onenthapp.data.login.AuthRepository
 import com.example.onenthapp.model.SignupViewModel
 import com.example.onenthapp.model.SignupViewModelFactory
 

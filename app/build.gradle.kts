@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
     id("androidx.navigation.safeargs.kotlin")
-    id("com.google.gms.google-services")
+//    id("com.google.gms.google-services")
 }
 
 // properties 객체 생성 및 파일에서 읽기

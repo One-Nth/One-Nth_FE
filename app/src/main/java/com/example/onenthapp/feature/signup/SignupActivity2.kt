@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.signup
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +9,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.example.onenthapp.data.AuthRepository
+import com.example.onenthapp.MainActivity
+import com.example.onenthapp.R
+import com.example.onenthapp.data.login.AuthRepository
 import com.example.onenthapp.model.KakaoLoginModelFactory
 import com.example.onenthapp.model.KakaoViewModel
 import com.example.onenthapp.model.SignupViewModel
@@ -65,17 +67,23 @@ class SignupActivity2 : AppCompatActivity() {
                 val nick = s.toString()
                 if (!isValidNickname(nick)) {
                     tvNicknameError.text = "닉네임은 2~10자, 영문/숫자만 가능해요."
-                    tvNicknameError.setTextColor(ContextCompat.getColor(this@SignupActivity2, R.color.error_text))
+                    tvNicknameError.setTextColor(ContextCompat.getColor(this@SignupActivity2,
+                        R.color.error_text
+                    ))
                     tvNicknameError.visibility = View.VISIBLE
 
                     // 빨간 테두리 적용
-                    edtNickname.background = ContextCompat.getDrawable(this@SignupActivity2, R.drawable.edittext_border_error)
+                    edtNickname.background = ContextCompat.getDrawable(this@SignupActivity2,
+                        R.drawable.edittext_border_error
+                    )
                 } else {
                     tvNicknameError.text = ""
                     tvNicknameError.visibility = View.GONE
 
                     // 기본 테두리로 복구
-                    edtNickname.background = ContextCompat.getDrawable(this@SignupActivity2, R.drawable.edittext_border2)
+                    edtNickname.background = ContextCompat.getDrawable(this@SignupActivity2,
+                        R.drawable.edittext_border2
+                    )
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

@@ -3,6 +3,7 @@ package com.example.onenthapp.data
 import NicknameResponse
 import ProfileImageResponse
 import ProfileResponse
+import com.example.onenthapp.data.post.LikeActionResult
 import com.example.onenthapp.data.post.MyPostsPage
 import com.example.onenthapp.data.userset.BaseResponse
 import okhttp3.MultipartBody
