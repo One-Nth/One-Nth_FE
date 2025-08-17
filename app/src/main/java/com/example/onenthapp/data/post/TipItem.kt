@@ -9,6 +9,10 @@ data class TipItem(
     val commentCount: Int,
     val likeCount: Int,
     val viewCount: Int,
-    val imageUrls: List<String> = emptyList()
+    val imageUrls: List<String> = emptyList(),
+
+    // ✅ 추가
+    val likedByMe: Boolean = false,
+    val scrappedByMe: Boolean = false
 )
 

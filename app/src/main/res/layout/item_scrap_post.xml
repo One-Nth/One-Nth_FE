@@ -113,7 +113,8 @@
                 android:layout_height="wrap_content"
                 android:text="조회수 24"
                 android:textColor="@color/light_gray"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginStart="12dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <!-- 오른쪽 끝 이미지 -->

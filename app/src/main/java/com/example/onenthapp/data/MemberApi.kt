@@ -121,4 +121,8 @@ interface MemberApi {
         @Header("Authorization") bearer: String,
         @Path("postId") postId: Long
     ): Response<CommonResponse<LikeActionResult>>
+
+    @GET("/api/members/{memberId}/profile")
+    suspend fun getMemberProfile(@Path("memberId") memberId: Long
+    ): Response<MemberProfileResponse>
 }

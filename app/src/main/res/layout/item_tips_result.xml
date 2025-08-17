@@ -71,7 +71,8 @@
             android:layout_marginEnd="8dp"
             android:src="@drawable/material_symbols_bookmark_rounded"
             app:layout_constraintTop_toTopOf="@id/tvTitle"
-            app:layout_constraintEnd_toStartOf="@id/tvTime" />
+            app:layout_constraintEnd_toStartOf="@id/tvTime"
+            android:visibility="gone"/>
 
         <!-- 시간 -->
         <TextView

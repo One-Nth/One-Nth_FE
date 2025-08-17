@@ -17,7 +17,9 @@
         app:navigationIcon="@drawable/humbleicons_arrow_up"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:titleMarginStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"/>
 
     <!-- 프로필 -->
     <ImageView

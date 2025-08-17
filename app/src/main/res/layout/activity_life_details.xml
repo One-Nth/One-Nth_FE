@@ -37,16 +37,16 @@
 
             <ImageView
                 android:id="@+id/ivShare"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_share_gray"
                 android:layout_marginEnd="16dp" />
 
             <ImageView
                 android:id="@+id/ivBookmark"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_bookmark_on" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_bookmark_off" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -103,8 +103,8 @@
                 <TextView
                     android:id="@+id/tvMeta"
                     style="@style/PretendardSubtitle4"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="00동 · 3분전"
                     android:textColor="@color/light_gray" />
             </LinearLayout>

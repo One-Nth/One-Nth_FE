@@ -150,17 +150,51 @@ class EditPostActivity : AppCompatActivity() {
     // ---------------- 태그 칩 ----------------
 
     private fun setupTagInput(): Unit = with(binding) {
+        // ✅ 태그 입력: 단일 라인 + actionDone 강제
+        etTags.apply {
+            isSingleLine = true
+            maxLines = 1
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            inputType = android.text.InputType.TYPE_CLASS_TEXT
+            setHorizontallyScrolling(false)
+        }
+
+        // ✅ 엔터/Done → 확정 후 비우기 (기존 clearOnEnter 사용)
+        etTags.clearOnEnter { addTagFromInput() }
+
+        // ✅ 일부 키보드가 개행(\n)으로 넣는 경우 직접 처리
         etTags.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val str: String = s?.toString().orEmpty()
-                if (str.endsWith(" ") || str.endsWith(",")) addTagFromInput()
+                val str = s?.toString().orEmpty()
+
+                // 엔터가 개행으로 들어온 경우 즉시 확정 + 비우기
+                if (str.contains('\n')) {
+                    val v = str.replace("\n", "")
+                    etTags.setText(v)           // 커서/텍스트 상태 정리
+                    addTagFromInput()
+                    etTags.text?.clear()
+                    return
+                }
+
+                // 스페이스/콤마 자동 확정
+                if (str.endsWith(" ") || str.endsWith(",")) {
+                    addTagFromInput()
+                    etTags.text?.clear()
+                }
             }
             override fun afterTextChanged(s: Editable?) {}
         })
-        etTags.clearOnEnter { addTagFromInput() }
-        etTags.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) addTagFromInput() }
+
+        // 포커스 아웃 시에도 확정 시도
+        etTags.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                addTagFromInput()
+                etTags.text?.clear()
+            }
+        }
     }
+
 
     private fun addTagFromInput(): Unit {
         val raw: String = binding.etTags.text?.toString()?.trim()?.removeSuffix(",").orEmpty()
