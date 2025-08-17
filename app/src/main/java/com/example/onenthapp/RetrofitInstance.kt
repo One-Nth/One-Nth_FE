@@ -7,6 +7,7 @@ import com.example.onenthapp.data.item.PlusApi
 import com.example.onenthapp.data.userset.UserSetApi
 import com.example.onenthapp.data.chat.MessageApi
 import com.example.onenthapp.data.ReviewApi
+import com.example.onenthapp.data.alarm.AlarmApi
 
 import com.example.onenthapp.data.notificationboard.NotificationboardApi
 import com.example.onenthapp.data.nwonsaved.NwonSavedApi
@@ -116,6 +117,10 @@ object RetrofitInstance {
 
     val itemSearchApi: ItemSearchApi by lazy {
         retrofit.create(ItemSearchApi::class.java)
+    }
+
+    val alarmApi: AlarmApi by lazy {
+        retrofit.create(AlarmApi::class.java)
     }
 
 }
