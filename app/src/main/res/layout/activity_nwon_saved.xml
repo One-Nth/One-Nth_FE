@@ -21,7 +21,9 @@
             app:navigationIcon="@drawable/humbleicons_arrow_up"
             app:title="N원 아꼈어요"
             app:titleTextColor="@color/main_black"
-            app:titleTextAppearance="@style/PretendardSubtitle2" />
+            app:titleTextAppearance="@style/PretendardSubtitle2"
+            app:titleMarginStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"/>
 
 
 
