@@ -60,20 +60,24 @@ class AccountSettingsActivity : AppCompatActivity() {
                     if (!profile?.profileImageUrl.isNullOrEmpty()) {
                         Glide.with(this@AccountSettingsActivity)
                             .load(profile?.profileImageUrl)
-                            .placeholder(R.drawable.avatar) // 기본 이미지
+                            .placeholder(R.drawable.profile_base) // 기본 이미지
                             .into(profileImageView)
                     } else {
                         profileImageView.setImageResource(R.drawable.avatar)
                     }
-                    val dong = profile?.verifiedRegionNames?.firstOrNull()
-                    if (!dong.isNullOrBlank()) {
-                        regionText.text = "$dong 인증 완료"
-                        regionText.setTextColor(getColor(R.color.main_green))
+                    val firstRegionFull = profile?.verifiedRegionNames?.firstOrNull()
+
+                    val dongOnly = firstRegionFull?.let { extractDong(it) } ?: firstRegionFull
+
+                    if (!dongOnly.isNullOrBlank()) {
+                        regionText.text = "$dongOnly 인증완료" // 원하신 표기: 공백 없이
+                        regionText.setTextColor(getColor(R.color.main_green_2))
                         regionText.visibility = View.VISIBLE
                     } else {
                         regionText.text = "인증된 지역 없음"
-                        // regionText.visibility = View.GONE // 숨기려면
+                        regionText.setTextColor(getColor(R.color.main_green_2))
                     }
+
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@AccountSettingsActivity, "프로필 불러오기 실패", Toast.LENGTH_SHORT).show()

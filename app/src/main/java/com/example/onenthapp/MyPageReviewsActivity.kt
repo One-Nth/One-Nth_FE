@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -173,7 +174,7 @@ class MyPageReviewsActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                val resp = RetrofitInstance.memberApi.getProfile() // 인터셉터에서 Bearer 붙는다고 가정
+                val resp = RetrofitInstance.memberApi.getProfile() // /api/user-settings/profile 이어야 함
                 if (resp.isSuccessful && resp.body()?.isSuccess == true) {
                     val p = resp.body()!!.result
 
@@ -193,17 +194,32 @@ class MyPageReviewsActivity : AppCompatActivity() {
                         binding.profileImage.setImageResource(R.drawable.profile_base)
                     }
 
-                    // (옵션) 인증 지역 표시까지 필요하면 여기에 verifiedRegionNames 처리 추가 가능
-                    // val dong = p.verifiedRegionNames.firstOrNull()?.let { extractDong(it) }
-                    // binding.regionText.text = dong?.let { "$it 인증 완료" } ?: "인증된 지역 없음"
+                    // ✅ 인증 지역
+                    val firstRegionFull = p.verifiedRegionNames?.firstOrNull()
+                    val dongOnly = extractDong(firstRegionFull) ?: firstRegionFull
+
+                    binding.regionText.apply {
+                        if (!dongOnly.isNullOrBlank()) {
+                            text = "$dongOnly 인증완료"
+                            setTextColor(getColor(R.color.main_green_2))
+                            visibility = View.VISIBLE
+                        } else {
+                            text = "인증된 지역 없음"
+                            setTextColor(getColor(R.color.main_green_2))
+                            visibility = View.VISIBLE
+                        }
+                    }
+
                 } else {
-                    Log.e("MyPageReviews", "프로필 응답 실패: ${resp.errorBody()?.string()}")
+                    // 실패 시 지역 기본값
+                    binding.regionText.text = "인증된 지역 없음"
                 }
             } catch (e: Exception) {
-                Log.e("MyPageReviews", "프로필 로드 오류: ${e.message}")
+                binding.regionText.text = "인증된 지역 없음"
             }
         }
     }
+
 
 
     private fun loadTradeSummary() {
@@ -258,4 +274,19 @@ class MyPageReviewsActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun extractDong(full: String?): String? {
+        if (full.isNullOrBlank()) return null
+
+        // 구분자 통일 후 토큰화
+        val tokens = full.replace(",", " ")
+            .replace("·", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+
+        // 뒤에서부터 동/가/읍/면/리 같은 말단 행정동 찾기
+        val suffixes = listOf("동", "가", "읍", "면", "리")
+        return tokens.asReversed().firstOrNull { t -> suffixes.any { t.endsWith(it) } }
+    }
+
 }

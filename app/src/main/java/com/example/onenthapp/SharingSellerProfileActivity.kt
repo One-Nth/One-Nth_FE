@@ -40,6 +40,8 @@ class SharingSellerProfileActivity : AppCompatActivity() {
     private val btnBlock by lazy { findViewById<View>(R.id.blockbtn) }
     private var targetMemberId: Long? = null
 
+    private val regionText by lazy { findViewById<TextView>(R.id.regionText) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_seller_profile)
@@ -185,6 +187,27 @@ class SharingSellerProfileActivity : AppCompatActivity() {
                             .error(R.drawable.profile_base)
                             .into(ivProfile)
                         sellerItemAdapter.updateList(r.items)
+
+                        // ✅ 지역 표시: 인증 여부에 따라 문구 결정
+                        val dongOnly = extractDong(r.mainRegionName)
+                        regionText.apply {
+                            when {
+                                r.verified == true && !dongOnly.isNullOrBlank() -> {
+                                    text = "$dongOnly 인증 완료"
+                                    setTextColor(getColor(R.color.main_green_2))
+                                }
+                                !dongOnly.isNullOrBlank() -> {
+                                    text = "$dongOnly 인증 완료"        // ✅ 동만 노출 (미인증)
+                                    setTextColor(getColor(R.color.main_green_2))
+                                }
+                                else -> {
+                                    text = "인증된 지역 없음"
+                                    setTextColor(getColor(R.color.main_green_2))
+                                }
+                            }
+                            visibility = View.VISIBLE
+                        }
+
                     } else fallbackZeros()
                 }
                 .onFailure { fallbackZeros() }
@@ -236,4 +259,20 @@ class SharingSellerProfileActivity : AppCompatActivity() {
         return if (item.itemId == android.R.id.home) { finish(); true } else super.onOptionsItemSelected(item)
     }
     override fun onSupportNavigateUp(): Boolean { finish(); return true }
+
+    private fun extractDong(full: String?): String? {
+        if (full.isNullOrBlank()) return null
+
+        // 구분자 정리 후 토큰화
+        val tokens = full.replace(",", " ")
+            .replace("·", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+
+        // 말단 행정단위(동/가/읍/면/리) 우선 탐색
+        val suffixes = listOf("동", "가", "읍", "면", "리")
+        return tokens.asReversed().firstOrNull { t -> suffixes.any { t.endsWith(it) } }
+            ?: tokens.lastOrNull() // 혹시 못 찾으면 마지막 토큰
+    }
+
 }

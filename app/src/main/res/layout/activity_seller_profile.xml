@@ -49,20 +49,38 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
-                    style="@style/PretendardSemibold4"
-                    android:id="@+id/nickname"
+                <!-- 닉네임 + 아이콘 가로 배치 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="abcd123"
-                    android:textColor="@color/main_black" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        style="@style/PretendardSemibold4"
+                        android:id="@+id/nickname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="abcd123"
+                        android:textColor="@color/main_black" />
+
+                    <ImageView
+                        android:id="@+id/nickname_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/check_green"
+                        android:contentDescription="닉네임 아이콘" />
+                </LinearLayout>
 
                 <TextView
+                    android:id="@+id/regionText"
                     style="@style/PretendardSemibold5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="OO동 인증 완료"
                     android:textColor="@color/main_green_2" />
+
             </LinearLayout>
 
             <ImageView

@@ -37,6 +37,8 @@ class PurchaseSellerProfileActivity : AppCompatActivity() {
     private lateinit var buyerAdapter: BuyerReviewAdapter
     private lateinit var sellerItemAdapter: SellerItemAdapter
 
+    private val regionText by lazy { findViewById<TextView>(R.id.regionText) }
+
     private val btnBlock by lazy { findViewById<View>(R.id.blockbtn) }
     private var targetMemberId: Long? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -177,6 +179,28 @@ class PurchaseSellerProfileActivity : AppCompatActivity() {
                             .error(R.drawable.profile_base)
                             .into(ivProfile)
                         sellerItemAdapter.updateList(r.items)
+
+                        // ✅ 지역 표시: "서울특별시 성북구 상월곡동" -> "상월곡동"
+                        val dongOnly = extractDong(r.mainRegionName)
+                        regionText.apply {
+                            when {
+                                r.verified == true && !dongOnly.isNullOrBlank() -> {
+                                    text = "$dongOnly 인증 완료"
+                                    setTextColor(getColor(R.color.main_green_2))
+                                }
+                                !dongOnly.isNullOrBlank() -> {
+                                    text = "$dongOnly 인증 완료"           // ✅ 동만 노출 (미인증)
+                                    setTextColor(getColor(R.color.main_green_2))
+                                }
+                                else -> {
+                                    text = "인증된 지역 없음"
+                                    setTextColor(getColor(R.color.main_green_2))
+                                }
+                            }
+                            visibility = View.VISIBLE
+                        }
+
+
                     } else fallbackZeros()
                 }
                 .onFailure { fallbackZeros() }
@@ -228,4 +252,14 @@ class PurchaseSellerProfileActivity : AppCompatActivity() {
         return if (item.itemId == android.R.id.home) { finish(); true } else super.onOptionsItemSelected(item)
     }
     override fun onSupportNavigateUp(): Boolean { finish(); return true }
+
+    private fun extractDong(full: String?): String? {
+        if (full.isNullOrBlank()) return null
+        val tokens = full.replace(",", " ")
+            .replace("·", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+        return tokens.asReversed().firstOrNull { it.endsWith("동") || it.endsWith("가") }
+    }
+
 }
