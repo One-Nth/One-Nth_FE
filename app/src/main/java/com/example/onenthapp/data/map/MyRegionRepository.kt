@@ -47,8 +47,15 @@ class MyRegionRepository {
     // 지역명 기반으로 해당 지역의 대표 좌표 조회
     suspend fun getRegionCenter(regionName: String): RegionCenterResult? = withContext(Dispatchers.IO) {
         val resp = api.getRegionCenter(regionName)
-        if (resp.isSuccess && resp.result != null) {
-            resp.result
-        } else null
+        if (resp.isSuccess && resp.result != null) resp.result
+        else null
+    }
+
+    // 지역 인증
+    suspend fun authenticateRegion(regionId: Long, latitude: Double, longitude: Double): RegionAuthResult? = withContext(Dispatchers.IO) {
+        val request = RegionAuthRequest(latitude, longitude)
+        val resp = api.authenticateRegion(regionId, request)
+        if (resp.isSuccess && resp.result != null) resp.result
+        else throw Exception("지역 인증 실패: ${resp.message}")
     }
 }

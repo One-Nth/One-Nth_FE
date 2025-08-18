@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 class MyRegionViewModel : ViewModel() {
 
-    private val repo = MyRegionRepository()
+    val repo = MyRegionRepository()
     private val _myRegions = MutableLiveData<List<MyRegion>>(emptyList())
     val myRegions: LiveData<List<MyRegion>> = _myRegions
     // 상단 라벨 노출/문구용

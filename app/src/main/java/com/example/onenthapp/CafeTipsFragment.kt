@@ -187,7 +187,7 @@ class CafeTipsFragment : Fragment() {
     private fun updateMapCenter(latitude: Double, longitude: Double) {
         val map = kakaoMapInstance ?: return
         val pos = LatLng.from(latitude, longitude)
-        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 15))
+        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 14))
     }
 
     private fun loadRestaurantMarkers(regionId: Long? = null) {
