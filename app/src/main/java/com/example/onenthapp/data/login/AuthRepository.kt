@@ -1,4 +1,4 @@
-package com.example.onenthapp.data
+package com.example.onenthapp.data.login
 
 import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.userset.KakaoSignupRequest

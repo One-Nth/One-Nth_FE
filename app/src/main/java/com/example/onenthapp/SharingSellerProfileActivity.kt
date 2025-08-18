@@ -37,6 +37,9 @@ class SharingSellerProfileActivity : AppCompatActivity() {
     private val memberApi get() = RetrofitInstance.memberApi
     private val reviewApi get() = RetrofitInstance.reviewApi
 
+    private val btnBlock by lazy { findViewById<View>(R.id.blockbtn) }
+    private var targetMemberId: Long? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_seller_profile)
@@ -49,6 +52,8 @@ class SharingSellerProfileActivity : AppCompatActivity() {
         val sellerName       = intent.getStringExtra("sellerName").orEmpty()
         val sellerProfileUrl = intent.getStringExtra("sellerProfileImageUrl").orEmpty()
 
+
+        targetMemberId = sellerId // 인텐트로 들어오면 먼저 세팅
         supportActionBar?.title = if (sellerName.isNotBlank()) sellerName else "프로필"
         if (sellerName.isNotBlank()) tvNickname.text = sellerName
         if (sellerProfileUrl.isNotBlank()) {
@@ -70,6 +75,7 @@ class SharingSellerProfileActivity : AppCompatActivity() {
             }
         }
 
+
         findViewById<View>(R.id.btnGoAllItems)?.setOnClickListener {
             val id = sellerId ?: return@setOnClickListener
             startActivity(Intent(this, SellerItemDetailActivity::class.java).apply {
@@ -78,6 +84,54 @@ class SharingSellerProfileActivity : AppCompatActivity() {
                 putExtra("itemType", "sharing")
             })
         }
+
+        // 차단하기 버튼
+        btnBlock.setOnClickListener {
+            val token = TokenManager.getAccessToken()
+            if (token.isNullOrEmpty()) {
+                Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val id = targetMemberId
+            if (id == null) {
+                Toast.makeText(this, "판매자 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            btnBlock.isEnabled = false
+            lifecycleScope.launch {
+                try {
+                    val res = RetrofitInstance.messageApi.blockMember(id.toInt()) // Long 시그니처면 그대로 id
+                    if (res.isSuccessful && res.body()?.isSuccess == true) {
+                        val displayName = (intent.getStringExtra("sellerName").orEmpty()
+                            .ifBlank { tvNickname.text?.toString().orEmpty() })
+                            .ifBlank { "사용자" }
+
+                        Toast.makeText(
+                            this@SharingSellerProfileActivity,
+                            "${displayName}님을 차단하였습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        // 필요 시 finish()
+                    } else {
+                        Toast.makeText(
+                            this@SharingSellerProfileActivity,
+                            res.body()?.message ?: "차단에 실패했습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this@SharingSellerProfileActivity, "오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                } finally {
+                    btnBlock.isEnabled = true
+                }
+            }
+        }
+
+
+
+
 
         buyerAdapter = BuyerReviewAdapter()
         rvBuyerReviews.adapter = buyerAdapter

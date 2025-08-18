@@ -2,7 +2,7 @@ package com.example.onenthapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.onenthapp.data.AuthRepository
+import com.example.onenthapp.data.login.AuthRepository
 import com.example.onenthapp.model.PasswordResetViewModel
 
 class PasswordResetViewModelFactory(
