@@ -48,4 +48,5 @@ interface MessageApi {
     suspend fun blockMember(
         @Path("targetMemberId") targetMemberId: Int
     ): Response<CommonResponse<String>>
+
 }

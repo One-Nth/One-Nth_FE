@@ -9,34 +9,61 @@
     <LinearLayout
         android:id="@+id/leftChatLayout"
         android:layout_width="343dp"
-        android:layout_height="63dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <!-- 프로필 이미지 (회색 원으로 대체) -->
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/chat_profile"  />
-
-        <!-- 말풍선 -->
-        <TextView
-            android:id="@+id/leftMessage"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_chat_bubble"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical">
+
+            <!-- 프로필 이미지 -->
+            <ImageView
+                android:id="@+id/leftProfileImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/chat_profile" />
+
+            <!-- 닉네임 -->
+            <TextView
+                android:id="@+id/leftNickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상대 닉네임"
+                android:textSize="14sp"
+                android:textColor="#111111" />
+        </LinearLayout>
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- 말풍선 -->
+            <TextView
             android:padding="10dp"
-            android:textColor="#ffffff" />
-        <!-- 시간 -->
-        <TextView
-            android:id="@+id/leftMessageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="오후 7:30"
-            android:textSize="12sp"
-            android:textColor="#cccccc"
-            android:layout_marginStart="4dp"
-            android:gravity="bottom|center_vertical" />
+                android:text="히히"
+                android:layout_marginStart="47dp"
+                android:id="@+id/leftMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chat_bubble"
+                android:textColor="#ffffff" />
+
+            <!-- 시간 -->
+            <TextView
+                android:id="@+id/leftMessageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="오후 7:30"
+                android:textSize="12sp"
+                android:textColor="#cccccc"
+                android:layout_marginStart="5dp"
+                android:gravity="bottom|center_vertical" />
+        </LinearLayout>
     </LinearLayout>
 
     <Space
@@ -59,7 +86,7 @@
             android:text="오후 7:40"
             android:textSize="12sp"
             android:textColor="#999999"
-            android:layout_marginStart="4dp"
+            android:layout_marginEnd="5dp"
             android:gravity="bottom|center_vertical" />
         <!-- 말풍선 -->
         <TextView

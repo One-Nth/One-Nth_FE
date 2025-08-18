@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 class ChatCheckActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatCheckBinding
-
+    private lateinit var peerNickname: String
     private lateinit var roomName: String
     private var selectedProductItem: ProductItem? = null
     private var isDropdownVisible = false
@@ -36,12 +36,28 @@ class ChatCheckActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         roomName = intent.getStringExtra("roomName") ?: ""
+        peerNickname = intent.getStringExtra("peerNickname") ?: "상대방"
         if(roomName.isBlank()){
             Toast.makeText(this, "채팅방 정보가 없습니다.", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
+        binding.root.findViewById<TextView>(R.id.title).text = peerNickname
 
+// 내 아이디
+        val myId = TokenManager.getMemberId().toString()
+
+        // 상대방 아이디 추출
+        val otherMemberIdStr = extractOtherMemberId(roomName, myId)
+        val otherMemberId = otherMemberIdStr?.toIntOrNull()
+
+        if (otherMemberId != null) {
+            // 상대방 닉네임 조회 함수 호출
+            fetchPeerNickname(otherMemberId)
+        } else {
+            // 상대방 닉네임이 없으면 기존 닉네임 보여주기
+            binding.root.findViewById<TextView>(R.id.title).text = peerNickname
+        }
         // 뒤로가기
         binding.btnLeft.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
@@ -80,6 +96,32 @@ class ChatCheckActivity : AppCompatActivity() {
             confirmDeal()
         }
     }
+
+    private fun fetchPeerNickname(memberId: Int) {
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitInstance.messageApi.getMemberNickname(memberId)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        peerNickname = body.result.nickname
+                        binding.root.findViewById<TextView>(R.id.title).text = peerNickname
+                    } else {
+                        Log.e("ChatCheck", "닉네임 조회 실패: ${body?.message ?: "알 수 없는 오류"}")
+                        binding.root.findViewById<TextView>(R.id.title).text = peerNickname
+                    }
+                } else {
+                    Log.e("ChatCheck", "닉네임 조회 실패: 서버 오류 ${response.code()}")
+                    binding.root.findViewById<TextView>(R.id.title).text = peerNickname
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                binding.root.findViewById<TextView>(R.id.title).text = peerNickname
+            }
+        }
+    }
+
+
 
     private fun selectTradeType(type: String){
         when(type){
@@ -249,12 +291,14 @@ class ChatCheckActivity : AppCompatActivity() {
                         val resultIntent = Intent().apply {
                             putExtra("dealConfirmed", true)
                             putExtra("itemName", product.name)
-                            putExtra("isWriter", true) // 내가 작성자니까
+                            putExtra("isWriter", true)
+                            putExtra("peerNickname", peerNickname) // 🔥 닉네임 추가
                         }
                         setResult(RESULT_OK, resultIntent)
                         finish()
+                    }
 
-                    } else {
+                    else {
                         showError("거래 확정 실패: ${body?.message ?: "알 수 없는 오류"}")
                     }
                 } else {

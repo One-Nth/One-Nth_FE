@@ -11,9 +11,8 @@
     <RelativeLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="81dp"
+        android:layout_height="60dp"
         android:background="#FFFFFF"
-        android:elevation="4dp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,9 +22,9 @@
             android:id="@+id/btn_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginTop="3dp"
             android:src="@drawable/humbleicons_arrow_up"
-            android:layout_marginTop="7.75dp"
             android:contentDescription="뒤로가기" />
 
         <TextView
@@ -37,12 +36,14 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/main_black"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginStart="61dp"
+            android:layout_marginTop="3dp"/>
     </RelativeLayout>
 
     <!-- 탭 -->
     <com.google.android.material.tabs.TabLayout
+        app:tabTextAppearance="@style/PretendardBody5"
+        app:tabIndicator="@drawable/tab_indicator"
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
