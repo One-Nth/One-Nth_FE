@@ -46,10 +46,10 @@ interface MyRegionApi {
     ): GenericResponse<RegionCenterResult>
 
     // 지역 인증
-    @POST("user-settings/regions/{regionId}/auth")
+    @PATCH("user-settings/regions/{regionId}/auth")
     suspend fun authenticateRegion(
         @Path("regionId") regionId: Long,
         @Body request: RegionAuthRequest
-    ): RegionAuthResponse
+    ): GenericResponse<RegionAuthResult>
 
 }

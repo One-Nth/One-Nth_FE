@@ -22,3 +22,5 @@ local.properties
 *.aab
 gradle/libs.versions.toml.lock
 Thumbs.db
+app/google-services.json
+app/one-nth-firebase-adminsdk-fbsvc-e17dc2af6f.json

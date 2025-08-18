@@ -136,7 +136,9 @@ class RegionVerificationActivity : AppCompatActivity() {
                 text = extractDong(region.regionName)
                 isCheckable = true
                 isChecked = (index == 0) // 첫 번째 칩이 기본 선택
-                
+                isCloseIconVisible = true  // 지역 인증 화면에서는 삭제 버튼 숨김
+
+                // 텍스트 색상 Selector를 코드에서 직접 적용
                 val textColorStateList = ContextCompat.getColorStateList(this@RegionVerificationActivity, R.color.region_chip_text)
                 setTextColor(textColorStateList)
                 
@@ -145,6 +147,17 @@ class RegionVerificationActivity : AppCompatActivity() {
                     updateChipSelection(this)
                 }
             }
+            
+            // MyRegionActivity와 동일한 방식으로 간격 설정
+            val layoutParams = android.view.ViewGroup.MarginLayoutParams(
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            val marginInDp = 18 // dp 단위의 마진 값
+            val marginInPx = (marginInDp * resources.displayMetrics.density).toInt()
+            layoutParams.setMargins(0, 0, marginInPx, 0) // 오른쪽 마진 설정
+            chip.layoutParams = layoutParams
+            
             flexSelected.addView(chip)
         }
     }
