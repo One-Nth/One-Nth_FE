@@ -16,7 +16,8 @@ import java.util.Locale
 import java.util.TimeZone
 
 class ChatAdapter(
-    private val myMemberId: Int
+    private val myMemberId: Int,
+    private val peerNickname: String
 ) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
     private val messages = mutableListOf<ChatMessage>()
@@ -28,6 +29,7 @@ class ChatAdapter(
         val rightChatLayout: LinearLayout = itemView.findViewById(R.id.rightChatLayout)
         val rightMessage: TextView = itemView.findViewById(R.id.rightMessage)
         val rightMessageTime: TextView = itemView.findViewById(R.id.rightMessageTime)
+        val leftNickname: TextView = itemView.findViewById(R.id.leftNickname)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
@@ -42,13 +44,6 @@ class ChatAdapter(
         val formattedTime = formatServerTime(chat.messageTime)
 
         if (isMe) {
-            holder.rightMessageTime.text = formattedTime
-        } else {
-            holder.leftMessageTime.text = formattedTime
-        }
-
-
-        if (isMe) {
             holder.rightChatLayout.visibility = View.VISIBLE
             holder.leftChatLayout.visibility = View.GONE
 
@@ -60,8 +55,12 @@ class ChatAdapter(
 
             holder.leftMessage.text = chat.content
             holder.leftMessageTime.text = formattedTime
+
+            holder.leftNickname.text = peerNickname // 여기서 닉네임 넣기
+            holder.leftNickname.visibility = View.VISIBLE
         }
     }
+
 
     override fun getItemCount(): Int = messages.size
 

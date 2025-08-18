@@ -1,7 +1,5 @@
 package com.example.onenthapp.feature.chat
 
-import ChatNotification
-import ChatNotificationAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -42,19 +40,15 @@ class TipChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 어댑터 초기화
         chatNotificationAdapter = ChatNotificationAdapter(emptyList(), requireContext())
 
-        // RecyclerView 설정
         binding.notificationList.apply {
             adapter = chatNotificationAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        // 채팅방 목록 불러오기
         fetchChatRooms("TIP_SHARE")
 
-        // 채팅방 클릭 시 채팅창으로 이동
         chatNotificationAdapter.setOnItemClickListener { chatNotification ->
             val intent = Intent(requireContext(), ChatRoomActivity::class.java).apply {
                 putExtra("chatRoomId", chatNotification.chatRoomId)
@@ -67,10 +61,21 @@ class TipChatFragment : Fragment() {
         }
     }
 
-
     private fun fetchChatRooms(chatRoomType: String) {
         lifecycleScope.launch {
             try {
+                // 차단 닉네임 목록 불러오기
+                val blockedNicknames = withContext(Dispatchers.IO) {
+                    try {
+                        val res = RetrofitInstance.usersetApi.getBlockedUsers()
+                        if (res.isSuccessful && res.body()?.isSuccess == true) {
+                            res.body()?.result?.blockedUserSummaryList?.map { it.nickname } ?: emptyList()
+                        } else emptyList()
+                    } catch (e: Exception) {
+                        emptyList()
+                    }
+                }
+
                 val response = withContext(Dispatchers.IO) {
                     api.getChatListMessages(chatRoomType)
                 }
@@ -78,20 +83,19 @@ class TipChatFragment : Fragment() {
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
                     val chatRooms = response.body()?.result ?: emptyList()
 
-                    // 👉 각 채팅방의 상대방 닉네임을 병렬로 가져오기
                     val notifications = withContext(Dispatchers.IO) {
                         chatRooms.map { chatRoom ->
                             async {
                                 val nickname = try {
-                                    val res = RetrofitInstance.messageApi.getMemberNickname(chatRoom.opponentId)
+                                    val res = api.getMemberNickname(chatRoom.opponentId)
                                     if (res.isSuccessful && res.body()?.isSuccess == true) {
                                         res.body()?.result?.nickname ?: "알 수 없음"
-                                    } else {
-                                        "알 수 없음"
-                                    }
+                                    } else "알 수 없음"
                                 } catch (e: Exception) {
                                     "알 수 없음"
                                 }
+
+                                val isBlocked = blockedNicknames.contains(nickname)
 
                                 ChatNotification(
                                     chatRoomId = chatRoom.chatRoomId,
@@ -99,18 +103,17 @@ class TipChatFragment : Fragment() {
                                     message = chatRoom.lastMessageContent ?: "메시지 없음",
                                     time = formatTime(chatRoom.lastMessageTime),
                                     roomName = chatRoom.chatRoomName,
-                                    opponentId = chatRoom.opponentId
+                                    opponentId = chatRoom.opponentId,
+                                    isBlocked = isBlocked
                                 )
                             }
                         }.awaitAll()
                     }
 
-
                     chatNotificationAdapter.updateData(notifications)
                 } else {
                     Toast.makeText(requireContext(), "채팅 목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
                 }
-
             } catch (e: IOException) {
                 Toast.makeText(requireContext(), "네트워크 오류", Toast.LENGTH_SHORT).show()
             } catch (e: HttpException) {
@@ -122,12 +125,11 @@ class TipChatFragment : Fragment() {
         }
     }
 
-
     private fun formatTime(iso: String?): String {
         if (iso.isNullOrEmpty()) return ""
 
         return try {
-            val trimmed = iso.substringBefore('.') // 예: 2025-08-10T21:07:28
+            val trimmed = iso.substringBefore('.')
             val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
             sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
             val date = sdf.parse(trimmed) ?: return trimmed
@@ -148,7 +150,6 @@ class TipChatFragment : Fragment() {
             iso.substringBefore('.').replace('T', ' ')
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

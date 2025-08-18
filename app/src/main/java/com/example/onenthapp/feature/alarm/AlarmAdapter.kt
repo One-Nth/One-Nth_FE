@@ -1,10 +1,13 @@
 package com.example.onenthapp.feature.alarm
 
-import android.widget.ImageView
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onenthapp.R
 
@@ -12,9 +15,10 @@ class AlarmAdapter(private var alarmList: List<AlarmItem>) :
     RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder>() {
 
     class AlarmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val rootLayout: ConstraintLayout = itemView.findViewById(R.id.alarmRootLayout) // 추가
         val messageTextView: TextView = itemView.findViewById(R.id.alarmMessage)
         val timeTextView: TextView = itemView.findViewById(R.id.alarmTimeAgo)
-        val navigationImageView: ImageView = itemView.findViewById(R.id.alramNavigation)
+        val typeTextView: TextView = itemView.findViewById(R.id.alarmTypeBox)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
@@ -27,8 +31,20 @@ class AlarmAdapter(private var alarmList: List<AlarmItem>) :
         val item = alarmList[position]
         holder.messageTextView.text = item.message
         holder.timeTextView.text = item.timeAgo
-        holder.navigationImageView.setImageResource(item.navigationImageResId)
+        holder.typeTextView.text = item.type
+
+        // 읽지 않은 알림이면 배경색 변경
+        if (!item.isRead) {
+            holder.rootLayout.setBackgroundColor(
+                ContextCompat.getColor(holder.itemView.context, R.color.light_red) // #FFDADA
+            )
+        } else {
+            holder.rootLayout.setBackgroundColor(
+                ContextCompat.getColor(holder.itemView.context, R.color.main_white)
+            )
+        }
     }
+
 
     override fun getItemCount(): Int = alarmList.size
 

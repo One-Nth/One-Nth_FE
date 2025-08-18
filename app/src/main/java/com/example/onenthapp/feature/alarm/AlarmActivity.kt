@@ -107,6 +107,8 @@ class AlarmActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun sendTestPushNotification() {
         lifecycleScope.launch {
             try {
@@ -166,11 +168,15 @@ class AlarmActivity : AppCompatActivity() {
         return list.map {
             AlarmItem(
                 message = it.message,
-                timeAgo = "방금 전",  // 서버에서 시간 정보가 없으면 임시값
-                navigationImageResId = R.drawable.notification_ic_1
+                timeAgo = "방금 전",
+                navigationImageResId = R.drawable.notification_ic_1,
+                isRead = it.readStatus,
+                type = getKoreanType(it.alertType) // <-- 여기!
             )
         }
     }
+
+
 
     // PostAlarm -> AlarmItem 변환
     private fun mapPostAlarmsToItems(list: List<PostAlarm>): List<AlarmItem> {
@@ -178,8 +184,23 @@ class AlarmActivity : AppCompatActivity() {
             AlarmItem(
                 message = it.message,
                 timeAgo = "방금 전",
-                navigationImageResId = R.drawable.notification_ic_2
+                navigationImageResId = R.drawable.notification_ic_2,
+                isRead = it.readStatus,
+                type = getKoreanType(it.alertType)
             )
         }
     }
+
+    private fun getKoreanType(type: String): String {
+        return when (type) {
+            "REVIEW" -> "거래후기"
+            "ITEM" -> "상품등록"
+            "LIFE_TIP" -> "생활정보"
+            "DISCOUNT" -> "할인정보"
+            "RESTAURANT" -> "우리동네 맛집/카페"
+            else -> "기타"
+        }
+    }
+
+
 }

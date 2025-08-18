@@ -2,7 +2,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="100dp"
+    android:id="@+id/alarmRootLayout"
+    android:background="@color/main_white">
 
     <!-- 프로필 이미지 -->
     <ImageView
@@ -27,12 +29,20 @@
         app:layout_constraintTop_toTopOf="@id/alramProfile"
         app:layout_constraintBottom_toBottomOf="@id/alramProfile">
 
-        <!-- 두번째 이미지 -->
-        <ImageView
-            android:id="@+id/alramNavigation"
+        <TextView
+            android:id="@+id/alarmTypeBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/notification_ic_1" />
+            android:background="@drawable/box_green_border"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="ITEM"
+            android:textColor="#419461"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center" />
 
         <!-- 메시지 텍스트 -->
         <TextView
