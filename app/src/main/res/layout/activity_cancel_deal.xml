@@ -26,21 +26,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/PretendardSubtitle2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:text="닉네임"
-            android:textColor="@color/main_black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/btn_left"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/btn_left"
-            app:layout_constraintTop_toTopOf="@id/btn_left" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
@@ -80,8 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="8dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
@@ -101,8 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="8dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
@@ -122,8 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="8dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
@@ -144,8 +126,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="8dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
@@ -160,6 +141,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
+
     <ImageView
         android:id="@+id/cancelbtn"
         android:layout_width="wrap_content"

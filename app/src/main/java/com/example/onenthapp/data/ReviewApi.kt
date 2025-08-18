@@ -8,7 +8,7 @@ import retrofit2.http.*
 
 interface ReviewApi {
     @Multipart
-    @POST("reviews/purchases/{purchaseItemId}")
+    @POST("reviews/purchase/{purchaseItemId}")
     fun submitPurchaseReview(
         @Path("purchaseItemId") purchaseItemId: Long,
         @Part("review") review: RequestBody,

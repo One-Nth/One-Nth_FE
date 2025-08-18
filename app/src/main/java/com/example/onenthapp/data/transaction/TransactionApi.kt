@@ -37,9 +37,10 @@ interface TransactionApi {
     suspend fun getAvailableProducts(): Response<AvailableProductsResponse>
 
     // 6. 거래 취소
-    @DELETE("deals/cancellation")
+    @HTTP(method = "DELETE", path = "deals/cancellation", hasBody = true)
     suspend fun cancelTransaction(
         @Query("roomName") roomName: String,
         @Body request: CancelTransactionRequest
     ): Response<CommonResponse<String>>
+
 }

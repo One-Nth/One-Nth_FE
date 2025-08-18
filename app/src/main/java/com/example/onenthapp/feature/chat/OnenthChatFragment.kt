@@ -1,7 +1,5 @@
 package com.example.onenthapp.chat
 
-import ChatNotification
-import ChatNotificationAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.databinding.FragmentOnenthChatBinding
+import com.example.onenthapp.feature.chat.ChatNotification
+import com.example.onenthapp.feature.chat.ChatNotificationAdapter
 import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.Dispatchers
@@ -63,6 +63,18 @@ class OnenthChatFragment : Fragment() {
     private fun fetchChatRooms(chatRoomType: String) {
         lifecycleScope.launch {
             try {
+                // ✅ 차단 목록 가져오기 (nickname 리스트)
+                val blockedNicknames = withContext(Dispatchers.IO) {
+                    try {
+                        val res = RetrofitInstance.usersetApi.getBlockedUsers()
+                        if (res.isSuccessful && res.body()?.isSuccess == true) {
+                            res.body()?.result?.blockedUserSummaryList?.map { it.nickname } ?: emptyList()
+                        } else emptyList()
+                    } catch (e: Exception) {
+                        emptyList()
+                    }
+                }
+
                 val response = withContext(Dispatchers.IO) {
                     api.getChatListMessages(chatRoomType)
                 }
@@ -84,13 +96,16 @@ class OnenthChatFragment : Fragment() {
                                     "알 수 없음"
                                 }
 
+                                val isBlocked = blockedNicknames.contains(nickname)
+
                                 ChatNotification(
                                     chatRoomId = chatRoom.chatRoomId,
                                     nickname = nickname,
                                     message = chatRoom.lastMessageContent ?: "메시지 없음",
                                     time = formatTime(chatRoom.lastMessageTime),
                                     roomName = chatRoom.chatRoomName,
-                                    opponentId = chatRoom.opponentId
+                                    opponentId = chatRoom.opponentId,
+                                    isBlocked = isBlocked
                                 )
                             }
                         }.awaitAll()
@@ -112,6 +127,7 @@ class OnenthChatFragment : Fragment() {
             }
         }
     }
+
 
     private fun formatTime(iso: String?): String {
         if (iso.isNullOrEmpty()) return ""

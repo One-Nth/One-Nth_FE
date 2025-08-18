@@ -120,6 +120,7 @@
         android:layout_width="0dp"
         android:layout_height="44dp"
         android:hint="알림 설정할 키워드를 등록하세요"
+        android:singleLine="true"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
         android:textColor="@color/light_gray"
@@ -166,6 +167,7 @@
         android:layout_width="0dp"
         android:layout_height="44dp"
         android:hint="알림 설정할 키워드를 등록하세요"
+        android:singleLine="true"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
         android:textColor="@color/light_gray"
@@ -193,15 +195,17 @@
     <!-- 내가 등록한 알림 보기 -->
     <TextView
         android:id="@+id/myAlertTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="내가 등록한 알림 보기"
         style="@style/PretendardSemibold3"
+        android:textAlignment="viewStart"
         android:textColor="@color/main_black"
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
         app:layout_constraintTop_toBottomOf="@id/alertLocationText2"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/modifyButton" />
 
     <ImageView
         android:id="@+id/modifyButton"
@@ -211,10 +215,10 @@
         android:contentDescription="수정 버튼"
         android:clickable="true"
         android:focusable="true"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@id/myAlertTitle"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/myAlertTitle"
         app:layout_constraintBottom_toBottomOf="@id/myAlertTitle" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keywordRecyclerView"
         android:layout_width="0dp"

@@ -1,5 +1,6 @@
-package com.example.onenthapp.data
+package com.example.onenthapp.data.login
 
+import com.example.onenthapp.data.CommonResponse
 import com.example.onenthapp.data.userset.KakaoSignupRequest
 import com.example.onenthapp.data.userset.KakaoSignupResult
 import retrofit2.Call

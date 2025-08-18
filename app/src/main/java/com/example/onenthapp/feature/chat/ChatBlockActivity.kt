@@ -20,12 +20,15 @@ import com.example.onenthapp.chat.CancelDealActivity
 import com.example.onenthapp.chat.DropdownProductAdapter
 import com.example.onenthapp.chat.ProductItem
 import com.example.onenthapp.data.transaction.CompleteTransactionRequest
+import com.example.onenthapp.util.TokenManager
+
 // 거래 완료
 class ChatBlockActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatBlockBinding
     private lateinit var roomName: String
     private var selectedProductItem: ProductItem? = null
+    private lateinit var peerNickname: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +44,16 @@ class ChatBlockActivity : AppCompatActivity() {
             showError("채팅방 정보가 없습니다. 다시 시도해주세요.")
             finish()
             return
+        }
+
+        val myId = TokenManager.getMemberId().toString()
+        val otherMemberIdStr = extractOtherMemberId(roomName, myId)
+        val otherMemberId = otherMemberIdStr?.toIntOrNull()
+
+        if (otherMemberId != null) {
+            fetchPeerNickname(otherMemberId)
+        } else {
+            peerNickname = "상대방" // 기본값
         }
 
         // 🔙 뒤로가기 버튼
@@ -116,7 +129,8 @@ class ChatBlockActivity : AppCompatActivity() {
         // ❌ 거래 취소 버튼
         binding.dealCancelBtn.setOnClickListener {
             val intent = Intent(this, CancelDealActivity::class.java)
-            intent.putExtra("roomName", roomName) // 필요하다면 방 이름도 전달
+            intent.putExtra("roomName", roomName)
+            intent.putExtra("dealConfirmationId", dealConfirmationId)
             startActivity(intent)
         }
 
@@ -138,6 +152,35 @@ class ChatBlockActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun fetchPeerNickname(memberId: Int) {
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitInstance.messageApi.getMemberNickname(memberId)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        peerNickname = body.result.nickname
+                        binding.root.findViewById<TextView>(R.id.title).text = peerNickname
+                    } else {
+                        Log.e("ChatBlockActivity", "닉네임 조회 실패: ${body?.message ?: "알 수 없는 오류"}")
+                    }
+                } else {
+                    Log.e("ChatBlockActivity", "닉네임 조회 실패: 서버 오류 ${response.code()}")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
+    private fun extractOtherMemberId(roomName: String, myId: String): String? {
+        val parts = roomName.split("-")
+        if(parts.size < 3) return null
+        return parts.firstOrNull { it != myId && it != "TIP_SHARE" }
+    }
+
     private var isDropdownVisible = false
 
     private fun toggleDropdown() {

@@ -24,14 +24,15 @@
             <!-- 뒤로가기 버튼 -->
             <ImageView
                 android:id="@+id/ivBack"
-                android:layout_width="31dp"
-                android:layout_height="31dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:contentDescription="뒤로가기"
                 android:src="@drawable/humbleicons_arrow_up"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
             <!-- 검색어 -->
             <TextView
@@ -157,7 +158,8 @@
                 android:inputType="textMultiLine"
                 android:padding="8dp"
                 android:textAlignment="viewStart"
-                android:textColor="@color/text_btn_ok"
+                android:textColorHint="@color/splash_gray"
+                android:textColor="@color/main_black"
                 android:textSize="16sp" />
 
 
@@ -173,7 +175,8 @@
                 android:inputType="textMultiLine"
                 android:padding="8dp"
                 android:textAlignment="viewStart"
-                android:textColor="@color/text_btn_ok"
+                android:textColorHint="@color/splash_gray"
+                android:textColor="@color/main_black"
                 android:textSize="16sp" />
 
 

@@ -55,4 +55,7 @@
 
     <!-- 회원가입 -->
     <color name="error_text">#FF0000</color>
+
+    <color name="light_red">#FFDADA</color>
+
 </resources>
