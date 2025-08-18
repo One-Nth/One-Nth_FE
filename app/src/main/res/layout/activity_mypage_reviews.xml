@@ -74,6 +74,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/regionText"
                     style="@style/PretendardSemibold5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

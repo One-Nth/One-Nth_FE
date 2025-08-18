@@ -157,7 +157,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/icon_park_solid_check_one" />
+                android:src="@drawable/region_vertify" />
             <TextView
                 style="@style/PretendardSubtitle1"
                 android:layout_width="wrap_content"
