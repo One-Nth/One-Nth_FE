@@ -12,8 +12,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.onenthapp.MyReviewActivity
+import com.example.onenthapp.NwonSavedActivity
 import com.example.onenthapp.R
 import com.example.onenthapp.RetrofitInstance
+import com.example.onenthapp.WriteReviewActivity
 import com.example.onenthapp.chat.CancelDealActivity
 import com.example.onenthapp.data.chat.ChatMessage
 import com.example.onenthapp.databinding.ActivityChatRoomBinding
@@ -47,16 +50,42 @@ class ChatRoomActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == RESULT_OK && data?.getBooleanExtra("dealConfirmed", false) == true) {
-            val itemName = data.getStringExtra("itemName") ?: ""
-            val isWriter = data.getBooleanExtra("isWriter", false)
+        if (resultCode == RESULT_OK && data != null) {
+            if (data.getBooleanExtra("dealConfirmed", false)) {
+                val itemName = data.getStringExtra("itemName") ?: ""
+                val isWriter = data.getBooleanExtra("isWriter", false)
+                val opponentNickname = toolbarBinding.title.text.toString()
 
-            // 🔸 Toolbar 타이틀에서 닉네임 가져오기
-            val opponentNickname = findViewById<Toolbar>(R.id.chatTopToolbar).title?.toString() ?: "상대방"
+                showDealConfirmedUI(isWriter, itemName, opponentNickname)
+            }
 
-            showDealConfirmedUI(isWriter, itemName, opponentNickname)
+            // ✅ 거래 완료 후 상품 정보 처리
+            val itemId = data.getIntExtra("itemId", -1)
+            val itemImageUrl = data.getStringExtra("itemImageUrl") ?: ""
+            val itemType = data.getStringExtra("itemType") ?: ""
+            val itemTypeAndId = data.getStringExtra("itemTypeAndId") ?: ""
+
+            if (itemId != -1 && itemTypeAndId.isNotEmpty()) {
+                goToReviewPage(itemId, itemImageUrl, itemType, itemTypeAndId)
+            }
         }
     }
+
+    private fun goToReviewPage(
+        itemId: Int,
+        itemImageUrl: String,
+        itemType: String,
+        itemTypeAndId: String
+    ) {
+        val intent = Intent(this, WriteReviewActivity::class.java).apply {
+            putExtra("itemId", itemId)
+            putExtra("itemImageUrl", itemImageUrl)
+            putExtra("itemType", itemType)
+            putExtra("itemTypeAndId", itemTypeAndId)
+        }
+        startActivity(intent)
+    }
+
 
 
     private fun showDealConfirmedUI(
@@ -109,14 +138,27 @@ class ChatRoomActivity : AppCompatActivity() {
         }
 
         // ✅ 거래완료 관련 뷰 보이기
-        findViewById<ImageView>(R.id.completereivew).visibility = View.VISIBLE
-        findViewById<ImageView>(R.id.completensave).visibility = View.VISIBLE
+        val reviewButton = findViewById<ImageView>(R.id.completereivew)
+        val nwonSaveButton = findViewById<ImageView>(R.id.completensave)
+
+        reviewButton.visibility = View.VISIBLE
+        nwonSaveButton.visibility = View.VISIBLE
 
         // ❌ 거래확정 관련 버튼 숨기기
         findViewById<ImageView>(R.id.check_deal_cancel_btn).visibility = View.GONE
+
+        // 💬 후기 남기러 가기
+        reviewButton.setOnClickListener {
+            val intent = Intent(this, WriteReviewActivity::class.java)
+            startActivity(intent)
+        }
+
+        // 💬 누적 내역 보기
+        nwonSaveButton.setOnClickListener {
+            val intent = Intent(this, NwonSavedActivity::class.java)
+            startActivity(intent)
+        }
     }
-
-
 
 
     // 수정 필요

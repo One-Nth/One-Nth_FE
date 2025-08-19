@@ -112,8 +112,18 @@ class ChatBlockActivity : AppCompatActivity() {
                         val body = response.body()
                         if (body?.isSuccess == true) {
                             Toast.makeText(this@ChatBlockActivity, "거래가 완료되었습니다!", Toast.LENGTH_SHORT).show()
+
+                            val resultIntent = Intent().apply {
+                                putExtra("itemId", selectedProductItem?.itemId)
+                                putExtra("itemImageUrl", selectedProductItem?.imageUrl)
+                                putExtra("itemType", selectedProductItem?.itemType)
+                                putExtra("itemTypeAndId", "${selectedProductItem?.itemType}_${selectedProductItem?.itemId}")
+                            }
+
+                            setResult(RESULT_OK, resultIntent)
                             finish()
-                        } else {
+                        }
+                        else {
                             showError("거래 완료 실패: ${body?.message ?: "알 수 없는 오류"}")
                         }
                     } else {

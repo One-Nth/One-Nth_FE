@@ -15,8 +15,8 @@ interface UserSetApi {
     @GET("user-settings")
     suspend fun getUserSettings(): Response<UserSettingsResponse>
 
-    // 2. 스크랩 알림 on/off
-    @POST("user-settings/scrap-alerts")
+    // 2. 게시글 댓글 알림 on/off
+    @POST("user-settings/comment-alerts")
     suspend fun updateScrapAlert(@Body request: EnabledRequest): Response<AlertToggleResponse>
 
     // 3. 리뷰 알림 on/off
