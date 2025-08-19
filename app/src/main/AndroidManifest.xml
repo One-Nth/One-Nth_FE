@@ -110,6 +110,9 @@
         <activity
             android:name=".FilteredBuyerReviewsActivity"
             android:exported="false" />
+        <activity
+            android:name=".MySaleItemsActivity"
+            android:exported="false" />
 
         <service
             android:name=".feature.alarm.MyFirebaseMessagingService"

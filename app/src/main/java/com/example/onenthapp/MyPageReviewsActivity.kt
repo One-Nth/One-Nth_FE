@@ -25,6 +25,7 @@ class MyPageReviewsActivity : AppCompatActivity() {
     private lateinit var adapter: BuyerReviewAdapter
     private val reviewApi = RetrofitInstance.reviewApi
     private lateinit var myEditAdapter: MyOwnReviewEditAdapter
+    private lateinit var saleItemsAdapter: SellerItemAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +68,11 @@ class MyPageReviewsActivity : AppCompatActivity() {
             })
         }
 
+        // 판매물품 전체보기 버튼 클릭 리스너
+        binding.btnGoAllItems.setOnClickListener {
+            startActivity(Intent(this, MySaleItemsActivity::class.java))
+        }
+
 
         // 뒤로가기
         binding.topAppBar.setNavigationOnClickListener {
@@ -87,10 +93,17 @@ class MyPageReviewsActivity : AppCompatActivity() {
         binding.editReviewRecyclerView.adapter = myEditAdapter
         binding.editReviewRecyclerView.isNestedScrollingEnabled = false
 
+        // 판매물품 리사이클러뷰 설정 (기존 판매자 프로필과 동일하게 SellerItemAdapter 사용, 카테고리 칩 숨김)
+        saleItemsAdapter = SellerItemAdapter(hideCategory = true)
+        binding.saleItemsRecyclerView.adapter = saleItemsAdapter
+        binding.saleItemsRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.saleItemsRecyclerView.minimumHeight = (220 * resources.displayMetrics.density).toInt()
+
         loadBuyerReviews()
         bindProfile()
         loadTradeSummary()
         loadMyWrittenReviews()
+        loadMySaleItems()
     }
 
     private fun loadMyWrittenReviews() {
@@ -271,6 +284,42 @@ class MyPageReviewsActivity : AppCompatActivity() {
                 binding.ratingSummary.rating = 0f
 
                 Log.e("TradeSummary", "오류: ${e.message}")
+            }
+        }
+    }
+
+    private fun loadMySaleItems() {
+        val token = TokenManager.getAccessToken()
+        if (token.isNullOrEmpty()) {
+            // 비로그인 시 빈 리스트 표시
+            saleItemsAdapter.updateList(emptyList())
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitInstance.memberApi.getMyItems("Bearer $token", page = 1, size = 10)
+                if (response.isSuccess && response.result != null) {
+                    // MyPostProductItem을 SellerItem으로 변환
+                    val sellerItems = response.result.items.map { item ->
+                        com.example.onenthapp.data.SellerItem(
+                            id = item.itemId,
+                            name = item.productName,
+                            status = "DEFAULT", // MyPostProductItem에는 status가 없으므로 기본값
+                            price = item.price.toInt(),
+                            itemCategory = item.itemType, // PURCHASE, SHARE 등을 카테고리로 사용
+                            purchaseMethod = "ONLINE", // 기본값
+                            thumbnailUrl = item.imageUrl ?: ""
+                        )
+                    }
+                    saleItemsAdapter.updateList(sellerItems)
+                } else {
+                    saleItemsAdapter.updateList(emptyList())
+                    Log.e("MyPageReviews", "판매물품 불러오기 실패: ${response.message}")
+                }
+            } catch (e: Exception) {
+                saleItemsAdapter.updateList(emptyList())
+                Log.e("MyPageReviews", "판매물품 네트워크 오류: ${e.message}")
             }
         }
     }
