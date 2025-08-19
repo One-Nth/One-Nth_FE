@@ -18,6 +18,7 @@ data class PostPayload(
     val address: String? = null,   // LIFE_TIP이면 null 가능
     val placeName: String? = null, // LIFE_TIP이면 null 가능
     val link: String? = null,      // DISCOUNT/RESTAURANT이면 null 가능
+    val regionId: Long? = null,    // DISCOUNT/RESTAURANT에서 메인 지역 ID
     val tags: List<String> = emptyList()
 )
 

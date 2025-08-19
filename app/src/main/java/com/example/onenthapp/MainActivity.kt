@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -22,10 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val sharedViewModel: SharedViewModel by viewModels()
 
-    // Tip 탭의 현재 게시판 타입 (LIFE_TIP/DISCOUNT/RESTAURANT)
-    private var lifePostType: String = "LIFE_TIP"
+    // Tip 탭의 현재 게시판 타입은 FAB 클릭 시점에 직접 확인
 
-    /** 생활꿀팁 글쓰기 vs 상품 등록 */
     private enum class FabMode { TIP_POST_WRITE, PRODUCT_REGISTER }
     private var fabMode: FabMode = FabMode.PRODUCT_REGISTER
 
@@ -64,10 +63,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // ✅ TipFragment에서 현재 탭의 postType 받기
-        supportFragmentManager.setFragmentResultListener("board_tab", this) { _, b ->
-            lifePostType = b.getString("postType") ?: "LIFE_TIP"
-        }
 
         // 검색 결과에서 상세로 이동 요청 처리 (인텐트 플래그)
         intent?.let { maybeIntent ->
@@ -119,19 +114,24 @@ class MainActivity : AppCompatActivity() {
             if (dest.id == R.id.tipFragment) setFabAsTip() else setFabAsProduct()
         }
 
-        // ✅ TipFragment에서 탭 변경 시 postType 받기
-        supportFragmentManager.setFragmentResultListener("board_tab", this) { _, bundle ->
-            lifePostType = bundle.getString("postType", "LIFE_TIP")
-        }
-
         // ✅ FAB 클릭 (한 번만)
         binding.fabAdd.setOnClickListener {
             val onTipScreen = navController.currentDestination?.id == R.id.tipFragment
             if (onTipScreen && fabMode == FabMode.TIP_POST_WRITE) {
-                // 생활꿀팁/할인정보/맛집 글쓰기 단일 화면
+                // TipFragment에서 현재 탭 확인하는 메서드 호출
+                val tipFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                    ?.childFragmentManager?.fragments?.firstOrNull { it is TipFragment } as? TipFragment
+                
+                val currentPosition = tipFragment?.getCurrentTabPosition() ?: 1 // 기본값: 생활꿀팁
+                val realPostType = when (currentPosition) {
+                    0 -> "DISCOUNT"
+                    1 -> "LIFE_TIP"
+                    else -> "RESTAURANT"
+                }
+                
                 startActivity(
                     Intent(this, CreateLifePostActivity::class.java)
-                        .putExtra("postType", lifePostType)
+                        .putExtra("postType", realPostType)
                 )
             } else {
                 // 상품 등록 (현재 홈 탭에 따라)
