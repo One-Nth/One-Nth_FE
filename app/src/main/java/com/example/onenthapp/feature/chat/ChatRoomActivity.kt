@@ -45,6 +45,9 @@ class ChatRoomActivity : AppCompatActivity() {
     private var chatRoomId: Int = -1
     private var peerNickname: String = "익명"
     private var roomName: String = ""
+
+    private var completedItemName: String = ""
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -62,12 +65,14 @@ class ChatRoomActivity : AppCompatActivity() {
             val itemImageUrl = data.getStringExtra("itemImageUrl") ?: ""
             val itemType = data.getStringExtra("itemType") ?: ""
             val itemTypeAndId = data.getStringExtra("itemTypeAndId") ?: ""
+            val itemNameFromResult = data.getStringExtra("itemName") ?: ""  // ★ 추가
 
             if (itemId != -1 && itemTypeAndId.isNotEmpty()) {
                 completedItemId = itemId
                 completedItemImageUrl = itemImageUrl
                 completedItemType = itemType
                 completedItemTypeAndId = itemTypeAndId
+                completedItemName = itemNameFromResult              // ★ 추가
             }
 
         }
@@ -173,6 +178,9 @@ class ChatRoomActivity : AppCompatActivity() {
                 val intent = Intent(this, WriteReviewActivity::class.java).apply {
                     putExtra("itemId", completedItemId)
                     putExtra("itemType", completedItemType)
+                    putExtra("itemName", completedItemName)             // ★ 추가
+                    putExtra("itemImageUrl", completedItemImageUrl)     // ★ 추가
+                    putExtra("itemTypeAndId", completedItemTypeAndId)   // (있으면 같이)
                 }
                 startActivity(intent)
             } else {
