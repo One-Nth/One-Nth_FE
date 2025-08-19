@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/main_white"
-    tools:context=".LifeTipsSearchActivity">
+    tools:context=".feature.board.LifeTipsSearchActivity">
 
     <!-- 툴바 -->
     <com.google.android.material.appbar.MaterialToolbar

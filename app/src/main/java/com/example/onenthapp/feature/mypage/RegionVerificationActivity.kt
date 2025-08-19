@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.Manifest
 import android.content.Context
@@ -12,10 +12,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.onenthapp.R
 import com.example.onenthapp.data.map.MyRegion
 import com.example.onenthapp.data.map.MyRegionRepository
 import com.example.onenthapp.databinding.ActivityRegionVerificationBinding

@@ -1,18 +1,16 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.board
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.ImageView
-import android.widget.ImageButton
 import android.widget.PopupMenu
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.onenthapp.R
 import com.example.onenthapp.databinding.FragmentTipBinding
 import com.example.onenthapp.feature.alarm.AlarmActivity
 import com.google.android.material.tabs.TabLayoutMediator

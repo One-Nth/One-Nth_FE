@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.scrap
 
 import android.os.Bundle
 import android.text.Editable
@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.viewpager2.widget.ViewPager2
+import com.example.onenthapp.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

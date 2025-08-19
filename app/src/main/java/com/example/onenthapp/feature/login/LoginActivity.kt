@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.onenthapp.FindAccountActivity
 import com.example.onenthapp.MainActivity
 import com.example.onenthapp.R
 import com.example.onenthapp.util.TokenManager

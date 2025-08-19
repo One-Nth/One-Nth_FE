@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,8 +14,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.onenthapp.R
 import com.example.onenthapp.data.login.AuthRepository
-import com.example.onenthapp.feature.login.LoginActivity
 import com.example.onenthapp.model.PasswordResetViewModel
 import com.example.onenthapp.viewmodel.PasswordResetViewModelFactory
 

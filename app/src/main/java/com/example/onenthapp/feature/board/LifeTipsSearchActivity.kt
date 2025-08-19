@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.board
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +14,8 @@ import com.example.onenthapp.data.map.MyRegion
 import kotlinx.coroutines.launch
 import java.util.Locale
 import android.view.View
-import com.google.android.material.chip.Chip
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 
 
 class LifeTipsSearchActivity : AppCompatActivity() {

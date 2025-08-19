@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypost
 
 import android.os.Bundle
 import android.view.View
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.MyPostProductItem
 import com.example.onenthapp.data.post.PostRepository
 import com.example.onenthapp.util.TokenManager

@@ -1,8 +1,9 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.onenthapp.R
 
 class PolicyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,10 +1,9 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
@@ -14,8 +13,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.post.MyPostItem
 import com.example.onenthapp.data.post.PostRepository
+import com.example.onenthapp.feature.board.LifeTipsDetailActivity
+import com.example.onenthapp.feature.mypost.MyPostAdapter
 import com.example.onenthapp.model.MyLikesViewModel
 
 class LikePostActivity : AppCompatActivity() {
