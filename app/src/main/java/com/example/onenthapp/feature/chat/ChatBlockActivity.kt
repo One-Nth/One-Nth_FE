@@ -1,5 +1,4 @@
 package com.example.onenthapp.feature.chat
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -21,82 +20,64 @@ import com.example.onenthapp.chat.DropdownProductAdapter
 import com.example.onenthapp.chat.ProductItem
 import com.example.onenthapp.data.transaction.CompleteTransactionRequest
 import com.example.onenthapp.util.TokenManager
-
 // 거래 완료
 class ChatBlockActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityChatBlockBinding
     private lateinit var roomName: String
     private var selectedProductItem: ProductItem? = null
     private lateinit var peerNickname: String
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBlockBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         roomName = intent.getStringExtra("roomName") ?: ""
         Log.d("ChatBlockActivity", "roomName = $roomName")
         fetchDealConfirmationId(roomName)
-
         if (roomName.isNullOrBlank()) {
             showError("채팅방 정보가 없습니다. 다시 시도해주세요.")
             finish()
             return
         }
-
         val myId = TokenManager.getMemberId().toString()
         val otherMemberIdStr = extractOtherMemberId(roomName, myId)
         val otherMemberId = otherMemberIdStr?.toIntOrNull()
-
         if (otherMemberId != null) {
             fetchPeerNickname(otherMemberId)
         } else {
             peerNickname = "상대방" // 기본값
         }
-
         // 🔙 뒤로가기 버튼
         binding.btnLeft.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-
         // ✅ 만나서 거래하기 버튼 클릭
         binding.inpersonButton.setOnClickListener {
-
             // 버튼 스타일: 활성화
             binding.inpersonButton.setBackgroundColor(getColor(R.color.main_green_4)) // 밝은 초록 배경
             binding.inpersonButton.setTextColor(getColor(R.color.main_green)) // 진한 초록 글자
-
             // 버튼 스타일: 비활성화
             binding.deliveryButton.setBackgroundColor(getColor(R.color.back_gray)) // 회색 배경
             binding.deliveryButton.setTextColor(getColor(R.color.gray)) // 회색 글자
         }
-
         // 🚚 택배로 거래하기 버튼 클릭
         binding.deliveryButton.setOnClickListener {
-
             // 버튼 스타일: 활성화
             binding.deliveryButton.setBackgroundColor(getColor(R.color.main_green_4)) // 밝은 초록 배경
             binding.deliveryButton.setTextColor(getColor(R.color.main_green)) // 진한 초록 글자
-
             // 버튼 스타일: 비활성화
             binding.inpersonButton.setBackgroundColor(getColor(R.color.back_gray)) // 회색 배경
             binding.inpersonButton.setTextColor(getColor(R.color.gray)) // 회색 글자
         }
-
         // ✅ 거래 완료 버튼
         binding.dealCompleteBtn.setOnClickListener {
             val dealDate = binding.dateInput.text.toString()
             val tradePrice = binding.priceInput.text.toString().toIntOrNull()
             val tradeCount = 1 // 혹은 사용자 입력
             val tradeType = if (binding.inpersonButton.currentTextColor == getColor(R.color.main_green)) "IN_PERSON" else "DELIVERY"
-
             if (dealConfirmationId == null || dealDate.isBlank() || tradePrice == null) {
                 showError("모든 필드를 입력해주세요.")
                 return@setOnClickListener
             }
-
             val request = CompleteTransactionRequest(
                 dealConfirmationId = dealConfirmationId!!.toLong(),
                 dealDate = dealDate,
@@ -104,7 +85,6 @@ class ChatBlockActivity : AppCompatActivity() {
                 tradeCount = tradeCount,
                 tradeType = tradeType
             )
-
             lifecycleScope.launch {
                 try {
                     val response = RetrofitInstance.transactionApi.completeTransaction(roomName, request)
@@ -113,15 +93,22 @@ class ChatBlockActivity : AppCompatActivity() {
                         if (body?.isSuccess == true) {
                             Toast.makeText(this@ChatBlockActivity, "거래가 완료되었습니다!", Toast.LENGTH_SHORT).show()
 
-                            val resultIntent = Intent().apply {
-                                putExtra("itemId", selectedProductItem?.itemId)
-                                putExtra("itemImageUrl", selectedProductItem?.imageUrl)
-                                putExtra("itemType", selectedProductItem?.itemType)
-                                putExtra("itemTypeAndId", "${selectedProductItem?.itemType}_${selectedProductItem?.itemId}")
-                            }
+                            val itemId = selectedProductItem?.itemId
+                            val itemImageUrl = selectedProductItem?.imageUrl
+                            val itemType = selectedProductItem?.itemType
+                            val itemTypeAndId = "${selectedProductItem?.itemType}_${selectedProductItem?.itemId}"
 
+                            Log.d("ChatBlockActivity", "거래 완료 데이터 - itemId: $itemId, imageUrl: $itemImageUrl, itemType: $itemType, itemTypeAndId: $itemTypeAndId")
+
+                            val resultIntent = Intent().apply {
+                                putExtra("itemId", itemId)
+                                putExtra("itemImageUrl", itemImageUrl)
+                                putExtra("itemType", itemType)
+                                putExtra("itemTypeAndId", itemTypeAndId)
+                            }
                             setResult(RESULT_OK, resultIntent)
                             finish()
+
                         }
                         else {
                             showError("거래 완료 실패: ${body?.message ?: "알 수 없는 오류"}")
@@ -133,9 +120,7 @@ class ChatBlockActivity : AppCompatActivity() {
                     showError("네트워크 오류가 발생했습니다.")
                 }
             }
-
         }
-
         // ❌ 거래 취소 버튼
         binding.dealCancelBtn.setOnClickListener {
             val intent = Intent(this, CancelDealActivity::class.java)
@@ -143,13 +128,10 @@ class ChatBlockActivity : AppCompatActivity() {
             intent.putExtra("dealConfirmationId", dealConfirmationId)
             startActivity(intent)
         }
-
-
         binding.productDropdown.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val drawableEnd = 2 // 오른쪽 drawable
                 val drawable = binding.productDropdown.compoundDrawables[drawableEnd]
-
                 // 터치가 drawableEnd 영역 안에 있을 경우
                 if (drawable != null &&
                     event.rawX >= (binding.productDropdown.right - drawable.bounds.width() - binding.productDropdown.paddingEnd)
@@ -160,9 +142,7 @@ class ChatBlockActivity : AppCompatActivity() {
             }
             false
         }
-
     }
-
     private fun fetchPeerNickname(memberId: Int) {
         lifecycleScope.launch {
             try {
@@ -183,16 +163,12 @@ class ChatBlockActivity : AppCompatActivity() {
             }
         }
     }
-
-
     private fun extractOtherMemberId(roomName: String, myId: String): String? {
         val parts = roomName.split("-")
         if(parts.size < 3) return null
         return parts.firstOrNull { it != myId && it != "TIP_SHARE" }
     }
-
     private var isDropdownVisible = false
-
     private fun toggleDropdown() {
         if (!isDropdownVisible) {
             // 처음 열 때만 API 호출
@@ -209,9 +185,7 @@ class ChatBlockActivity : AppCompatActivity() {
             isDropdownVisible = false
         }
     }
-
     private var dealConfirmationId: Int? = null
-
     private fun fetchDealConfirmationId(roomName: String) {
         lifecycleScope.launch {
             try {
@@ -221,7 +195,6 @@ class ChatBlockActivity : AppCompatActivity() {
                     if (body?.isSuccess == true && !body.result.isNullOrEmpty()) {
                         val firstItem = body.result[0] // 필요 시 선택 로직 변경
                         dealConfirmationId = firstItem.dealConfirmationId
-
                         // UI에 상품 보여주기 등 추가 작업 가능
                     } else {
                         showError("거래 확정 정보를 불러올 수 없습니다.")
@@ -234,8 +207,6 @@ class ChatBlockActivity : AppCompatActivity() {
             }
         }
     }
-
-
     private fun fetchProductsAndSetupDropdown() {
         lifecycleScope.launch {
             try {
@@ -252,7 +223,6 @@ class ChatBlockActivity : AppCompatActivity() {
                                 dealConfirmationId = it.dealConfirmationId
                             )
                         }
-
                         setupProductDropdown(productItems)
                         binding.productDropdown.showDropDown()
                     } else {
@@ -267,41 +237,30 @@ class ChatBlockActivity : AppCompatActivity() {
             }
         }
     }
-
-
     private fun setupProductDropdown(products: List<ProductItem>) {
         val adapter = DropdownProductAdapter(this, products)
         binding.productDropdown.setAdapter(adapter)
-
         binding.productDropdown.setOnItemClickListener { _, _, position, _ ->
             val selectedItem = products[position]
-
             // ✅ 선택된 항목 저장
             selectedProductItem = selectedItem
-
             // UI 업데이트
             val includedView = findViewById<View>(R.id.itemDropdownProduct)
             val itemName = includedView.findViewById<TextView>(R.id.itemName)
             val itemImage = includedView.findViewById<ImageView>(R.id.itemImage)
-
             includedView.visibility = View.VISIBLE
             itemName.text = selectedItem.name
-
             Glide.with(this)
                 .load(selectedItem.imageUrl)
                 .placeholder(R.drawable.box_green_border)
                 .into(itemImage)
-
             binding.productDropdown.setCompoundDrawablesWithIntrinsicBounds(
                 0, 0, R.drawable.icon_dropbox_down, 0
             )
             isDropdownVisible = false
         }
     }
-
-
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-    }
-
+}
