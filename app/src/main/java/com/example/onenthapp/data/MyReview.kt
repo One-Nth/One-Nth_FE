@@ -11,7 +11,7 @@ data class MyReview(
     val reviewerProfileImageUrl: String?,  // ✅ 추가
     val reviewTargetId: Long,
     val content: String,
-    val rate: Int,
+    val rate: Float,
     val reviewImageList: List<String>
 )
 

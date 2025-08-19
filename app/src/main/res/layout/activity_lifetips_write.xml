@@ -130,7 +130,8 @@
                 android:background="@android:color/transparent"
                 android:hint="제목"
                 android:padding="8dp"
-                android:inputType="textMultiLine"
+                android:inputType="text"
+                android:singleLine="true"
                 android:gravity="start|center_vertical"
                 android:textAlignment="viewStart"
                 android:textColorHint="@color/splash_gray"
@@ -203,7 +204,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:hint="링크를 입력하고 엔터로 확정"
+                        android:hint="링크를 삽입하세요"
                         android:imeOptions="actionDone"
                         android:inputType="textUri"
                         android:textColor="@color/main_black"
@@ -229,7 +230,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/tvLocationHeader"
@@ -239,14 +240,55 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
                     android:text="장소 추가하기"
-                    android:textColor="@color/main_black" />
+                    android:drawableTint="@color/main_black"
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/main_black"
+                    app:drawableStartCompat="@drawable/ic_gps_black"
+                    tools:ignore="UseCompatTextViewDrawableXml" />
 
+                <!-- 장소명 입력 -->
+                <LinearLayout
+                    android:id="@+id/placeNameContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/bg_search_bar"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="10dp">
+
+                    <ImageView
+                        android:id="@+id/ivPlaceIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_gps_black"
+                        app:tint="@color/text_search" />
+
+                    <EditText
+                        android:id="@+id/etPlaceName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="장소명을 입력하고 엔터로 확정"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:textColor="@color/main_black"
+                        android:textColorHint="@color/text_search"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- 주소 입력 -->
                 <LinearLayout
                     android:id="@+id/locationSearchContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_search_bar"
                     android:gravity="center_vertical"
@@ -333,7 +375,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="태그를 입력하고 엔터/쉼표로 확정"
+                    android:hint="태그 입력, 최대 5개까지"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:singleLine="true"

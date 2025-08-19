@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.login
 
 import LoginViewModel
 import android.content.Intent
@@ -10,6 +10,9 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.onenthapp.FindAccountActivity
+import com.example.onenthapp.MainActivity
+import com.example.onenthapp.R
 import com.example.onenthapp.util.TokenManager
 
 class LoginActivity : AppCompatActivity() {

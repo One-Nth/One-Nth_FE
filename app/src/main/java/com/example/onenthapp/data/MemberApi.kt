@@ -3,6 +3,7 @@ package com.example.onenthapp.data
 import NicknameResponse
 import ProfileImageResponse
 import ProfileResponse
+import com.example.onenthapp.data.post.LikeActionResult
 import com.example.onenthapp.data.post.MyPostsPage
 import com.example.onenthapp.data.userset.BaseResponse
 import okhttp3.MultipartBody
@@ -121,4 +122,8 @@ interface MemberApi {
         @Header("Authorization") bearer: String,
         @Path("postId") postId: Long
     ): Response<CommonResponse<LikeActionResult>>
+
+    @GET("/api/members/{memberId}/profile")
+    suspend fun getMemberProfile(@Path("memberId") memberId: Long
+    ): Response<MemberProfileResponse>
 }

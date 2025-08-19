@@ -8,8 +8,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.onenthapp.data.AuthRepository
-import com.example.onenthapp.data.ReissueResponse
+import com.example.onenthapp.data.login.AuthRepository
+import com.example.onenthapp.data.login.ReissueResponse
+import com.example.onenthapp.feature.login.LoginActivity
+import com.example.onenthapp.feature.signup.SignupActivity
+import com.example.onenthapp.feature.signup.SignupActivity2
 import com.example.onenthapp.model.KakaoLoginModelFactory
 import com.example.onenthapp.model.KakaoViewModel
 import com.example.onenthapp.util.TokenManager

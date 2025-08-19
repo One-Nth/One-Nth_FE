@@ -24,18 +24,20 @@ class BlockedUsersAdapter(
         val userName: TextView = view.findViewById(R.id.userName)
         val btnUnblock: ImageButton = view.findViewById(R.id.btnUnblock)
 
-        fun bind(user: BlockedUser) {
-            userName.text = user.username
-            Glide.with(itemView.context)
-                .load(user.profileImageUrl)
-                .placeholder(R.drawable.avatar)
-                .into(userImage)
+            fun bind(user: BlockedUser) {
+                userName.text = user.username
 
-            btnUnblock.setOnClickListener {
-                onUnblockClick(user)
+                Glide.with(itemView.context)
+                    .load(user.profileImageUrl)
+                    .placeholder(R.drawable.profile_base)   // 로딩 중 표시
+                    .error(R.drawable.profile_base)         // 실패 시 표시
+                    .circleCrop()                     // ★ 동그랗게 자르기
+                    .into(userImage)
+
+                btnUnblock.setOnClickListener { onUnblockClick(user) }
             }
+
         }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

@@ -14,7 +14,9 @@
         app:navigationIcon="@drawable/humbleicons_arrow_up"
         app:title="구매자 거래 후기"
         app:titleTextColor="@color/main_black"
-        app:titleTextAppearance="@style/PretendardSubtitle2" />
+        app:titleTextAppearance="@style/PretendardSubtitle2"
+        app:titleMarginStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAllReviews"

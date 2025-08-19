@@ -34,8 +34,14 @@ class LifeTipsSearchActivity : AppCompatActivity() {
 
         // 인텐트에서 검색어/게시판 타입 받기
         val query = intent.getStringExtra("query").orEmpty()
-        val boardType = (intent.getStringExtra("boardType") ?: "life_tip")
-            .uppercase(Locale.getDefault()) // "LIFE_TIP", "DISCOUNT", "RESTAURANT"
+        val rawBoardType = intent.getStringExtra("boardType") ?: "life_tip"
+        // 게시판 타입 매핑: 프론트엔드 → API
+        val boardType = when (rawBoardType.lowercase()) {
+            "discount" -> "DISCOUNT"
+            "life_tip" -> "LIFE_TIP"
+            "cafe" -> "RESTAURANT"
+            else -> rawBoardType.uppercase(Locale.getDefault())
+        } // "LIFE_TIP", "DISCOUNT", "RESTAURANT"
         binding.toolbarSearchResult.title = query
 
         // 지역 필터링 UI 설정 (할인/맛집 게시판에서만 표시)
@@ -89,6 +95,7 @@ class LifeTipsSearchActivity : AppCompatActivity() {
         chips.forEach { chip ->
             chip.visibility = View.GONE
             chip.text = "OO동"
+            chip.isChecked = false // 처음에는 모든 칩을 선택 해제
         }
         
         // 사용자 지역을 칩에 바인딩 (최대 3개)
@@ -96,11 +103,7 @@ class LifeTipsSearchActivity : AppCompatActivity() {
             val chip = chips[index]
             chip.visibility = View.VISIBLE
             chip.text = extractDong(region.regionName)
-            
-            // 메인 지역을 기본 선택으로 설정
-            if (region.main) {
-                chip.isChecked = true
-            }
+            // 처음에는 아무 칩도 선택하지 않음 (키워드 검색을 먼저 수행하기 위해)
         }
     }
 
@@ -109,23 +112,47 @@ class LifeTipsSearchActivity : AppCompatActivity() {
     }
 
     private fun setupRegionChips(boardType: String) {
+        var lastSelectedChipId = View.NO_ID
+        
         // ChipGroup의 선택 변경 리스너 설정
-        binding.cgRegionFilter.setOnCheckedChangeListener { group, checkedIds ->
-            val currentSelectedChipId = group.checkedChipId // 선택된 Chip의 ID 또는 View.NO_ID
-
-            if (currentSelectedChipId != View.NO_ID) {
-                // 선택된 Chip이 있는 경우
-                val selectedRegion = getSelectedRegion(currentSelectedChipId)
-                
-                if (selectedRegion != null) {
-                    // 선택된 지역으로 검색 실행
-                    val query = intent.getStringExtra("query").orEmpty()
-                    searchWithRegion(boardType, query, selectedRegion.regionName)
+        binding.cgRegionFilter.setOnCheckedChangeListener { group, checkedId ->
+            val query = intent.getStringExtra("query").orEmpty()
+            
+            if (checkedId != View.NO_ID) {
+                // 칩이 선택된 경우
+                if (checkedId == lastSelectedChipId) {
+                    // 같은 칩을 다시 클릭한 경우 - 선택 해제하고 키워드 검색
+                    group.clearCheck()
+                    lastSelectedChipId = View.NO_ID
+                    search(boardType, query)
+                } else {
+                    // 다른 칩을 선택한 경우 - 지역 기반 검색
+                    lastSelectedChipId = checkedId
+                    val selectedRegion = getSelectedRegion(checkedId)
+                    if (selectedRegion != null) {
+                        searchWithRegion(boardType, query, selectedRegion.regionName)
+                    }
                 }
             } else {
-                // 선택된 Chip이 없는 경우 - 전체 검색 결과 로드
-                val query = intent.getStringExtra("query").orEmpty()
+                // 선택된 칩이 없는 경우 - 키워드 검색
+                lastSelectedChipId = View.NO_ID
                 search(boardType, query)
+            }
+        }
+        
+        // 개별 칩 클릭 리스너로 토글 동작 구현
+        val chips = listOf(
+            binding.chipRegion1 to 0,
+            binding.chipRegion2 to 1,
+            binding.chipRegion3 to 2
+        )
+        
+        chips.forEach { (chip, index) ->
+            chip.setOnClickListener {
+                if (chip.isChecked && lastSelectedChipId == chip.id) {
+                    // 이미 선택된 칩을 다시 클릭한 경우 - 선택 해제
+                    binding.cgRegionFilter.clearCheck()
+                }
             }
         }
     }

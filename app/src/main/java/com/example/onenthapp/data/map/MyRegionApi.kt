@@ -45,4 +45,11 @@ interface MyRegionApi {
         @Query("regionName") regionName: String
     ): GenericResponse<RegionCenterResult>
 
+    // 지역 인증
+    @PATCH("user-settings/regions/{regionId}/auth")
+    suspend fun authenticateRegion(
+        @Path("regionId") regionId: Long,
+        @Body request: RegionAuthRequest
+    ): GenericResponse<RegionAuthResult>
+
 }

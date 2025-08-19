@@ -332,7 +332,7 @@ class ReviewEditActivity : AppCompatActivity() {
     private suspend fun updateReviewTextAndRate(reviewId: Long, itemType: String) {
         if (!canEdit) return
         val content = binding.reviewTextDetail2.text.toString()
-        val rate = binding.ratingBar.rating.toInt()
+        val rate = binding.ratingBar.rating
         val req = ReviewBody(content, rate)
         try {
             val resp = api.updateReviewContentAndRate(reviewId, itemType, req)

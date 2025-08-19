@@ -23,6 +23,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.onenthapp.data.post.PostPayload
 import com.example.onenthapp.databinding.ActivityLifetipsWriteBinding
 import com.example.onenthapp.util.TokenManager
+import com.example.onenthapp.data.map.MyRegionRepository
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
@@ -36,6 +37,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class CreateLifePostActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLifetipsWriteBinding
+    private val myRegionRepo = MyRegionRepository()
 
     // 이미지(최대 5장)
     private val pickedUris: MutableList<Uri> = mutableListOf()
@@ -48,13 +50,19 @@ class CreateLifePostActivity : AppCompatActivity() {
     // 링크/장소 값(칩 1개 고정)
     private var linkValue: String? = null
     private var locationValue: String? = null
+    
+    // 할인/맛집 게시판용 주소와 장소명 분리
+    private var addressValue: String? = null
+    private var placeNameValue: String? = null
 
     // 타입
     private enum class PostType { LIFE_TIP, DISCOUNT, RESTAURANT }
-    private fun parsePostType(raw: String?): PostType = when (raw?.uppercase()) {
-        "DISCOUNT" -> PostType.DISCOUNT
-        "RESTAURANT" -> PostType.RESTAURANT
-        else -> PostType.LIFE_TIP
+    private fun parsePostType(raw: String?): PostType {
+        return when (raw?.uppercase()) {
+            "DISCOUNT" -> PostType.DISCOUNT
+            "RESTAURANT" -> PostType.RESTAURANT
+            else -> PostType.LIFE_TIP
+        }
     }
 
     // 여러 장 선택
@@ -85,6 +93,15 @@ class CreateLifePostActivity : AppCompatActivity() {
         val postType: PostType = parsePostType(intent.getStringExtra("postType"))
         applyUiFor(postType)
 
+        // ✅ 태그 입력은 단일 라인 + actionDone 강제
+        binding.etTags.apply {
+            isSingleLine = true
+            maxLines = 1
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            inputType = android.text.InputType.TYPE_CLASS_TEXT
+            setHorizontallyScrolling(false)
+        }
+
         // 상단바
         binding.ivBack.setOnClickListener { finish() }
         binding.ivNotification.setOnClickListener { submit(postType) }
@@ -98,6 +115,7 @@ class CreateLifePostActivity : AppCompatActivity() {
         // 링크/장소 입력 (엔터/포커스 아웃으로 확정 → 칩 생성)
         setupLinkInput(postType)
         setupLocationInput(postType)
+        setupPlaceNameInput(postType)
 
         // 초기 렌더
         updateImageCount()
@@ -121,37 +139,48 @@ class CreateLifePostActivity : AppCompatActivity() {
 
     // ------- 태그 -------
     private fun setupTagInput(): Unit = with(binding) {
-        etTags.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) { addTagFromInput(); true } else false
+        // 엔터/Done → 확정 후 비우기 (기존)
+        etTags.onConfirmClear { value ->
+            addTagIfPossible(value)
         }
-        etTags.setOnKeyListener { _, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) { addTagFromInput(); true } else false
-        }
+
+        // 스페이스/콤마/엔터(개행) 자동 확정
         etTags.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val str: String = s?.toString().orEmpty()
-                if (str.endsWith(" ") || str.endsWith(",")) addTagFromInput()
+                val str = s?.toString().orEmpty()
+
+                // ✅ 엔터가 개행으로 들어오는 케이스 처리
+                if (str.contains('\n')) {
+                    val v = str.replace("\n", "")
+                    if (v.isNotBlank()) addTagIfPossible(v)
+                    etTags.text?.clear()
+                    return
+                }
+
+                // 스페이스/콤마로 자동 확정
+                if (str.endsWith(" ") || str.endsWith(",")) {
+                    addTagIfPossible(str.removeSuffix(" ").removeSuffix(","))
+                    etTags.text?.clear()
+                }
             }
             override fun afterTextChanged(s: Editable?) {}
         })
     }
 
-    private fun addTagFromInput(): Unit {
-        val raw: String = binding.etTags.text?.toString()?.trim()?.removeSuffix(",").orEmpty()
-        val clean: String = raw.removePrefix("#").trim()
-        if (clean.isBlank()) { binding.etTags.text?.clear(); return }
+
+    private fun addTagIfPossible(raw: String) {
+        val clean = raw.removePrefix("#").trim()
+        if (clean.isBlank()) return
         if (tagList.size >= maxTags) {
             Toast.makeText(this, "태그는 최대 ${maxTags}개까지 가능합니다.", Toast.LENGTH_SHORT).show()
-            binding.etTags.text?.clear(); return
+            return
         }
-        if (tagList.any { it.equals(clean, ignoreCase = true) }) {
-            binding.etTags.text?.clear(); return
-        }
+        if (tagList.any { it.equals(clean, ignoreCase = true) }) return
         tagList.add(clean)
         addTagChip(clean)
-        binding.etTags.text?.clear()
     }
+
 
     private fun addTagChip(tag: String): Unit {
         val chip: Chip = Chip(this).apply {
@@ -181,10 +210,19 @@ class CreateLifePostActivity : AppCompatActivity() {
     private fun setupLocationInput(type: PostType): Unit = with(binding) {
         etLocation.setOnEditorActionListener { v, actionId, event ->
             val done: Boolean = isDoneOrEnter(actionId, event)
-            if (done) { confirmLocationFromInput(type); v.hideKeyboard() }
+            if (done) { confirmAddressFromInput(type); v.hideKeyboard() }
             done
         }
-        etLocation.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) confirmLocationFromInput(type) }
+        etLocation.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) confirmAddressFromInput(type) }
+    }
+
+    private fun setupPlaceNameInput(type: PostType): Unit = with(binding) {
+        etPlaceName.setOnEditorActionListener { v, actionId, event ->
+            val done: Boolean = isDoneOrEnter(actionId, event)
+            if (done) { confirmPlaceNameFromInput(type); v.hideKeyboard() }
+            done
+        }
+        etPlaceName.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) confirmPlaceNameFromInput(type) }
     }
 
     private fun confirmLinkFromInput(type: PostType): Unit {
@@ -197,13 +235,23 @@ class CreateLifePostActivity : AppCompatActivity() {
         renderMetaUi(type)
     }
 
-    private fun confirmLocationFromInput(type: PostType): Unit {
+    private fun confirmAddressFromInput(type: PostType): Unit {
         if (type != PostType.DISCOUNT && type != PostType.RESTAURANT) return
-        if (locationValue != null) { binding.etLocation.text?.clear(); return }
+        if (addressValue != null) { binding.etLocation.text?.clear(); return }
         val v: String = binding.etLocation.text?.toString()?.trim().orEmpty()
         if (v.isBlank()) return
-        locationValue = v
+        addressValue = v
         binding.etLocation.text?.clear()
+        renderMetaUi(type)
+    }
+
+    private fun confirmPlaceNameFromInput(type: PostType): Unit {
+        if (type != PostType.DISCOUNT && type != PostType.RESTAURANT) return
+        if (placeNameValue != null) { binding.etPlaceName.text?.clear(); return }
+        val v: String = binding.etPlaceName.text?.toString()?.trim().orEmpty()
+        if (v.isBlank()) return
+        placeNameValue = v
+        binding.etPlaceName.text?.clear()
         renderMetaUi(type)
     }
 
@@ -226,16 +274,30 @@ class CreateLifePostActivity : AppCompatActivity() {
                 etLocation.visibility = View.GONE
             }
             PostType.DISCOUNT, PostType.RESTAURANT -> {
-                val v: String = locationValue?.trim().orEmpty()
-                if (v.isNotEmpty()) {
-                    val onClose: () -> Unit = {
-                        locationValue = null
+                // 장소명 칩
+                val placeName: String = placeNameValue?.trim().orEmpty()
+                if (placeName.isNotEmpty()) {
+                    val onClosePlaceName: () -> Unit = {
+                        placeNameValue = null
+                        renderMetaUi(type)
+                        etPlaceName.requestFocus()
+                    }
+                    chipGroupLocation.addView(makeSingleChip("📍 $placeName", onClosePlaceName))
+                }
+                
+                // 주소 칩
+                val address: String = addressValue?.trim().orEmpty()
+                if (address.isNotEmpty()) {
+                    val onCloseAddress: () -> Unit = {
+                        addressValue = null
                         renderMetaUi(type)
                         etLocation.requestFocus()
                     }
-                    chipGroupLocation.addView(makeSingleChip(v, onClose))
+                    chipGroupLocation.addView(makeSingleChip("🏠 $address", onCloseAddress))
                 }
-                etLocation.visibility = if (locationValue == null) View.VISIBLE else View.GONE
+                
+                etPlaceName.visibility = if (placeNameValue == null) View.VISIBLE else View.GONE
+                etLocation.visibility = if (addressValue == null) View.VISIBLE else View.GONE
                 etLink.visibility = View.GONE
             }
         }
@@ -331,25 +393,55 @@ class CreateLifePostActivity : AppCompatActivity() {
 
         val tags: List<String> = tagList.toList()
 
-        val payload: PostPayload = when (type) {
-            PostType.LIFE_TIP -> PostPayload(
-                title = title,
-                content = content,
-                link = linkValue?.ifBlank { null },
-                tags = tags
-            )
-            PostType.DISCOUNT, PostType.RESTAURANT -> PostPayload(
-                title = title,
-                content = content,
-                address = locationValue,
-                placeName = locationValue,
-                tags = tags
-            )
-        }
-
         val token: String? = TokenManager.getAccessToken()
         if (token.isNullOrEmpty()) { Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show(); return }
 
+        // 할인/맛집 게시판에서는 메인 지역 ID 가져오기
+        if (type == PostType.DISCOUNT || type == PostType.RESTAURANT) {
+            setLoading(true)
+            lifecycleScope.launch {
+                try {
+                    val regions = myRegionRepo.getMyRegions()
+                    val mainRegion = regions.find { it.main }
+                    
+                    if (mainRegion == null) {
+                        setLoading(false)
+                        Toast.makeText(this@CreateLifePostActivity, "메인 지역이 설정되지 않았습니다.\n내 지역을 먼저 설정해주세요.", Toast.LENGTH_LONG).show()
+                        return@launch
+                    }
+                    
+                    // 메인 지역 ID를 포함한 payload 생성
+                    val payload = PostPayload(
+                        title = title,
+                        content = content,
+                        address = addressValue?.ifBlank { null },
+                        placeName = placeNameValue?.ifBlank { null },
+                        regionId = mainRegion.regionId,
+                        tags = tags
+                    )
+                    
+                    proceedWithPost(type, payload, token)
+                    
+                } catch (e: Exception) {
+                    setLoading(false)
+                    Toast.makeText(this@CreateLifePostActivity, "지역 정보를 확인할 수 없습니다: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+            return
+        }
+        
+        // 생활꿀팁은 바로 등록 (regionId 없음)
+        val payload = PostPayload(
+            title = title,
+            content = content,
+            link = linkValue?.ifBlank { null },
+            tags = tags
+        )
+        
+        proceedWithPost(type, payload, token)
+    }
+
+    private fun proceedWithPost(type: PostType, payload: PostPayload, token: String) {
         val postPart: RequestBody = buildPostJsonPart(payload)
         val imageParts: List<MultipartBody.Part> = applicationContext.buildImageParts(pickedUris.take(maxImages))
         val imagesArg: List<MultipartBody.Part>? = if (imageParts.isEmpty()) null else imageParts
@@ -367,10 +459,10 @@ class CreateLifePostActivity : AppCompatActivity() {
                 if (resp.isSuccessful) {
                     val body = resp.body()
                     if (body?.isSuccess == true) {
-                        Toast.makeText(this@CreateLifePostActivity, "등록 완료 (id=${body.result?.postId})", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CreateLifePostActivity, "등록 완료", Toast.LENGTH_SHORT).show()
                         finish()
                     } else {
-                        Toast.makeText(this@CreateLifePostActivity, "등록 실패: [${body?.code}] ${body?.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@CreateLifePostActivity, "등록 실패: ${body?.message}", Toast.LENGTH_LONG).show()
                     }
                 } else {
                     val err: String? = resp.errorBody()?.string()
@@ -407,6 +499,26 @@ class CreateLifePostActivity : AppCompatActivity() {
         }
         return parts
     }
+
+    private fun EditText.onConfirmClear(
+        confirm: (String) -> Unit
+    ) {
+        fun runConfirm(view: View): Boolean {
+            val value = text?.toString()?.trim().orEmpty()
+            if (value.isNotEmpty()) confirm(value)
+            text?.clear()                 // ✅ 엔터 후 항상 비우기
+            view.hideKeyboard()
+            return true
+        }
+
+        setOnEditorActionListener { v, actionId, event ->
+            if (isDoneOrEnter(actionId, event)) runConfirm(v) else false
+        }
+        setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) runConfirm(v) else false
+        }
+    }
+
 
     // ------- 공용 헬퍼 -------
     private fun isDoneOrEnter(actionId: Int, event: KeyEvent?): Boolean =

@@ -12,17 +12,19 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.example.onenthapp.data.chat.ChatNameRequest
-import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
+import com.example.onenthapp.data.notificationboard.UiComment
 import com.example.onenthapp.data.post.PostDetailResponse
 import com.example.onenthapp.databinding.ActivityLifeDetailsBinding
+import com.example.onenthapp.feature.chat.ChatRoomActivity
 import com.example.onenthapp.util.TokenManager
 import com.example.onenthapp.utils.ShareDialogUtil
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
 class LifeTipsDetailActivity : AppCompatActivity() {
 
@@ -31,6 +33,8 @@ class LifeTipsDetailActivity : AppCompatActivity() {
     private val api = RetrofitInstance.notificationboardApi
 
     private var postId: Long = -1L
+    private val profileCache = mutableMapOf<Long, String?>() // memberId -> profileImageUrl
+    // ✅ 상태: 내가 공감/스크랩 했는지 (마이페이지에서 온 경우 취소 허용 기준)
     private var isLiked = false
     private var isScrapped = false
 
@@ -39,65 +43,37 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         binding = ActivityLifeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 목록/검색에서 putExtra("postId", ...), (선택) putExtra("liked", true) 로 들어옴
+        // ✅ 진입 파라미터
         postId = intent.getLongExtra("postId", -1L)
         isLiked = intent.getBooleanExtra("liked", false)
+        isScrapped = intent.getBooleanExtra("scrapped", false) // ← 마이페이지에서 오면 같이 넣어줘
+
         if (postId <= 0L) {
             Toast.makeText(this, "잘못된 게시글입니다.", Toast.LENGTH_SHORT).show()
             finish(); return
         }
+        // ✅ 진입할 때 서버 기준으로 하트/스크랩 상태 동기화
+        refreshMyActions()
+        fetchDetailAndBind()
         renderLike(isLiked)
+        renderScrap(isScrapped) // ✅ 초기 렌더
 
-        // 댓글 RV
+        // 댓글 목록 세팅
         setupCommentsRv()
         loadComments()
 
+
+        // 상단/액션
         binding.ivBack.setOnClickListener { finish() }
         binding.ivShare.setOnClickListener { showSharePopup() }
         binding.btnSendComment.setOnClickListener { postComment() }
+
+        // ✅ 토글 연결
         binding.postlikeicon.setOnClickListener { toggleLike() }
         binding.ivBookmark.setOnClickListener { toggleScrap() }
-
-        val token = TokenManager.getAccessToken()
-        if (token.isNullOrEmpty()) {
-            Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-            finish(); return
-        }
-
-        setLoading(true)
-        lifecycleScope.launch {
-            try {
-                val resp = RetrofitInstance.postApi.getPostDetail("Bearer $token", postId)
-                setLoading(false)
-                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
-                    resp.body()!!.result?.let { bindDetail(it) }
-                } else {
-                    Toast.makeText(
-                        this@LifeTipsDetailActivity,
-                        "상세 조회 실패: ${resp.code()} ${resp.errorBody()?.string()}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    finish()
-                }
-            } catch (e: UnknownHostException) {
-                setLoading(false)
-                Toast.makeText(this@LifeTipsDetailActivity, "서버 연결 불가", Toast.LENGTH_LONG).show()
-                finish()
-            } catch (e: SocketTimeoutException) {
-                setLoading(false)
-                Toast.makeText(this@LifeTipsDetailActivity, "요청 시간 초과", Toast.LENGTH_LONG).show()
-                finish()
-            } catch (e: HttpException) {
-                setLoading(false)
-                Toast.makeText(this@LifeTipsDetailActivity, "HTTP 오류: ${e.code()}", Toast.LENGTH_LONG).show()
-                finish()
-            } catch (e: Exception) {
-                setLoading(false)
-                Toast.makeText(this@LifeTipsDetailActivity, "예외: ${e.message}", Toast.LENGTH_LONG).show()
-                finish()
-            }
-        }
     }
+
+    // ==================== 공감 ====================
 
     private fun renderLike(liked: Boolean) {
         binding.postlikeicon.setImageResource(
@@ -105,42 +81,48 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         )
     }
 
-    /** 하트 토글: 공감 취소는 MemberApi, 공감 등록은 NotificationboardApi 사용 */
     private fun toggleLike() {
-        val token = TokenManager.getAccessToken()
-        if (token.isNullOrEmpty()) {
-            Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         lifecycleScope.launch {
             try {
                 binding.postlikeicon.isEnabled = false
+                val api = RetrofitInstance.notificationboardApi
 
                 if (isLiked) {
-                    // ✅ 내가 공감한 글 취소: DELETE /members/mypage/likes/{postId}
-                    val res = RetrofitInstance.memberApi.cancelMyLikedPost("Bearer $token", postId)
-                    if (res.isSuccessful && res.body()?.isSuccess == true && res.body()?.result?.isSuccess == true) {
+                    // 취소
+                    val res = api.unlikepost(postId.toInt())
+                    if (res.isSuccessful && res.body()?.result?.isSuccess == true) {
                         isLiked = false
+                        // 개수 -1 (음수 방지)
+                        val cur = binding.tvIconLike.text.toString().toIntOrNull() ?: 0
+                        binding.tvIconLike.text = maxOf(0, cur - 1).toString()
                         renderLike(false)
                         Toast.makeText(this@LifeTipsDetailActivity, "공감을 취소했어요.", Toast.LENGTH_SHORT).show()
-                        setResult(RESULT_OK, Intent().putExtra("unlikedPostId", postId))
-                        // finish() // 원하면 즉시 목록으로
                     } else {
-                        Toast.makeText(this@LifeTipsDetailActivity,
-                            res.body()?.message ?: "공감 취소 실패", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LifeTipsDetailActivity, res.body()?.message ?: "공감 취소 실패", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    // ✅ 공감 등록: POST /post/{postId}/like  (인터셉터로 인증 붙는 구조라면 헤더 불필요)
-                    val likeRes = RetrofitInstance.notificationboardApi.likepost(postId.toInt())
-                    if (likeRes.isSuccessful && likeRes.body()?.isSuccess == true) {
+                    // 등록
+                    val res = api.likepost(postId.toInt())
+                    if (res.isSuccessful && res.body()?.result?.isSuccess == true) {
                         isLiked = true
+                        // 개수 +1
+                        val cur = binding.tvIconLike.text.toString().toIntOrNull() ?: 0
+                        binding.tvIconLike.text = (cur + 1).toString()
                         renderLike(true)
                         Toast.makeText(this@LifeTipsDetailActivity, "공감했어요.", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this@LifeTipsDetailActivity, "공감 실패", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LifeTipsDetailActivity, res.body()?.message ?: "공감 실패", Toast.LENGTH_SHORT).show()
                     }
                 }
+                refreshMyActions()
+
+                // 목록/탭 새로고침용 결과 전달
+                setResult(RESULT_OK, Intent().apply {
+                    putExtra("postId", postId)
+                    putExtra("likeChanged", true)
+                    putExtra("liked", isLiked)
+                })
+
             } catch (e: Exception) {
                 Toast.makeText(this@LifeTipsDetailActivity, "오류: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
@@ -149,40 +131,42 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ 북마크 아이콘 렌더
+
+    // ✅ 공감 수 증감 도우미
+    private fun bumpLikeCount(delta: Int) {
+        val cur = binding.tvIconLike.text.toString().toIntOrNull() ?: 0
+        val next = (cur + delta).coerceAtLeast(0)
+        binding.tvIconLike.text = next.toString()
+    }
+
+    // ==================== 스크랩 ====================
+
     private fun renderScrap(scrapped: Boolean) {
         binding.ivBookmark.setImageResource(
             if (scrapped) R.drawable.ic_bookmark_on else R.drawable.ic_bookmark_off
         )
     }
 
-    // ✅ 스크랩 토글: 취소는 MyPage API(DELETE /members/mypage/scraps/{postId}), 등록은 게시판 API(POST /post/{postId}/scrap)
     private fun toggleScrap() {
         lifecycleScope.launch {
             try {
                 binding.ivBookmark.isEnabled = false
+                val api = RetrofitInstance.notificationboardApi
 
                 if (isScrapped) {
-                    // 🔴 취소: 마이페이지 취소 API
-                    val bearer = TokenManager.getAccessToken()?.let { "Bearer $it" } ?: run {
-                        Toast.makeText(this@LifeTipsDetailActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-                        return@launch
-                    }
-                    val res = RetrofitInstance.memberApi.cancelMyScrapPost(bearer, postId)
-                    if (res.isSuccessful && res.body()?.isSuccess == true && res.body()?.result?.isSuccess == true) {
+                    // 취소
+                    val res = api.unscrapPost(postId.toInt())
+                    if (res.isSuccessful && res.body()?.result?.isSuccess == true) {
                         isScrapped = false
                         renderScrap(false)
-                        Toast.makeText(this@LifeTipsDetailActivity, "스크랩 취소했어요.", Toast.LENGTH_SHORT).show()
-                        // 목록 쪽 새로고침 신호
-                        setResult(RESULT_OK, Intent().putExtra("needRefresh", true))
+                        Toast.makeText(this@LifeTipsDetailActivity, "스크랩을 취소했어요.", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this@LifeTipsDetailActivity, res.body()?.message ?: "스크랩 취소 실패", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    // 🟢 등록: 게시판 API (NotificationboardApi)
-                    // ※ 시그니처가 Int라면 toInt()로 변환하세요.
-                    val res = RetrofitInstance.notificationboardApi.scrapPost(postId.toInt())
-                    if (res.isSuccessful && res.body()?.isSuccess == true) {
+                    // 등록
+                    val res = api.scrapPost(postId.toInt())
+                    if (res.isSuccessful && res.body()?.result?.isSuccess == true) {
                         isScrapped = true
                         renderScrap(true)
                         Toast.makeText(this@LifeTipsDetailActivity, "스크랩했어요.", Toast.LENGTH_SHORT).show()
@@ -190,6 +174,15 @@ class LifeTipsDetailActivity : AppCompatActivity() {
                         Toast.makeText(this@LifeTipsDetailActivity, res.body()?.message ?: "스크랩 실패", Toast.LENGTH_SHORT).show()
                     }
                 }
+                refreshMyActions()
+
+                // 목록/탭 새로고침용 결과 전달
+                setResult(RESULT_OK, Intent().apply {
+                    putExtra("postId", postId)
+                    putExtra("scrapChanged", true)
+                    putExtra("scrapped", isScrapped)
+                })
+
             } catch (e: Exception) {
                 Toast.makeText(this@LifeTipsDetailActivity, "오류: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
@@ -199,79 +192,56 @@ class LifeTipsDetailActivity : AppCompatActivity() {
     }
 
 
-    /** 댓글 리스트 RecyclerView */
+    // ==================== 댓글 ====================
+
+
+    // 댓글 RV 세팅
     private fun setupCommentsRv() {
-        commentAdapter = CommentAdapter { action, c ->
+        commentAdapter = CommentAdapter { action, c: UiComment ->
             when (action) {
                 CommentAdapter.Action.Chat -> {
-                    // ✅ 서버로 채팅방 생성 요청 보내기
                     val token = TokenManager.getAccessToken()
                     if (token.isNullOrEmpty()) {
                         Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
                         return@CommentAdapter
                     }
-
                     lifecycleScope.launch {
                         try {
-                            val token = TokenManager.getAccessToken()
-                            if (token.isNullOrEmpty()) {
-                                Toast.makeText(this@LifeTipsDetailActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-                                return@launch
-                            }
-
-                            // Retrofit 인터페이스에 맞게 파라미터 직접 전달
+                            // API가 Long 받으면 그대로, Int 받으면 .toInt()
                             val res = RetrofitInstance.messageApi.createChatRoom(
-                                targetMemberId = c.writeId,
+                                targetMemberId = c.memberId,    // or c.memberId.toInt()
                                 chatRoomType = "TIP_SHARE"
                             )
-
                             if (res.isSuccessful && res.body()?.isSuccess == true) {
                                 val chatRoom = res.body()!!.result!!
-
-                                // 채팅방 화면으로 이동
                                 val intent = Intent(this@LifeTipsDetailActivity, ChatRoomActivity::class.java).apply {
-
                                     putExtra("chatRoomId", chatRoom.chatRoomId)
                                     putExtra("myMemberId", TokenManager.getMemberId())
                                     putExtra("roomName", chatRoom.chatRoomName)
                                     putExtra("peerNickname", c.nickname)
-                                    putExtra("opponentId", c.writeId)
+                                    putExtra("opponentId", c.memberId) // or c.memberId.toInt()
                                 }
                                 startActivity(intent)
                             } else {
                                 Toast.makeText(this@LifeTipsDetailActivity, "채팅방 생성 실패", Toast.LENGTH_SHORT).show()
                             }
                         } catch (e: Exception) {
-                            e.printStackTrace()
-                            Toast.makeText(
-                                this@LifeTipsDetailActivity,
-                                "채팅방 오류: ${e.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }}        }
-
-
+                            Toast.makeText(this@LifeTipsDetailActivity, "채팅방 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
                 CommentAdapter.Action.Block -> {
                     val token = TokenManager.getAccessToken()
                     if (token.isNullOrEmpty()) {
                         Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
                         return@CommentAdapter
                     }
-
                     lifecycleScope.launch {
                         try {
-                            val res = RetrofitInstance.messageApi.blockMember(c.writeId)
+                            // blockMember가 Int면 toInt() 써줘
+                            val res = RetrofitInstance.messageApi.blockMember(c.memberId /* or .toInt() */)
                             if (res.isSuccessful && res.body()?.isSuccess == true) {
-                                Toast.makeText(
-                                    this@LifeTipsDetailActivity,
-                                    "${c.nickname}님을 차단하였습니다.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                                // 차단된 사용자 댓글 숨기려면 이 부분 사용:
-                                // commentAdapter.submitList(commentAdapter.currentList.filterNot { it.writeId == c.writeId })
-
-                                // 또는 전체 댓글 새로고침
+                                Toast.makeText(this@LifeTipsDetailActivity, "${c.nickname}님을 차단하였습니다.", Toast.LENGTH_SHORT).show()
                                 loadComments()
                             } else {
                                 Toast.makeText(this@LifeTipsDetailActivity, "차단 실패", Toast.LENGTH_SHORT).show()
@@ -281,7 +251,6 @@ class LifeTipsDetailActivity : AppCompatActivity() {
                         }
                     }
                 }
-
             }
         }
         binding.rvComments.apply {
@@ -294,15 +263,13 @@ class LifeTipsDetailActivity : AppCompatActivity() {
 
 
 
-    /** 댓글 작성 */
     private fun postComment() {
         val content = binding.etComment.text.toString().trim()
         if (content.isEmpty()) return
 
         lifecycleScope.launch {
             try {
-                val request = AddCommentToPostRequest(content = content)
-                val res = api.addCommentToPost(postId.toInt(), request)
+                val res = api.addCommentToPost(postId.toInt(), AddCommentToPostRequest(content))
                 if (res.isSuccessful) {
                     binding.etComment.text.clear()
                     loadComments()
@@ -316,7 +283,6 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
-    /** 댓글 삭제(필요 시 사용) */
     private fun deleteComment(commentId: Int) {
         lifecycleScope.launch {
             try {
@@ -333,24 +299,45 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
-    /** 댓글 목록 로드 */
     private fun loadComments() {
         lifecycleScope.launch {
             try {
                 val res = api.getPostComments(postId.toInt())
-                if (res.isSuccessful) {
-                    val items = res.body()?.result ?: emptyList()
-                    val comments = items.map { item ->
-                        // 프로젝트 내 정의된 Comment 데이터클래스를 사용하세요 (org.w3c.dom.Comment 말고!)
-                        Comment(
-                            nickname = item.nickname,
-                            content = item.content,
-                            likeCount = 0,
-                            writeId = item.memberId
-                        )
+                if (!res.isSuccessful) return@launch
+
+                val items = res.body()?.result ?: emptyList()
+
+                // memberId를 Long으로 일괄 변환
+                val ids = items.map { it.memberId.toLong() }.toSet()
+                val toFetch = ids.filter { it !in profileCache }
+
+                val memberApi = RetrofitInstance.memberApi
+                // ✅ 병렬 조회
+                toFetch.map { mid ->
+                    async {
+                        try {
+                            val r = memberApi.getMemberProfile(mid) // 시그니처가 Int면 mid.toInt()
+                            val url = if (r.isSuccessful) r.body()?.result?.profileImageUrl else null
+                            profileCache[mid] = url
+                        } catch (_: Exception) {
+                            profileCache[mid] = null
+                        }
                     }
-                    commentAdapter.submitList(comments)
+                }.awaitAll()
+
+                // ✅ UiComment로 매핑
+                val ui = items.map { it ->
+                    UiComment(
+                        id = it.id,
+                        content = it.content,
+                        nickname = it.nickname,
+                        memberId = it.memberId,
+                        createdAt = it.createdAt,
+                        profileImageUrl = profileCache[it.memberId.toLong()]
+                    )
                 }
+
+                commentAdapter.submitList(ui)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -358,12 +345,7 @@ class LifeTipsDetailActivity : AppCompatActivity() {
     }
 
 
-
-    /** 공유 팝업 */
-    private fun showSharePopup() {
-        val shareUrl = "https://onenthapp.com/post/$postId"
-        ShareDialogUtil.showShareDialog(this, shareUrl, "해당 글을 공유하시겠습니까?")
-    }
+    // ==================== 상세 바인딩 ====================
 
     private fun bindDetail(d: PostDetailResponse.Detail) {
         binding.tvTitle.text = d.title
@@ -386,6 +368,7 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         binding.tvIconViews.text = "조회수 ${d.viewCount}"
         binding.tvCommentCount.text = "댓글 ${d.commentCount}"
 
+        // 사진 스트립
         val urls = d.imageUrls.orEmpty().filter { it.isNotBlank() }.take(5)
         binding.photoScroll.isVisible = urls.isNotEmpty()
         val strip = binding.photoStrip
@@ -407,29 +390,115 @@ class LifeTipsDetailActivity : AppCompatActivity() {
         }
     }
 
+    // ==================== 공용 ====================
+
+    private fun showSharePopup() {
+        val shareUrl = "https://onenthapp.com/post/$postId"
+        ShareDialogUtil.showShareDialog(this, shareUrl, "해당 글을 공유하시겠습니까?")
+    }
+
     private fun setLoading(loading: Boolean) {
         binding.btnSendComment.isEnabled = !loading
+        // 필요하면 다른 버튼도 디세이블 처리 가능
     }
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 
-    private fun toTimeAgo(iso: String): String = try {
-        val trimmed = iso.substringBefore('.')
-        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
-        sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
-        val date = sdf.parse(trimmed) ?: return trimmed
-        val diffMs = System.currentTimeMillis() - date.time
-        val mins = diffMs / 60000
-        val hours = mins / 60
-        val days = hours / 24
-        when {
-            mins < 1 -> "방금 전"
-            mins < 60 -> "${mins}분 전"
-            hours < 24 -> "${hours}시간 전"
-            days < 7 -> "${days}일 전"
-            else -> trimmed.replace('T', ' ')
+    private fun toTimeAgo(iso: String): String {
+        return try {
+            val trimmed = iso.substringBefore('.')        // 예: 2025-08-12T16:40:50
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
+            }
+            val date = sdf.parse(trimmed) ?: return trimmed
+            val diffMs = System.currentTimeMillis() - date.time
+            val mins = diffMs / 60000
+            val hours = mins / 60
+            val days = hours / 24
+            when {
+                mins < 1 -> "방금 전"
+                mins < 60 -> "${mins}분 전"
+                hours < 24 -> "${hours}시간 전"
+                days < 7 -> "${days}일 전"
+                else -> trimmed.replace('T', ' ')
+            }
+        } catch (_: Exception) {
+            iso.substringBefore('.').replace('T', ' ')
         }
-    } catch (_: Exception) {
-        iso.substringBefore('.').replace('T', ' ')
     }
+
+    private fun fetchDetailAndBind() {
+        val token = TokenManager.getAccessToken()
+        if (token.isNullOrEmpty()) {
+            Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+            finish(); return
+        }
+
+        setLoading(true)
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitInstance.postApi.getPostDetail("Bearer $token", postId)
+                setLoading(false)
+                if (resp.isSuccessful && resp.body()?.isSuccess == true) {
+                    val detail = resp.body()!!.result
+                    if (detail == null) {
+                        Toast.makeText(this@LifeTipsDetailActivity, "게시글을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        finish(); return@launch
+                    }
+
+                    // UI 바인딩
+                    bindDetail(detail)
+                    refreshMyActions()
+                    // ✅ 초기 하트/스크랩 상태 렌더링
+                    // 서버가 myLiked/myScrapped 같은 값 내려주면 여기서 세팅 (필드 생기면 주석을 해제하세요)
+                    // isLiked = detail.myLiked ?: isLiked
+                    // isScrapped = detail.myScrapped ?: isScrapped
+
+                    // 목록/검색에서 putExtra로 넘어온 값이 있으면 우선 적용(없으면 기존값 유지)
+                    renderLike(isLiked)
+                    renderScrap(isScrapped)
+
+                } else {
+                    Toast.makeText(
+                        this@LifeTipsDetailActivity,
+                        "상세 조회 실패: ${resp.code()} ${resp.errorBody()?.string()}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
+            } catch (e: Exception) {
+                setLoading(false)
+                Toast.makeText(this@LifeTipsDetailActivity, "네트워크 오류: ${e.message}", Toast.LENGTH_LONG).show()
+                finish()
+            }
+        }
+    }
+
+    private fun refreshMyActions() {
+        lifecycleScope.launch {
+            try {
+                // 내 공감/스크랩 목록 가져오기 (Auth 인터셉터가 붙는 구조라면 헤더 불필요)
+                val likedRes = RetrofitInstance.memberApi.getMyLikedPosts(page = 1, size = 100)
+                val scrapRes = RetrofitInstance.memberApi.getMyScrapPosts(page = 1, size = 100)
+
+                // ✅ 네 모델에 맞춰서 postList 사용
+                val likedList  = likedRes.body()?.result?.postList ?: emptyList()
+                val scrapedList = scrapRes.body()?.result?.postList ?: emptyList()
+
+                // ✅ 아이디 비교는 postId
+                isLiked    = likedList.any   { it.postId == postId }
+                isScrapped = scrapedList.any { it.postId == postId }
+
+                // UI 반영
+                renderLike(isLiked)
+                renderScrap(isScrapped)
+            } catch (_: Exception) {
+                // 네트워크 실패 시엔 기존 상태 유지 (원하면 Toast 추가)
+            }
+        }
+    }
+
+
+
+
 }

@@ -12,7 +12,7 @@ data class ReviewDetailResult(
     val itemId: Long,
     val itemTitle: String,
     val content: String,
-    val rate: Int,
+    val rate: Float,
     val reviewImageList: List<ReviewImageDto>  // 수정!
 )
 

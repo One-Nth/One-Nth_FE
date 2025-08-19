@@ -5,7 +5,11 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.onenthapp.data.map.MyRegionRepository
+import com.example.onenthapp.data.map.SimpleRegion
 import com.example.onenthapp.data.userset.UserSetRepository
 import com.example.onenthapp.databinding.ActivityAlertSettingsBinding
 import kotlinx.coroutines.CoroutineScope
@@ -20,11 +24,32 @@ class AlertSettingsActivity : AppCompatActivity() {
     }
     private lateinit var binding: ActivityAlertSettingsBinding
     private val repository = UserSetRepository()
+    private val regionRepository = MyRegionRepository()
 
     private val keywordIdsToDelete = mutableSetOf<Pair<Int, String>>() // ID와 타입을 함께 저장
     private var isEditMode = false
+    private var isSaving = false
 
     private lateinit var keywordAdapter: KeywordAdapter
+    private lateinit var regionSuggestionAdapter: RegionSuggestionAdapter
+    private var oneToast: Toast? = null
+    // Activity 상단 멤버로: 삭제 후보(복구용 데이터 포함)
+    private val pendingRemovals = mutableListOf<RemovedItem>()
+    
+    // 지역 검색 관련 변수
+    private var selectedRegion: SimpleRegion? = null
+    private var currentSuggestions = mutableListOf<SimpleRegion>()
+    private var currentPage = 0
+    private var isLastPage = true
+    private var currentKeyword = ""
+    private val pageSize = 10
+
+    data class RemovedItem(
+        val id: Int,
+        val type: String, // "PRODUCT" | "REGION"
+        val position: Int,
+        val item: com.example.onenthapp.data.userset.KeywordAlertSummary
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +62,7 @@ class AlertSettingsActivity : AppCompatActivity() {
 
             setupViews()
             setupRecyclerView()
+            setupRegionSearch()
             loadUserSettings()
 
             Log.d(TAG, "onCreate completed successfully")
@@ -63,10 +89,52 @@ class AlertSettingsActivity : AppCompatActivity() {
             }
 
             // 확인 버튼 (삭제 실행)
+//            binding.btnConfirmDelete.setOnClickListener {
+//                Log.d(TAG, "Confirm delete button clicked")
+//                deleteSelectedKeywords()
+//            }
+
             binding.btnConfirmDelete.setOnClickListener {
-                Log.d(TAG, "Confirm delete button clicked")
-                deleteSelectedKeywords()
+                if (isSaving) return@setOnClickListener
+                if (pendingRemovals.isEmpty()) {
+                    showToast("변경 사항이 없습니다.")
+                    toggleEditMode(false)
+                    return@setOnClickListener
+                }
+
+                isSaving = true
+                binding.btnConfirmDelete.isEnabled = false
+
+                // ✨ 현재 화면에 남아있는 아이템으로 '유지할' 목록 만들기
+                val current = keywordAdapter.currentItems()  // 어댑터에 헬퍼 추가 (아래 3번 참고)
+                val keepProducts = current.filter { it.keywordAlertType == "PRODUCT" }.map { it.keywordAlertId }
+                val keepRegions  = current.filter { it.keywordAlertType == "REGION"  }.map { it.keywordAlertId }
+
+                lifecycleScope.launch {
+                    try {
+                        val res = repository.deleteKeywords(keepProducts, keepRegions) // 서버 스펙: 유지목록
+                        if (res.isSuccessful && res.body()?.isSuccess == true) {
+                            showToast("삭제가 완료되었습니다.")
+                            toggleEditMode(false)
+                            loadUserSettings() // 서버 최신값으로 동기화
+                        } else {
+                            val msg = parseErrorMessage(res.errorBody()?.string()) ?: "삭제에 실패했습니다. (${res.code()})"
+                            showToast(msg)
+                            rollbackRemovals()
+                            loadUserSettings()
+                        }
+                    } catch (e: Exception) {
+                        showToast("네트워크 오류: ${e.message}")
+                        rollbackRemovals()
+                        loadUserSettings()
+                    } finally {
+                        isSaving = false
+                        binding.btnConfirmDelete.isEnabled = true
+                    }
+                }
             }
+
+
 
             // 지역 키워드 등록 버튼
             binding.btnRegisterLocation.setOnClickListener {
@@ -98,34 +166,114 @@ class AlertSettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun rollbackRemovals() {
+        if (pendingRemovals.isEmpty()) return
+        // 원래 순서에 가까워지도록 뒤에서부터 삽입
+        val toRestore = pendingRemovals.sortedByDescending { it.position }
+        toRestore.forEach { r ->
+            keywordAdapter.insertAt(r.position, r.item)
+        }
+        pendingRemovals.clear()
+    }
+
     private fun setupRecyclerView() {
-        Log.d(TAG, "setupRecyclerView started")
+        keywordAdapter = KeywordAdapter(
+            onDeleteClick = { id, type, position ->
+                // (이건 기존대로) UI에서만 제거하고 완료 버튼에서 일괄 PATCH
+                val snapshot = keywordAdapter.getItemAt(position)
+                keywordAdapter.removeAt(position)
+                snapshot?.let { pendingRemovals += RemovedItem(id, type, position, it) }
+            },
+            onToggleClick = { id, type, newState ->
+                toggleKeywordAlert(id, type, newState) // ✅ 3개 인자
+            },
+            isEditModeProvider = { isEditMode }
+        )
 
-        try {
-            keywordAdapter = KeywordAdapter(
-                onDeleteClick = { id, type ->
-                    Log.d(TAG, "Delete clicked for keyword id: $id, type: $type")
-                    if (isEditMode) {
-                        keywordIdsToDelete.add(Pair(id, type))
-                        Log.d(TAG, "Added to delete list. Total items to delete: ${keywordIdsToDelete.size}")
-                        // 시각적 피드백을 위해 아이템을 회색으로 표시하거나 체크박스 추가 가능
-                    }
-                },
-                onToggleClick = { id, type, newState ->
-                    Log.d(TAG, "Toggle clicked for keyword id: $id, type: $type, newState: $newState")
-                    toggleKeywordAlert(id, type, newState)
-                },
-                isEditModeProvider = { isEditMode }
-            )
 
-            binding.keywordRecyclerView.adapter = keywordAdapter
-            binding.keywordRecyclerView.layoutManager = LinearLayoutManager(this)
-
-            Log.d(TAG, "RecyclerView setup completed successfully")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in setupRecyclerView: ${e.message}", e)
+        binding.keywordRecyclerView.apply {
+            adapter = keywordAdapter
+            layoutManager = LinearLayoutManager(this@AlertSettingsActivity)
         }
     }
+
+    private fun setupRegionSearch() {
+        // 지역 검색 결과 어댑터 설정
+        regionSuggestionAdapter = RegionSuggestionAdapter(
+            onClick = { region ->
+                selectedRegion = region
+                binding.alertLocationText.setText(region.regionName)
+                binding.cardRegionSuggestions.visibility = View.GONE
+            },
+            onEndReached = { loadMoreRegions() }
+        )
+        
+        binding.rvRegionSuggestions.apply {
+            adapter = regionSuggestionAdapter
+            layoutManager = LinearLayoutManager(this@AlertSettingsActivity)
+        }
+        
+        // 지역 검색 입력 텍스트 변경 리스너
+        binding.alertLocationText.addTextChangedListener { s ->
+            val query = s?.toString()?.trim().orEmpty()
+            if (query.isEmpty()) {
+                currentSuggestions.clear()
+                regionSuggestionAdapter.submitList(emptyList())
+                binding.cardRegionSuggestions.visibility = View.GONE
+                selectedRegion = null
+            } else {
+                startSearch(query)
+            }
+        }
+    }
+
+    private fun startSearch(newKeyword: String) {
+        currentKeyword = newKeyword.trim()
+        if (currentKeyword.isEmpty()) {
+            currentSuggestions.clear()
+            regionSuggestionAdapter.submitList(emptyList())
+            binding.cardRegionSuggestions.visibility = View.GONE
+            return
+        }
+        currentPage = 0
+        searchRegions(currentKeyword, currentPage)
+    }
+
+    private fun searchRegions(keyword: String, page: Int) {
+        lifecycleScope.launch {
+            try {
+                val (regions, pagination) = regionRepository.searchRegions(keyword, page, pageSize)
+                isLastPage = pagination?.last ?: true
+                
+                if (page == 0) {
+                    // 새로운 검색
+                    currentSuggestions.clear()
+                    currentSuggestions.addAll(regions)
+                } else {
+                    // 페이징: 기존 리스트에 추가
+                    currentSuggestions.addAll(regions)
+                }
+                
+                regionSuggestionAdapter.updateKeyword(keyword)
+                regionSuggestionAdapter.submitList(currentSuggestions.toList())
+                binding.cardRegionSuggestions.visibility = if (currentSuggestions.isEmpty()) View.GONE else View.VISIBLE
+            } catch (e: Exception) {
+                Log.e(TAG, "지역 검색 실패: ${e.message}", e)
+                if (page == 0) {
+                    currentSuggestions.clear()
+                    regionSuggestionAdapter.submitList(emptyList())
+                    binding.cardRegionSuggestions.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun loadMoreRegions() {
+        if (isLastPage || currentKeyword.isEmpty()) return
+        currentPage++
+        searchRegions(currentKeyword, currentPage)
+    }
+
 
     private fun loadUserSettings() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -169,22 +317,19 @@ class AlertSettingsActivity : AppCompatActivity() {
     private fun registerRegionKeyword() {
         Log.d(TAG, "registerRegionKeyword started")
 
-        val keyword = binding.alertLocationText.text.toString().trim()
-        Log.d(TAG, "Input keyword: '$keyword'")
-
-        if (keyword.isEmpty()) {
-            Log.d(TAG, "Keyword is empty")
-            Toast.makeText(this, "키워드를 입력해주세요.", Toast.LENGTH_SHORT).show()
+        val region = selectedRegion
+        if (region == null) {
+            Log.d(TAG, "No region selected")
+            Toast.makeText(this, "지역을 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // 현재 API에서는 지역 ID로 등록하는 방식이므로,
-        // 실제 구현에서는 지역명을 ID로 변환하는 로직이 필요합니다.
-        // 여기서는 예시로 1번 지역으로 등록
+        Log.d(TAG, "Selected region: ${region.regionName} (ID: ${region.regionId})")
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 Log.d(TAG, "Making API call to register region keyword")
-                val response = repository.registerRegionKeyword(1) // 임시 지역 ID
+                val response = repository.registerRegionKeyword(region.regionId.toInt())
                 Log.d(TAG, "Region keyword API response: isSuccessful=${response.isSuccessful}")
 
                 withContext(Dispatchers.Main) {
@@ -194,20 +339,28 @@ class AlertSettingsActivity : AppCompatActivity() {
 
                         if (body?.isSuccess == true) {
                             binding.alertLocationText.text.clear()
-                            Toast.makeText(this@AlertSettingsActivity, "지역 키워드가 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                            selectedRegion = null
+                            binding.cardRegionSuggestions.visibility = View.GONE
+                            showToast("지역 알림이 등록되었습니다.")
                             loadUserSettings() // 목록 새로고침
                         } else {
-                            Toast.makeText(this@AlertSettingsActivity, "등록에 실패했습니다: ${body?.message}", Toast.LENGTH_SHORT).show()
+                            val errorMsg = when (body?.code) {
+                                "REGION_KEYWORD_LIMIT_EXCEEDED" -> "등록 가능한 지역 알림은 최대 3개입니다."
+                                "REGION_KEYWORD_ALREADY_EXISTS" -> "이미 알림으로 등록한 지역입니다."
+                                "REGION_NOT_FOUND" -> "존재하지 않는 지역입니다."
+                                else -> "등록에 실패했습니다: ${body?.message}"
+                            }
+                            showToast(errorMsg)
                         }
                     } else {
                         Log.e(TAG, "HTTP error in region keyword registration: ${response.code()}")
-                        Toast.makeText(this@AlertSettingsActivity, "등록에 실패했습니다. (${response.code()})", Toast.LENGTH_SHORT).show()
+                        showToast("등록에 실패했습니다. (${response.code()})")
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Exception in registerRegionKeyword: ${e.message}", e)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다: ${e.message}", Toast.LENGTH_LONG).show()
+                    showToast("네트워크 오류가 발생했습니다: ${e.message}")
                 }
             }
         }
@@ -304,39 +457,69 @@ class AlertSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun toggleKeywordAlert(keywordAlertId: Int, alertType: String, isEnabled: Boolean) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = when (alertType) {
-                    "REGION" -> repository.toggleRegionKeyword(keywordAlertId, isEnabled)
-                    "PRODUCT" -> repository.toggleKeyword(keywordAlertId, isEnabled)
-                    else -> return@launch
-                }
+//    private fun toggleKeywordAlert(keywordAlertId: Int, alertType: String, isEnabled: Boolean) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            try {
+//                val response = when (alertType) {
+//                    "REGION" -> repository.toggleRegionKeyword(keywordAlertId, isEnabled)
+//                    "PRODUCT" -> repository.toggleKeyword(keywordAlertId, isEnabled)
+//                    else -> return@launch
+//                }
+//
+//                withContext(Dispatchers.Main) {
+//                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+//                        Toast.makeText(this@AlertSettingsActivity,
+//                            if (isEnabled) "알림이 활성화되었습니다." else "알림이 비활성화되었습니다.",
+//                            Toast.LENGTH_SHORT).show()
+//                        loadUserSettings() // 목록 새로고침
+//                    } else {
+//                        Toast.makeText(this@AlertSettingsActivity, "설정 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
+//    }
+private fun toggleKeywordAlert(keywordAlertId: Int, alertType: String, isEnabled: Boolean) {
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = when (alertType) {
+                "REGION" -> repository.toggleRegionKeyword(keywordAlertId, isEnabled)
+                "PRODUCT" -> repository.toggleKeyword(keywordAlertId, isEnabled)
+                else -> return@launch
+            }
 
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful && response.body()?.isSuccess == true) {
-                        Toast.makeText(this@AlertSettingsActivity,
-                            if (isEnabled) "알림이 활성화되었습니다." else "알림이 비활성화되었습니다.",
-                            Toast.LENGTH_SHORT).show()
-                        loadUserSettings() // 목록 새로고침
-                    } else {
-                        Toast.makeText(this@AlertSettingsActivity, "설정 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    }
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    // ✅ 네트워크 성공 → 즉시 아이콘 상태 업데이트
+                    keywordAdapter.updateEnabledById(keywordAlertId, alertType, isEnabled)
+                    showToast(if (isEnabled) "알림이 활성화되었습니다." else "알림이 비활성화되었습니다.")
+                    // (선택) 서버 재동기화가 꼭 필요하면 아래 한 줄 유지
+                    // loadUserSettings()
+                } else {
+                    showToast("설정 변경에 실패했습니다.")
                 }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                }
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                showToast("네트워크 오류가 발생했습니다.")
             }
         }
     }
+}
+
+
 
     private fun toggleEditMode(enable: Boolean) {
         isEditMode = enable
         binding.btnConfirmDelete.visibility = if (enable) View.VISIBLE else View.GONE
-        keywordAdapter.notifyDataSetChanged() // 모드 변경 시 UI 갱신
+        keywordAdapter.notifyDataSetChanged()
         if (!enable) {
-            keywordIdsToDelete.clear()
+            // 편집 모드 종료 시(성공/취소 시점) 후보 비우기
+            pendingRemovals.clear()
         }
     }
 
@@ -372,6 +555,30 @@ class AlertSettingsActivity : AppCompatActivity() {
                     loadUserSettings() // 여기서 데이터를 다시 받아서 어댑터에 submitList() 호출 필요
                 }
             }
+        }
+    }
+
+    private fun showToast(msg: String) {
+        oneToast?.cancel()
+        oneToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
+        oneToast?.show()
+    }
+
+    data class ApiError(
+        val isSuccess: Boolean,
+        val code: String?,
+        val message: String?
+    )
+
+    /** 서버 에러바디에서 message만 꺼내기 */
+    private fun parseErrorMessage(errorBody: String?): String? {
+        return try {
+            if (errorBody.isNullOrBlank()) return null
+            // Gson 쓰는 버전 (Gson 이미 의존성/임포트 되어 있을 확률 높음)
+            com.google.gson.Gson().fromJson(errorBody, ApiError::class.java)?.message
+                ?.takeIf { it.isNotBlank() }
+        } catch (e: Exception) {
+            null
         }
     }
 }

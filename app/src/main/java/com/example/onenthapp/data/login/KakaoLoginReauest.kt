@@ -1,4 +1,4 @@
-package com.example.onenthapp.data
+package com.example.onenthapp.data.login
 
 import com.google.gson.annotations.SerializedName
 

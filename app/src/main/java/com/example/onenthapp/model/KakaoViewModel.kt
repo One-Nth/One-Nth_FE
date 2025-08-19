@@ -3,8 +3,8 @@ package com.example.onenthapp.model
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.onenthapp.data.AuthRepository
-import com.example.onenthapp.data.KakaoLoginResult
+import com.example.onenthapp.data.login.AuthRepository
+import com.example.onenthapp.data.login.KakaoLoginResult
 import com.example.onenthapp.data.userset.KakaoSignupRequest
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch

@@ -1,6 +1,6 @@
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.onenthapp.data.AuthRepository
+import com.example.onenthapp.data.login.AuthRepository
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
 import org.json.JSONObject

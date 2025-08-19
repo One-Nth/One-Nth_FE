@@ -1,5 +1,7 @@
 package com.example.onenthapp.data
 
+import com.google.gson.annotations.SerializedName
+
 data class TradeHistoryResponse(
     val isSuccess: Boolean,
     val code: String,
@@ -30,7 +32,8 @@ data class SellerProfileResult(
     val profileImageUrl: String?,
     val mainRegionName: String,
     val items: List<SellerItem>,
-    val recentReviews: List<Review>,
+//    val recentReviews: List<Review>,
+    val recentReviews: List<SellerRecentReview>,
     val verified: Boolean
 )
 
@@ -42,4 +45,21 @@ data class SellerItem(
     val itemCategory: String, // "ELECTRONICS", "HOUSEHOLD", "FOOD", "CLOTHING", "MISC"
     val purchaseMethod: String, // "ONLINE", "OFFLINE"
     val thumbnailUrl: String
+)
+
+
+// 🔴 sharings 전용 recent review DTO
+data class SellerRecentReview(
+    @SerializedName("reviewId") val reviewId: Long,
+    @SerializedName("itemType") val itemType: String,
+    @SerializedName("itemId") val itemId: Long,
+    @SerializedName("itemTitle") val itemTitle: String?,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("reviewerId") val reviewerId: Long,
+    @SerializedName("reviewerNickName") val reviewerNickName: String?,          // ← JSON 키와 정확히 매칭
+    @SerializedName("reviewerProfileImageUrl") val reviewerProfileImageUrl: String?,
+    @SerializedName("reviewTargetId") val reviewTargetId: Long?,
+    @SerializedName("content") val content: String?,
+    @SerializedName("rate") val rate: Float,
+    @SerializedName("reviewImageList") val reviewImageList: List<String>?
 )

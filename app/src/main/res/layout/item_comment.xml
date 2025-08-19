@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:text="· 00동 인증"
+                android:visibility="gone"
                 android:textColor="@color/main_green" />
         </LinearLayout>
     </RelativeLayout>
