@@ -17,8 +17,8 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/humbleicons_arrow_up"
             android:background="@android:color/transparent"
             android:contentDescription="뒤로가기"
@@ -249,8 +249,8 @@
     <!-- 다음 버튼 -->
     <ImageButton
         android:id="@+id/nextButton"
-        android:layout_width="156dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/nextbutton"
         android:background="@null"
         android:contentDescription="다음으로"

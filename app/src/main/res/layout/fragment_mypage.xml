@@ -19,8 +19,8 @@
 
         <ImageView
             android:id="@+id/backButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/humbleicons_arrow_up"
             android:contentDescription="뒤로가기"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,8 +41,8 @@
 
         <ImageView
             android:id="@+id/settingsButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/uil_setting"
             android:contentDescription="설정"
             app:layout_constraintEnd_toEndOf="parent"
@@ -98,8 +98,8 @@
 
             <ImageView
                 android:id="@+id/profileArrow"
-                android:layout_width="39dp"
-                android:layout_height="39dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/right_arrow"
                 android:contentDescription="프로필 이동"
                 app:layout_constraintTop_toTopOf="@id/profileImage"

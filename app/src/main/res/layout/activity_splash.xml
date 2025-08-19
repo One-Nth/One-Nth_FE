@@ -7,7 +7,7 @@
     <!-- 로고 이미지 -->
     <ImageView
         android:id="@+id/logoImage"
-        android:layout_width="93dp"
+        android:layout_width="wrap_content"
         android:layout_height="93dp"
         android:layout_marginTop="150dp"
         android:src="@drawable/logo"
@@ -18,8 +18,8 @@
     <!-- 앱 타이틀 이미지 -->
     <ImageView
         android:id="@+id/appTitleImage"
-        android:layout_width="198dp"
-        android:layout_height="41.72dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:scaleType="fitXY"
         android:src="@drawable/group_44"

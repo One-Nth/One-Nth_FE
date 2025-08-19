@@ -16,8 +16,8 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/humbleicons_arrow_up"
             android:background="@android:color/transparent"
             android:contentDescription="뒤로가기"
@@ -55,7 +55,7 @@
         android:id="@+id/email"
         style="@style/PretendardSemibold3"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:text="이메일"
         android:textColor="@color/main_black"
         android:layout_marginTop="31dp"
@@ -89,7 +89,7 @@
         android:id="@+id/password"
         style="@style/PretendardSemibold3"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:text="비밀번호"
         android:textColor="@color/main_black"
         android:layout_marginTop="20dp"
@@ -134,8 +134,8 @@
 
         <ImageButton
             android:id="@+id/button1"
-            android:layout_width="156dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/frame_427318915"
             android:background="@null"
             android:contentDescription="계정찾기"
@@ -143,8 +143,8 @@
 
         <ImageButton
             android:id="@+id/button2"
-            android:layout_width="156dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/frame_427318914"
             android:background="@null"
             android:contentDescription="로그인" />
