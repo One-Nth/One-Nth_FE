@@ -13,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.onenthapp.R
 import com.example.onenthapp.SharingSellerProfileActivity
+import com.example.onenthapp.ScrapActivity
+import com.example.onenthapp.MyPostActivity
 import com.example.onenthapp.RetrofitInstance.messageApi
 import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.PlusRepository
@@ -95,7 +97,13 @@ class SharingItemDetailFragment : Fragment() {
             }
         }
         binding.btnBack.setOnClickListener {
-            findNavController().popBackStack()
+            // 현재 Activity가 ScrapActivity나 MyPostActivity인지 확인
+            val activity = requireActivity()
+            when (activity) {
+                is ScrapActivity -> activity.onBackFromProductDetail()
+                is MyPostActivity -> activity.onBackFromProductDetail()
+                else -> findNavController().popBackStack()
+            }
         }
 
         // 공유 버튼 클릭 리스너 추가

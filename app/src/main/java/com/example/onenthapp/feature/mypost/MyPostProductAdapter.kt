@@ -15,7 +15,8 @@ import com.example.onenthapp.formatWon
 class MyPostProductAdapter(
     private var items: List<MyPostProductItem>,
     private val showDelete: Boolean = false,
-    private val onDeleteClick: ((MyPostProductItem, Int) -> Unit)? = null
+    private val onDeleteClick: ((MyPostProductItem, Int) -> Unit)? = null,
+    private val onItemClick: ((MyPostProductItem) -> Unit)? = null
 ) : RecyclerView.Adapter<MyPostProductAdapter.VH>() {
 
     fun submitList(newItems: List<MyPostProductItem>) {
@@ -58,6 +59,9 @@ class MyPostProductAdapter(
 
             btnDelete.visibility = if (showDelete) View.VISIBLE else View.GONE
             btnDelete.setOnClickListener { onDeleteClick?.invoke(item, pos) }
+            
+            // 상품 클릭 시 상품 상세 조회로 이동
+            itemView.setOnClickListener { onItemClick?.invoke(item) }
         }
     }
 
