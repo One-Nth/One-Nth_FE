@@ -148,10 +148,10 @@ class AlertSettingsActivity : AppCompatActivity() {
                 registerProductKeyword()
             }
 
-            // 스크랩 알림 스위치
+            // 게시글 댓글 알림 스위치
             binding.alertSwitch1.setOnCheckedChangeListener { _, isChecked ->
-//                Log.d(TAG, "Scrap alert switch changed to: $isChecked")
-//                updateScrapAlert(isChecked)
+               Log.d(TAG, "Scrap alert switch changed to: $isChecked")
+                updateScrapAlert(isChecked)
             }
 
             // 리뷰 알림 스위치
@@ -410,29 +410,29 @@ class AlertSettingsActivity : AppCompatActivity() {
         }
     }
 
-//    private fun updateScrapAlert(isEnabled: Boolean) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val response = repository.updateScrapAlert(isEnabled)
-//                withContext(Dispatchers.Main) {
-//                    if (response.isSuccessful && response.body()?.isSuccess == true) {
-//                        Toast.makeText(this@AlertSettingsActivity,
-//                            if (isEnabled) "스크랩 알림이 활성화되었습니다." else "스크랩 알림이 비활성화되었습니다.",
-//                            Toast.LENGTH_SHORT).show()
-//                    } else {
-//                        // 실패 시 스위치 상태 되돌리기
-//                        binding.alertSwitch1.isChecked = !isEnabled
-//                        Toast.makeText(this@AlertSettingsActivity, "설정 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                withContext(Dispatchers.Main) {
-//                    binding.alertSwitch1.isChecked = !isEnabled
-//                    Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        }
-//    }
+    private fun updateScrapAlert(isEnabled: Boolean) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = repository.updateScrapAlert(isEnabled)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        Toast.makeText(this@AlertSettingsActivity,
+                            if (isEnabled) "게시글 댓글 알림이 활성화되었습니다." else "게시글 댓글 알림이 비활성화되었습니다.",
+                            Toast.LENGTH_SHORT).show()
+                    } else {
+                        // 실패 시 스위치 상태 되돌리기
+                        binding.alertSwitch1.isChecked = !isEnabled
+                        Toast.makeText(this@AlertSettingsActivity, "설정 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    binding.alertSwitch1.isChecked = !isEnabled
+                    Toast.makeText(this@AlertSettingsActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     private fun updateReviewAlert(isEnabled: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {

@@ -80,7 +80,7 @@ class NwonSavedItemAdapter(
             tvName.text = item.itemName
 
             // 상품 타입 표시 (tvDetails가 있는 경우)
-            tvDetails?.text = "타입: ${item.itemType}"
+            tvDetails?.text = " "
 
             // 이미지 로드
             if (item.itemImageUrl.isNotEmpty()) {

@@ -43,16 +43,7 @@ class CancelDealActivity : AppCompatActivity() {
             return
         }
 
-        findViewById<ImageButton>(R.id.btn_review).setOnClickListener {
-            val intent = Intent(this, MyReviewActivity::class.java)
-            intent.putExtra("roomName", roomName)
-            startActivity(intent)
-        }
 
-        findViewById<ImageButton>(R.id.btn_savings).setOnClickListener {
-            val intent = Intent(this, NwonSavedActivity::class.java)
-            startActivity(intent)
-        }
 
         findViewById<ImageButton>(R.id.btn_left).setOnClickListener {
             finish()
