@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.onenthapp.databinding.FragmentChatMenuBinding
 
@@ -70,7 +72,7 @@ class ChatMenuFragment : Fragment() {
         binding.chatMenuBlock.setOnClickListener {
             val intent = Intent(requireContext(), ChatBlockActivity::class.java)
             intent.putExtra("roomName", roomName)
-            startActivity(intent)
+            chatBlockLauncher.launch(intent)
         }
 
         // 🔘 신고
@@ -86,6 +88,15 @@ class ChatMenuFragment : Fragment() {
                 roomName,
                 BottomChatActionDialogFragment.ActionType.EXIT
             ).show(parentFragmentManager, "ExitDialog")
+        }
+    }
+    private val chatBlockLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            val data = result.data
+            // 결과를 Activity에 전달
+            (activity as? ChatRoomActivity)?.handleChatBlockResult(data)
         }
     }
 
