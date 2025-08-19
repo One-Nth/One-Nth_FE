@@ -110,6 +110,11 @@ class MyRegionActivity : AppCompatActivity() {
             adapter.submitList(it)
             b.cardSuggestions.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
         }
+        
+        // 검색 키워드 변경 시 어댑터에 전달 (하이라이트용)
+        vm.currentKeyword.observe(this) { keyword ->
+            adapter.updateKeyword(keyword)
+        }
 
         b.searchBarEt.addTextChangedListener { s ->
             val q = s?.toString()?.trim().orEmpty()

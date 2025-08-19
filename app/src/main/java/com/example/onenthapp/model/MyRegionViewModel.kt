@@ -19,6 +19,10 @@ class MyRegionViewModel : ViewModel() {
     private val _suggestions = MutableLiveData<List<SimpleRegion>>(emptyList())
     val suggestions: LiveData<List<SimpleRegion>> = _suggestions
     private var keyword: String = ""
+    
+    // 현재 검색 키워드 노출 (하이라이트용)
+    private val _currentKeyword = MutableLiveData<String>("")
+    val currentKeyword: LiveData<String> = _currentKeyword
     private var page: Int = 0
     private var last: Boolean = true
     private val size: Int = 10  // 오버레이 스크롤에 맞게 10개씩
@@ -33,6 +37,7 @@ class MyRegionViewModel : ViewModel() {
 
     fun startSearch(newKeyword: String) = viewModelScope.launch {
         keyword = newKeyword.trim()
+        _currentKeyword.value = keyword
         if (keyword.isEmpty()) {
             _suggestions.value = emptyList(); return@launch
         }

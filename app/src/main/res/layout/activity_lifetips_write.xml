@@ -130,7 +130,7 @@
                 android:background="@android:color/transparent"
                 android:hint="제목"
                 android:padding="8dp"
-                android:inputType="textMultiLine"
+                android:inputType="text"
                 android:singleLine="true"
                 android:gravity="start|center_vertical"
                 android:textAlignment="viewStart"
