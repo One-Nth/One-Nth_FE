@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.board
 
 import CommentAdapter
 import android.content.Intent
@@ -12,6 +12,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.notificationboard.AddCommentToPostRequest
 import com.example.onenthapp.data.notificationboard.UiComment
 import com.example.onenthapp.data.post.PostDetailResponse

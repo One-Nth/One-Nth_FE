@@ -19,8 +19,8 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginTop="27dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -55,8 +55,8 @@
     <!-- 프로필 이미지 -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profileImage"
-        android:layout_width="87dp"
-        android:layout_height="87dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/profile_base"
         android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/CircularShapeAppearance"
@@ -96,7 +96,7 @@
         android:id="@+id/nicknameInput"
         style="@style/PretendardBody5"
         android:layout_width="0dp"
-        android:layout_height="47dp"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
         android:background="@drawable/edittext_border2"
@@ -114,8 +114,8 @@
     <!-- 닉네임 수정 버튼 (닉네임 입력창의 내부 오른쪽에 겹치기) -->
     <ImageButton
         android:id="@+id/btnNicknameEdit"
-        android:layout_width="43dp"
-        android:layout_height="27dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/mypage_account_modify"
         android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="@id/nicknameInput"
@@ -141,7 +141,7 @@
         android:id="@+id/passwordMasked"
         style="@style/PretendardBody5"
         android:layout_width="0dp"
-        android:layout_height="47dp"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
         android:background="@drawable/edittext_border2"
@@ -160,8 +160,8 @@
     <!-- 비밀번호 변경 버튼 (입력창 내부) -->
     <ImageButton
         android:id="@+id/btnChangePassword"
-        android:layout_width="43dp"
-        android:layout_height="27dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/mypage_account_change"
         android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="@id/passwordMasked"
@@ -174,7 +174,7 @@
         android:id="@+id/newPasswordInput"
         style="@style/PretendardBody5"
         android:layout_width="0dp"
-        android:layout_height="47dp"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
         android:hint="변경할 비밀번호를 다시 한 번 입력해주세요"
@@ -193,8 +193,8 @@
     <!-- 새 비밀번호 확인 버튼 (입력창 내부) -->
     <ImageButton
         android:id="@+id/btnConfirmPassword"
-        android:layout_width="43dp"
-        android:layout_height="27dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/mypage_account_confirm"
         android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="@id/newPasswordInput"

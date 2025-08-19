@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypost
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.onenthapp.R
 import com.example.onenthapp.data.MyPostProductItem
-import java.text.NumberFormat
-import java.time.Duration
-import java.time.OffsetDateTime
+import com.example.onenthapp.formatWon
 
 class MyPostProductAdapter(
     private var items: List<MyPostProductItem>,

@@ -1,13 +1,11 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.R
 
 class SettingsActivity : AppCompatActivity() {
 

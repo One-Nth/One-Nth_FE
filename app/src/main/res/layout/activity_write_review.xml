@@ -71,8 +71,8 @@
             <!-- 썸네일 -->
             <ImageView
                 android:id="@+id/ivItemImage"
-                android:layout_width="119dp"
-                android:layout_height="124dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/rectangle_51"
                 android:contentDescription="상품 이미지" />
 
@@ -211,8 +211,8 @@
             android:src="@drawable/frame_427318932"
             android:layout_marginStart="30dp"
             android:layout_marginTop="50dp"
-            android:layout_width="335dp"
-            android:layout_height="45dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:backgroundTint="@color/main_green" />
     </LinearLayout>
 </ScrollView>

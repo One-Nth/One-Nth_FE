@@ -40,13 +40,13 @@
         <activity android:name=".BuyerReview" />
         <activity android:name=".feature.chat.ChatActivity" />
         <activity android:name=".EditMyReviewActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".AlertSettingsActivity" />
-        <activity android:name=".AccountSettingsActivity" />
-        <activity android:name=".BlockedUsersActivity" />
-        <activity android:name=".PolicyActivity" />
-        <activity android:name=".LifeTipsSearchActivity" />
-        <activity android:name=".LifeTipsDetailActivity" />
+        <activity android:name=".feature.mypage.SettingsActivity" />
+        <activity android:name=".feature.mypage.AlertSettingsActivity" />
+        <activity android:name=".feature.mypage.AccountSettingsActivity" />
+        <activity android:name=".feature.mypage.BlockedUsersActivity" />
+        <activity android:name=".feature.mypage.PolicyActivity" />
+        <activity android:name=".feature.board.LifeTipsSearchActivity" />
+        <activity android:name=".feature.board.LifeTipsDetailActivity" />
         <activity android:name=".feature.chat.ChatCheckActivity" />
         <activity android:name=".feature.chat.ChatBlockActivity"/>
 
@@ -67,11 +67,11 @@
         <activity android:name=".feature.login.LoginActivity" android:exported="true" />
         <activity android:name=".feature.signup.SignupActivity2" android:exported="false" />
 
-        <activity android:name=".ScrapActivity"/>
-        <activity android:name=".LikePostActivity" />
-        <activity android:name=".MyPostActivity" />
+        <activity android:name=".feature.scrap.ScrapActivity"/>
+        <activity android:name=".feature.mypage.LikePostActivity" />
+        <activity android:name=".feature.mypost.MyPostActivity" />
         <activity android:name=".feature.login.LoginActivity2" />
-        <activity android:name=".FindAccountActivity" />
+        <activity android:name=".feature.login.FindAccountActivity" />
         <activity android:name=".NwonSavedActivity" />
 
         <activity
@@ -88,10 +88,10 @@
         </activity>
         <activity android:name=".WriteReviewActivity" />
         <activity android:name=".AllMyReviewActivity" />
-        <activity android:name=".ReviewEditActivity" />
+        <activity android:name=".feature.mypage.ReviewEditActivity" />
         <activity android:name=".MyPageReviewsActivity" />
         <activity android:name=".feature.map.MyRegionActivity" />
-        <activity android:name=".CreateLifePostActivity" />
+        <activity android:name=".feature.board.CreateLifePostActivity" />
         <activity android:name=".BuyerReviewDetailActivity"
             android:exported="false" />
         <activity android:name=".chat.CancelDealActivity"/>
@@ -99,7 +99,7 @@
             android:name=".EditPostActivity"
             android:exported="false" />
         <activity android:name=".SearchResultActivity" android:exported="false" />
-        <activity android:name=".RegionVerificationActivity" />
+        <activity android:name=".feature.mypage.RegionVerificationActivity" />
         <activity android:name=".SharingSellerProfileActivity" android:exported="false" />
         <activity
             android:name=".PurchaseSellerProfileActivity"

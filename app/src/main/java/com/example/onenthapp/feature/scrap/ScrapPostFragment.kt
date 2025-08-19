@@ -1,5 +1,5 @@
 // ScrapPostFragment.kt
-package com.example.onenthapp
+package com.example.onenthapp.feature.scrap
 
 import android.app.Activity
 import android.content.Intent
@@ -11,6 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.onenthapp.feature.board.LifeTipsDetailActivity
+import com.example.onenthapp.feature.mypost.MyPostAdapter
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.post.MyPostItem
 import com.example.onenthapp.data.post.PostRepository
 import com.example.onenthapp.databinding.FragmentScrapNtipBinding

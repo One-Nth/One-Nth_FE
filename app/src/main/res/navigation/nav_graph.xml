@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/mypageFragment"
-        android:name="com.example.onenthapp.MypageFragment"
+        android:name="com.example.onenthapp.feature.mypage.MypageFragment"
         android:label="프로필" />
 
     <fragment
@@ -95,7 +95,7 @@
 
     <fragment
         android:id="@+id/tipFragment"
-        android:name="com.example.onenthapp.TipFragment"
+        android:name="com.example.onenthapp.feature.board.TipFragment"
         android:label="꿀팁 N분의 1"
         tools:layout="@layout/fragment_tip" />
 

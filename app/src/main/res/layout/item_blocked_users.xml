@@ -35,7 +35,7 @@
         android:src="@drawable/blockcancelbtn"
         android:background="@android:color/transparent"
         android:layout_width="wrap_content"
-        android:layout_height="32dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/userImage"
         app:layout_constraintBottom_toBottomOf="@id/userImage" />

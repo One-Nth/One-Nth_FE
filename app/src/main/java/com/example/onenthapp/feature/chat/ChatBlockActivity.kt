@@ -74,6 +74,13 @@ class ChatBlockActivity : AppCompatActivity() {
             val tradePrice = binding.priceInput.text.toString().toIntOrNull()
             val tradeCount = 1 // 혹은 사용자 입력
             val tradeType = if (binding.inpersonButton.currentTextColor == getColor(R.color.main_green)) "IN_PERSON" else "DELIVERY"
+
+            // 선택된 상품 체크
+            val sel = selectedProductItem ?: run {
+                showError("완료하려는 상품을 선택해주세요.")
+                return@setOnClickListener
+            }
+
             if (dealConfirmationId == null || dealDate.isBlank() || tradePrice == null) {
                 showError("모든 필드를 입력해주세요.")
                 return@setOnClickListener
@@ -101,10 +108,13 @@ class ChatBlockActivity : AppCompatActivity() {
                             Log.d("ChatBlockActivity", "거래 완료 데이터 - itemId: $itemId, imageUrl: $itemImageUrl, itemType: $itemType, itemTypeAndId: $itemTypeAndId")
 
                             val resultIntent = Intent().apply {
-                                putExtra("itemId", itemId)
-                                putExtra("itemImageUrl", itemImageUrl)
-                                putExtra("itemType", itemType)
-                                putExtra("itemTypeAndId", itemTypeAndId)
+                                putExtra("itemId", sel.itemId)
+                                putExtra("itemImageUrl", sel.imageUrl)   // ★ 추가
+//                                putExtra("itemImageUrl", itemImageUrl)
+                                putExtra("itemType", sel.itemType)
+//                                putExtra("itemTypeAndId", itemTypeAndId)
+                                putExtra("itemTypeAndId", "${sel.itemType}_${sel.itemId}")
+                                putExtra("itemName", sel.name)            // ★ 추가
                             }
                             setResult(RESULT_OK, resultIntent)
                             finish()
@@ -263,4 +273,5 @@ class ChatBlockActivity : AppCompatActivity() {
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
 }

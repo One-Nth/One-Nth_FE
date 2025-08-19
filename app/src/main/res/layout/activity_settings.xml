@@ -19,8 +19,8 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginTop="27dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -80,8 +80,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/account_setting" />
             <TextView
                 style="@style/PretendardSubtitle1"
@@ -105,8 +105,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/mdi_bell" />
             <TextView
                 style="@style/PretendardSubtitle1"
@@ -130,8 +130,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/solar_user_block_bold" />
             <TextView
                 style="@style/PretendardSubtitle1"
