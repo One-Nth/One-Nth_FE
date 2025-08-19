@@ -9,7 +9,9 @@ import com.bumptech.glide.Glide
 import com.example.onenthapp.data.SellerItem
 import com.example.onenthapp.databinding.ItemSearchResultBinding
 
-class SellerItemAdapter : RecyclerView.Adapter<SellerItemAdapter.SellerItemViewHolder>() {
+class SellerItemAdapter(
+    private val hideCategory: Boolean = false // 카테고리 칩 숨김 여부
+) : RecyclerView.Adapter<SellerItemAdapter.SellerItemViewHolder>() {
 
     private val itemList = mutableListOf<SellerItem>()
 
@@ -27,7 +29,7 @@ class SellerItemAdapter : RecyclerView.Adapter<SellerItemAdapter.SellerItemViewH
 
         fun bind(item: SellerItem) {
             // 기존 바인딩 방식 사용
-            binding.bindSellerItem(item)
+            binding.bindSellerItem(item, hideCategory)
         }
     }
 
@@ -52,7 +54,7 @@ class SellerItemAdapter : RecyclerView.Adapter<SellerItemAdapter.SellerItemViewH
 }
 
 // SellerItem용 바인딩 확장 함수
-fun ItemSearchResultBinding.bindSellerItem(item: SellerItem) {
+fun ItemSearchResultBinding.bindSellerItem(item: SellerItem, hideCategory: Boolean = false) {
     // 썸네일 이미지만 첫 번째 ImageView에 바인딩
     loadSellerImage(ivPreview1, item.thumbnailUrl)
     
@@ -67,14 +69,19 @@ fun ItemSearchResultBinding.bindSellerItem(item: SellerItem) {
         else -> "판매중"
     }
     
-    // 카테고리 라벨
-    tvCategory.text = when (item.itemCategory) {
-        "ELECTRONICS" -> "전자기기"
-        "HOUSEHOLD" -> "생활용품"
-        "FOOD" -> "식품"
-        "CLOTHING" -> "의류"
-        "MISC" -> "잡화"
-        else -> item.itemCategory
+    // 카테고리 라벨 (hideCategory가 true면 숨김)
+    if (hideCategory) {
+        tvCategory.isVisible = false
+    } else {
+        tvCategory.isVisible = true
+        tvCategory.text = when (item.itemCategory) {
+            "ELECTRONICS" -> "전자기기"
+            "HOUSEHOLD" -> "생활용품"
+            "FOOD" -> "식품"
+            "CLOTHING" -> "의류"
+            "MISC" -> "잡화"
+            else -> item.itemCategory
+        }
     }
     
     // 구매 방법
