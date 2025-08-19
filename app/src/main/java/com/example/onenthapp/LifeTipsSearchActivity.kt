@@ -35,8 +35,10 @@ class LifeTipsSearchActivity : AppCompatActivity() {
         // 인텐트에서 검색어/게시판 타입 받기
         val query = intent.getStringExtra("query").orEmpty()
         val rawBoardType = intent.getStringExtra("boardType") ?: "life_tip"
-        // "cafe" → "RESTAURANT"로 매핑
+        // 게시판 타입 매핑: 프론트엔드 → API
         val boardType = when (rawBoardType.lowercase()) {
+            "discount" -> "DISCOUNT"
+            "life_tip" -> "LIFE_TIP"
             "cafe" -> "RESTAURANT"
             else -> rawBoardType.uppercase(Locale.getDefault())
         } // "LIFE_TIP", "DISCOUNT", "RESTAURANT"
