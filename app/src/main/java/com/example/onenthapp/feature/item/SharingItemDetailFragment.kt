@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.onenthapp.R
 import com.example.onenthapp.SharingSellerProfileActivity
-import com.example.onenthapp.ScrapActivity
-import com.example.onenthapp.MyPostActivity
+import com.example.onenthapp.feature.scrap.ScrapActivity
+import com.example.onenthapp.feature.mypost.MyPostActivity
 import com.example.onenthapp.RetrofitInstance.messageApi
 import com.example.onenthapp.data.item.BookmarkRepository
 import com.example.onenthapp.data.item.PlusRepository

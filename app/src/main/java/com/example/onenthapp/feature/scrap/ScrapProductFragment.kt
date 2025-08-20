@@ -14,7 +14,7 @@ import com.example.onenthapp.ScrapProductAdapter
 import com.example.onenthapp.data.MyPostProductItem
 
 import com.example.onenthapp.util.TokenManager
-import com.example.onenthapp.ScrapActivity
+import com.example.onenthapp.feature.scrap.ScrapActivity
 import com.example.onenthapp.MainActivity
 
 import kotlinx.coroutines.launch

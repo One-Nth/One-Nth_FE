@@ -85,7 +85,6 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/rczvall21vwt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="27dp"
@@ -333,7 +332,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:fontFamily="@font/pretendard_regular"
-                android:text="년도.월.일로  기입해주세요 (ex. 25-01-01)"
+                android:text="년도.월.일로 기입해주세요 (ex. 25-01-01)"
                 android:textColor="@color/text_descript"
                 android:textSize="15sp" />
 

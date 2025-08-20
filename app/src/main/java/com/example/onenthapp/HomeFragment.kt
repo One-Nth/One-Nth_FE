@@ -137,7 +137,7 @@ class HomeFragment : Fragment() {
                         LatLng.from(
                             37.5665,
                             126.9780
-                        ), 14
+                        ), 12
                     )
                 )
                 kakaoMapInstance?.labelManager?.let { lm ->
@@ -276,7 +276,7 @@ class HomeFragment : Fragment() {
             private fun updateMapCenter(latitude: Double, longitude: Double) {
                 val map = kakaoMapInstance ?: return
                 val pos = LatLng.from(latitude, longitude)
-                map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 16))
+                map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 15))
             }
 
             private fun extractDong(full: String?): String? {
@@ -299,7 +299,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun getZoomLevel(): Int {
-                return 14 // 초기 줌 레벨
+                return 12 // 초기 줌 레벨
             }
         })
 

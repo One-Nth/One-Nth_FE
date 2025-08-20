@@ -12,9 +12,8 @@ import com.example.onenthapp.R
 import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.MyPostProductItem
 import com.example.onenthapp.data.post.PostRepository
-import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.util.TokenManager
-import com.example.onenthapp.MyPostActivity
+import com.example.onenthapp.feature.mypost.MyPostActivity
 
 import kotlinx.coroutines.launch
 //import kotlinx.coroutines.runCatching
