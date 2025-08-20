@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.onenthapp.R
 import com.example.onenthapp.data.item.PlusRepository
 import com.example.onenthapp.data.item.ShareRequest
+import com.example.onenthapp.data.map.MyRegionRepository
 import com.google.android.material.chip.Chip
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -28,12 +29,45 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
+import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.view.Gravity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class PlusShareFragment : Fragment() {
     private var _binding: FragmentPlusShareBinding? = null
     private val binding get() = _binding!!
     private val repo = PlusRepository()
+    private val myRegionRepo = MyRegionRepository()
     private val tags = mutableListOf<String>()
+    
+    // 이미지 관련 변수들
+    private val imageUris = mutableListOf<Uri>()
+    private val maxImages = 3
+
+    // 이미지 선택을 위한 ActivityResultLauncher
+    private val imagePickerLauncher =
+        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris: List<Uri> ->
+            if (!uris.isNullOrEmpty()) {
+                val remain: Int = maxImages - imageUris.size
+                if (remain <= 0) {
+                    Toast.makeText(requireContext(), "사진은 최대 ${maxImages}장까지 첨부할 수 있어요.", Toast.LENGTH_SHORT).show()
+                    return@registerForActivityResult
+                }
+                val toAdd: List<Uri> = uris.filterNot { it in imageUris }.take(remain)
+                if (toAdd.isEmpty()) {
+                    Toast.makeText(requireContext(), "추가할 수 있는 이미지가 없습니다.", Toast.LENGTH_SHORT).show()
+                    return@registerForActivityResult
+                }
+                imageUris.addAll(toAdd)
+            }
+            updateImageCount()
+            renderThumbnails()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,10 +94,20 @@ class PlusShareFragment : Fragment() {
         setupWayToggle()
         setupValidation()
         setupSubmitButton()
+        setupImagePicker()
 
         binding.includeToolbar.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+        
+        // 우리동네로 설정 버튼 클릭 이벤트
+        binding.btnSetMyplace.setOnClickListener {
+            setMyRegionAsLocation()
+        }
+        
+        // 초기 이미지 상태 설정
+        updateImageCount()
+        renderThumbnails()
     }
 
     private fun initTagInput() {
@@ -95,6 +139,92 @@ class PlusShareFragment : Fragment() {
                 }
             }
             binding.cgTags.addView(chip)
+        }
+    }
+
+    // 이미지 관련 메서드들
+    private fun setupImagePicker() {
+        binding.phImageUploadContainer.setOnClickListener {
+            imagePickerLauncher.launch("image/*")
+        }
+    }
+
+    private fun updateImageCount() {
+        binding.tvImageCount.text = "${imageUris.size}/$maxImages"
+    }
+
+    private fun renderThumbnails() {
+        val container: LinearLayout = binding.thumbsContainer
+        container.removeAllViews()
+        imageUris.forEachIndexed { index: Int, uri: Uri ->
+            container.addView(
+                createThumbFrame(
+                    uri = uri,
+                    index = index,
+                    onRemove = {
+                        imageUris.removeAt(index)
+                        updateImageCount()
+                        renderThumbnails()
+                    }
+                )
+            )
+        }
+    }
+
+    private fun createThumbFrame(
+        uri: Uri,
+        index: Int,
+        onRemove: () -> Unit
+    ): View {
+        val size: Int = dp(116)
+        val marginStart: Int = dp(8)
+        val corner: Int = dp(12)
+
+        val frame: FrameLayout = FrameLayout(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(size, size).apply { setMargins(marginStart, 0, 0, 0) }
+            background = resources.getDrawable(R.drawable.rectangle_11, null)
+        }
+
+        val iv: ImageView = ImageView(requireContext()).apply {
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+            scaleType = ImageView.ScaleType.CENTER_CROP
+        }
+        Glide.with(this).load(uri).transform(CenterCrop(), RoundedCorners(corner)).into(iv)
+        frame.addView(iv)
+
+        val btnDel: ImageView = ImageView(requireContext()).apply {
+            layoutParams = FrameLayout.LayoutParams(dp(22), dp(22)).apply {
+                gravity = Gravity.END or Gravity.TOP
+                setMargins(dp(6), dp(6), dp(6), dp(6))
+            }
+            setImageResource(R.drawable.btn_delete)
+            setPadding(dp(6), dp(6), dp(6), dp(6))
+            setOnClickListener { onRemove() }
+            bringToFront()
+        }
+        frame.addView(btnDel)
+        return frame
+    }
+
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+
+    /** 우리동네로 설정 버튼 클릭 시 메인지역 주소를 거래 장소에 자동 입력 */
+    private fun setMyRegionAsLocation() {
+        lifecycleScope.launch {
+            try {
+                val myRegions = myRegionRepo.getMyRegions()
+                val mainRegion = myRegions.find { it.main }
+                
+                if (mainRegion != null) {
+                    binding.etProductPlace.setText(mainRegion.regionName)
+                    Toast.makeText(requireContext(), "우리동네 주소가 입력되었습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "설정된 메인지역이 없습니다. 마이페이지에서 지역을 설정해주세요.", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                Log.e("PlusShare", "메인지역 조회 실패", e)
+                Toast.makeText(requireContext(), "지역 정보를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -174,14 +304,14 @@ class PlusShareFragment : Fragment() {
         val raw = binding.etProductDue.text.toString().trim()
         if (isFood) {
             if (raw.isNotEmpty() && !Regex("""\d{4}-\d{2}-\d{2}""").matches(raw)) {
-                binding.tvExpiryError.text = "날짜 형식은 YYYY-MM-DD 이어야 합니다"
+                binding.tvExpiryError.text = "날짜 형식은 YYYY-MM-DD 이어야 합니다."
                 binding.tvExpiryError.visibility = View.VISIBLE
             } else {
                 binding.tvExpiryError.visibility = View.GONE
             }
         } else {
             // FOOD 외엔 입력 불필요
-            binding.tvExpiryError.text = "음식 외의 카테고리는 기한을 입력할 수 없습니다"
+            binding.tvExpiryError.text = "음식 외의 카테고리는 기한을 입력할 수 없습니다."
             binding.tvExpiryError.visibility = View.VISIBLE
         }
     }
@@ -200,11 +330,23 @@ class PlusShareFragment : Fragment() {
         return priceOk && quantityOk && locOk && tagsOk && expiryOk
     }
 
+    /** 모든 에러메시지 초기화 */
+    private fun clearAllErrors() {
+        binding.tvNameError.visibility = View.GONE
+        binding.tvNumError.visibility = View.GONE
+        binding.tvCategoryError.visibility = View.GONE
+        binding.tvExpiryError.visibility = View.GONE
+        binding.tvLocationError.visibility = View.GONE
+    }
+
     /** 폼 유효성 검사 후 Retrofit 호출 */
     private fun setupSubmitButton() {
         binding.btnProductSubmit.setOnClickListener {
+            // 에러메시지 초기화
+            clearAllErrors()
+            
             // 1) 폼 값 읽기
-            val title = binding.etProductName.text.toString()
+            val title = binding.etProductName.text.toString().trim()
             if (title.isEmpty()) {
                 binding.tvNameError.text = "상품명을 입력해주세요"
                 binding.tvNameError.visibility = View.VISIBLE
@@ -212,18 +354,56 @@ class PlusShareFragment : Fragment() {
                 return@setOnClickListener
             }
             
-            val quantity = binding.etProductNum.text.toString().toIntOrNull()
-            if (quantity == null || quantity < 1) {
-                binding.tvNumError.text = "수량을 올바르게 입력하세요"
+            // 이미지 필수 체크
+            if (imageUris.isEmpty()) {
+                Toast.makeText(requireContext(), "상품 사진을 최소 1장 이상 등록해주세요", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            
+            // 태그 필수 체크
+            if (tags.isEmpty()) {
+                Toast.makeText(requireContext(), "상품 태그를 최소 1개 이상 입력해주세요", Toast.LENGTH_LONG).show()
+                binding.etProductTag.requestFocus()
+                return@setOnClickListener
+            }
+            
+            val quantityStr = binding.etProductNum.text.toString().trim()
+            if (quantityStr.isEmpty()) {
+                binding.tvNumError.text = "수량을 입력해주세요"
+                binding.tvNumError.visibility = View.VISIBLE
+                binding.etProductNum.requestFocus()
+                return@setOnClickListener
+            }
+            val quantity = quantityStr.toIntOrNull()
+            if (quantity == null) {
+                binding.tvNumError.text = "수량을 숫자로 입력하세요"
+                binding.tvNumError.visibility = View.VISIBLE
+                binding.etProductNum.requestFocus()
+                return@setOnClickListener
+            }
+            if (quantity < 1) {
+                binding.tvNumError.text = "수량은 1개 이상이어야 합니다"
                 binding.tvNumError.visibility = View.VISIBLE
                 binding.etProductNum.requestFocus()
                 return@setOnClickListener
             }
             
             val priceStr = binding.etProductCost.text.toString().trim()
-            val price = priceStr.toIntOrNull()
             if (priceStr.isEmpty()) {
                 binding.tvNumError.text = "가격을 입력해주세요"
+                binding.tvNumError.visibility = View.VISIBLE
+                binding.etProductCost.requestFocus()
+                return@setOnClickListener
+            }
+            val price = priceStr.toIntOrNull()
+            if (price == null) {
+                binding.tvNumError.text = "가격을 숫자로 입력하세요"
+                binding.tvNumError.visibility = View.VISIBLE
+                binding.etProductCost.requestFocus()
+                return@setOnClickListener
+            }
+            if (price < 1) {
+                binding.tvNumError.text = "가격은 1원 이상이어야 합니다"
                 binding.tvNumError.visibility = View.VISIBLE
                 binding.etProductCost.requestFocus()
                 return@setOnClickListener
@@ -247,7 +427,13 @@ class PlusShareFragment : Fragment() {
             
             val expiry = binding.etProductDue.text.toString().trim()
             if (binding.chipFood.isChecked && expiry.isEmpty()) {
-                binding.tvExpiryError.text = "유효기간을 입력해주세요."
+                binding.tvExpiryError.text = "유효기간을 입력해주세요"
+                binding.tvExpiryError.visibility = View.VISIBLE
+                binding.etProductDue.requestFocus()
+                return@setOnClickListener
+            }
+            if (binding.chipFood.isChecked && expiry.isNotEmpty() && !Regex("""\d{4}-\d{2}-\d{2}""").matches(expiry)) {
+                binding.tvExpiryError.text = "날짜 형식은 YYYY-MM-DD 이어야 합니다"
                 binding.tvExpiryError.visibility = View.VISIBLE
                 binding.etProductDue.requestFocus()
                 return@setOnClickListener
@@ -257,7 +443,7 @@ class PlusShareFragment : Fragment() {
             val isOffline = binding.btnWay1.isChecked
             val location = binding.etProductPlace.text.toString().trim()
             if (isOffline && location.isEmpty()) {
-                binding.tvLocationError.text = "거래 장소를 입력해주세요."
+                binding.tvLocationError.text = "거래 장소를 입력해주세요"
                 binding.tvLocationError.visibility = View.VISIBLE
                 binding.etProductPlace.requestFocus()
                 return@setOnClickListener
@@ -280,25 +466,23 @@ class PlusShareFragment : Fragment() {
             val json = Gson().toJson(req)
             val dataPart = json.toRequestBody("application/json".toMediaType())
 
-            // 3) 이미지 파트 (실제 업로드 미구현 상태라 dummy 이미지 하나 강제)
-            val realUris: List<Uri> = emptyList() // TODO: 실제 Uri 리스트
+            // 3) 이미지 파트
+            val realUris: List<Uri> = imageUris.toList()
             val parts = if (realUris.isNotEmpty()) {
                 realUris.mapIndexed { i, uri ->
                     val tmp = File(requireContext().cacheDir, "img_tissue_$i.jpg")
-                    // TODO: uri → tmp 파일 복사
+                    // URI를 임시 파일로 복사
+                    requireContext().contentResolver.openInputStream(uri)?.use { input ->
+                        tmp.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
                     val rb = tmp.readBytes().toRequestBody("image/*".toMediaType())
                     MultipartBody.Part.createFormData("imageFiles", tmp.name, rb)
                 }
             } else {
-                // drawable/mock_image.jpg 를 res/drawable 에 추가해 두세요
-                val bmp = BitmapFactory.decodeResource(resources, R.drawable.image_tissue_1)
-                val bos = ByteArrayOutputStream().apply {
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 80, this)
-                }
-                val dummy = File(requireContext().cacheDir, "image_tissue_1.jpg")
-                    .apply { writeBytes(bos.toByteArray()) }
-                val rb = dummy.readBytes().toRequestBody("image/jpeg".toMediaType())
-                listOf(MultipartBody.Part.createFormData("imageFiles", dummy.name, rb))
+                // 이미지가 없는 경우 빈 리스트 반환
+                emptyList()
             }
             
             // 4) 네트워크 호출
@@ -316,22 +500,30 @@ class PlusShareFragment : Fragment() {
                                 "productPrice" to priceStr,
                                 "productId" to newId,
                                 "isBuy" to false,
-                                "firstImageUrl" to "image_tissue_1" // 첫 번째 이미지 정보
+                                "firstImageUrl" to realUris.firstOrNull()?.toString() // 첫 번째 이미지 정보
                             )
                             
                             findNavController().navigate(R.id.plusCompleteFragment, bundle)
                         } else {
+                            // 응답 본문 또는 result 객체가 null인 경우의 오류 처리
+                            Log.e("PlusShare", "서버 응답 성공했으나, body 또는 result가 null입니다.")
                             Toast.makeText(requireContext(), "등록 결과를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         val code = resp.code()
                         val errBody = resp.errorBody()?.string().orEmpty()
                         Log.e("PlusShare", "서버 오류: HTTP $code / $errBody")
-                        Toast.makeText(
-                            requireContext(),
-                            resp.body()?.message ?: "등록 실패",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        
+                        // 더 상세한 에러 메시지 제공
+                        val errorMessage = when (code) {
+                            400 -> "잘못된 요청입니다. 입력 정보를 확인해주세요."
+                            401 -> "로그인이 필요합니다. 다시 로그인해주세요."
+                            403 -> "권한이 없습니다. 관리자에게 문의해주세요."
+                            404 -> "요청한 리소스를 찾을 수 없습니다."
+                            500 -> "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+                            else -> resp.body()?.message ?: "상품 등록에 실패했습니다. (오류 코드: $code)"
+                        }
+                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
                     }
                 } catch (e: Exception) {
                     Toast.makeText(

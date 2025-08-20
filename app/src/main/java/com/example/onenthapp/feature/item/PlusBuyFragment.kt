@@ -28,12 +28,44 @@ import android.view.inputmethod.EditorInfo
 import com.example.onenthapp.R
 import com.google.android.material.chip.Chip
 import okhttp3.MultipartBody // MultipartBody.Part를 위해 필요
+import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.view.Gravity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class PlusBuyFragment : Fragment() {
     private var _binding: FragmentPlusBuyBinding? = null
     private val binding get() = _binding!!
     private val repo = PlusRepository()
     private val tags = mutableListOf<String>()
+    
+    // 이미지 관련 변수들
+    private val imageUris = mutableListOf<Uri>()
+    private val maxImages = 3
+
+    // 이미지 선택을 위한 ActivityResultLauncher
+    private val imagePickerLauncher =
+        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris: List<Uri> ->
+            if (!uris.isNullOrEmpty()) {
+                val remain: Int = maxImages - imageUris.size
+                if (remain <= 0) {
+                    Toast.makeText(requireContext(), "사진은 최대 ${maxImages}장까지 첨부할 수 있어요.", Toast.LENGTH_SHORT).show()
+                    return@registerForActivityResult
+                }
+                val toAdd: List<Uri> = uris.filterNot { it in imageUris }.take(remain)
+                if (toAdd.isEmpty()) {
+                    Toast.makeText(requireContext(), "추가할 수 있는 이미지가 없습니다.", Toast.LENGTH_SHORT).show()
+                    return@registerForActivityResult
+                }
+                imageUris.addAll(toAdd)
+            }
+            updateImageCount()
+            renderThumbnails()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,17 +90,15 @@ class PlusBuyFragment : Fragment() {
         setupToggleButtons()
         setupValidation()
         setupSubmitButton()
-
-//            // 만약 이미지 피커를 구현하셨다면, URI 를 String 으로 꺼내세요.
-//            val imageUri = binding.ivPreviewImage.drawable.let {
-//                // 예시: 실제 URI 를 String 으로 저장해두셨다면 여기에 꺼내서 넣어주세요.
-//                ""
-//            }
-        //val imageUri = "imageUri"
+        setupImagePicker()
 
         binding.includeToolbar.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+        
+        // 초기 이미지 상태 설정
+        updateImageCount()
+        renderThumbnails()
     }
 
     private fun initTagInput() {
@@ -103,6 +133,72 @@ class PlusBuyFragment : Fragment() {
         }
     }
 
+    // 이미지 관련 메서드들
+    private fun setupImagePicker() {
+        binding.phImageUploadContainer.setOnClickListener {
+            imagePickerLauncher.launch("image/*")
+        }
+    }
+
+    private fun updateImageCount() {
+        binding.tvImageCount.text = "${imageUris.size}/$maxImages"
+    }
+
+    private fun renderThumbnails() {
+        val container: LinearLayout = binding.thumbsContainer
+        container.removeAllViews()
+        imageUris.forEachIndexed { index: Int, uri: Uri ->
+            container.addView(
+                createThumbFrame(
+                    uri = uri,
+                    index = index,
+                    onRemove = {
+                        imageUris.removeAt(index)
+                        updateImageCount()
+                        renderThumbnails()
+                    }
+                )
+            )
+        }
+    }
+
+    private fun createThumbFrame(
+        uri: Uri,
+        index: Int,
+        onRemove: () -> Unit
+    ): View {
+        val size: Int = dp(116)
+        val marginStart: Int = dp(8)
+        val corner: Int = dp(12)
+
+        val frame: FrameLayout = FrameLayout(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(size, size).apply { setMargins(marginStart, 0, 0, 0) }
+            background = resources.getDrawable(R.drawable.rectangle_11, null)
+        }
+
+        val iv: ImageView = ImageView(requireContext()).apply {
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+            scaleType = ImageView.ScaleType.CENTER_CROP
+        }
+        Glide.with(this).load(uri).transform(CenterCrop(), RoundedCorners(corner)).into(iv)
+        frame.addView(iv)
+
+        val btnDel: ImageView = ImageView(requireContext()).apply {
+            layoutParams = FrameLayout.LayoutParams(dp(22), dp(22)).apply {
+                gravity = Gravity.END or Gravity.TOP
+                setMargins(dp(6), dp(6), dp(6), dp(6))
+            }
+            setImageResource(R.drawable.btn_delete)
+            setPadding(dp(6), dp(6), dp(6), dp(6))
+            setOnClickListener { onRemove() }
+            bringToFront()
+        }
+        frame.addView(btnDel)
+        return frame
+    }
+
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+
     private fun setupSubmitButton() {
         binding.btnProductSubmit.setOnClickListener {
             // 1) 폼 값 읽기
@@ -111,6 +207,19 @@ class PlusBuyFragment : Fragment() {
                 binding.tvNameError.text = "상품명을 입력해주세요."
                 binding.tvNameError.visibility = View.VISIBLE
                 binding.etProductName.requestFocus()
+                return@setOnClickListener
+            }
+            
+            // 이미지 필수 체크
+            if (imageUris.isEmpty()) {
+                Toast.makeText(requireContext(), "상품 사진을 최소 1장 이상 등록해주세요.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            
+            // 태그 필수 체크
+            if (tags.isEmpty()) {
+                Toast.makeText(requireContext(), "상품 태그를 최소 1개 이상 입력해주세요.", Toast.LENGTH_LONG).show()
+                binding.etProductTag.requestFocus()
                 return@setOnClickListener
             }
             val categoryId = binding.cgCategoryShare.checkedChipId
@@ -181,23 +290,22 @@ class PlusBuyFragment : Fragment() {
             val json = Gson().toJson(req)
             val dataPart = json.toRequestBody("application/json".toMediaType())
 
-            val realUris: List<Uri> = emptyList()
+            val realUris: List<Uri> = imageUris.toList()
             val parts = if (realUris.isNotEmpty()) {
                 realUris.mapIndexed { i, uri ->
                     val tmp = File(requireContext().cacheDir, "img_$i.jpg")
+                    // URI를 임시 파일로 복사
+                    requireContext().contentResolver.openInputStream(uri)?.use { input ->
+                        tmp.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
                     val rb = tmp.readBytes().toRequestBody("image/*".toMediaType())
                     MultipartBody.Part.createFormData("imageFiles", tmp.name, rb)
                 }
             } else {
-                // drawable/mock_image.jpg 를 res/drawable 에 추가해 두세요
-                val bmp = BitmapFactory.decodeResource(resources, R.drawable.image_tissue_2)
-                val bos = ByteArrayOutputStream().apply {
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 80, this)
-                }
-                val dummy = File(requireContext().cacheDir, "image_tissue_2.jpg")
-                    .apply { writeBytes(bos.toByteArray()) }
-                val rb = dummy.readBytes().toRequestBody("image/jpeg".toMediaType())
-                listOf(MultipartBody.Part.createFormData("imageFiles", dummy.name, rb))
+                // 이미지가 없는 경우 빈 리스트 반환
+                emptyList()
             }
 //            val newId = resp.body()!!.result.id
 //            // 2) Bundle 에 담아서 navigate
@@ -238,11 +346,17 @@ class PlusBuyFragment : Fragment() {
                             val code = resp.code()
                             val errBody = resp.errorBody()?.string().orEmpty()
                             Log.e("PlusBuy", "서버 오류: HTTP $code / $errBody")
-                            Toast.makeText(
-                                requireContext(),
-                                resp.body()?.message ?: "등록 실패",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            
+                            // 더 상세한 에러 메시지 제공
+                            val errorMessage = when (code) {
+                                400 -> "잘못된 요청입니다. 입력 정보를 확인해주세요."
+                                401 -> "로그인이 필요합니다. 다시 로그인해주세요."
+                                403 -> "권한이 없습니다. 관리자에게 문의해주세요."
+                                404 -> "요청한 리소스를 찾을 수 없습니다."
+                                500 -> "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+                                else -> resp.body()?.message ?: "상품 등록에 실패했습니다. (오류 코드: $code)"
+                            }
+                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
                         }
                     } catch (e: Exception) {
                         Toast.makeText(

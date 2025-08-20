@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.BlockedUser
+import com.example.onenthapp.BlockedUsersAdapter
+import com.example.onenthapp.R
 import com.example.onenthapp.data.userset.UserSetRepository
 import kotlinx.coroutines.launch
 

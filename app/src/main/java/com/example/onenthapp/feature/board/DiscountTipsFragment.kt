@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.board
 
 import android.content.Intent
 import android.graphics.Color
@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.onenthapp.R
 import com.example.onenthapp.data.map.*
-import com.example.onenthapp.databinding.FragmentTipsCafetipsBinding
+import com.example.onenthapp.databinding.FragmentTipsDiscounttipsBinding
 import com.example.onenthapp.databinding.ItemMarkerDetailBinding
 import com.example.onenthapp.feature.map.MyRegionActivity
+import com.example.onenthapp.RetrofitInstance
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.label.Label
@@ -28,9 +30,9 @@ import kotlinx.coroutines.launch
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.kakao.vectormap.label.LabelTextBuilder
 
-class CafeTipsFragment : Fragment() {
+class DiscountTipsFragment : Fragment() {
 
-    private var _binding: FragmentTipsCafetipsBinding? = null
+    private var _binding: FragmentTipsDiscounttipsBinding? = null
     private val binding get() = _binding!!
 
     private var kakaoMapInstance: KakaoMap? = null
@@ -41,6 +43,7 @@ class CafeTipsFragment : Fragment() {
     private var defaultStyles: LabelStyles? = null
     private var selectedStyles: LabelStyles? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
+    private val scrapState = mutableMapOf<Long, Boolean>()  // 북마크 상태 관리
 
     private val mapRepo = MapRepository()
     private val myRegionRepo = MyRegionRepository()
@@ -50,7 +53,7 @@ class CafeTipsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTipsCafetipsBinding.inflate(inflater, container, false)
+        _binding = FragmentTipsDiscounttipsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -115,16 +118,16 @@ class CafeTipsFragment : Fragment() {
     private fun setupMapView() {
         binding.mapViewDisplay.start(object : MapLifeCycleCallback() {
             override fun onMapDestroy() {
-                Log.d("CafeTipsFragment", "onMapDestroy")
+                Log.d("DiscountTipsFragment", "onMapDestroy")
             }
 
             override fun onMapError(error: Exception) {
-                Log.e("CafeTipsFragment", "onMapError: ${error.message}", error)
+                Log.e("DiscountTipsFragment", "onMapError: ${error.message}", error)
                 Toast.makeText(context, "지도 로딩 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             }
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(kakaoMap: KakaoMap) {
-                Log.d("CafeTipsFragment", "KakaoMap is ready for CafeTips.")
+                Log.d("DiscountTipsFragment", "KakaoMap is ready for DiscountTips.")
                 kakaoMapInstance = kakaoMap
                 markersLayer = kakaoMapInstance?.labelManager?.layer
 
@@ -138,7 +141,7 @@ class CafeTipsFragment : Fragment() {
                 }
 
                 // 초기 마커 로드
-                loadRestaurantMarkers()
+                loadDiscountMarkers()
             }
         })
     }
@@ -175,11 +178,11 @@ class CafeTipsFragment : Fragment() {
                     val centerResult = myRegionRepo.getRegionCenter(region.regionName)
                     centerResult?.let { center ->
                         updateMapCenter(center.latitude, center.longitude)
-                        loadRestaurantMarkers(region.regionId)
+                        loadDiscountMarkers(region.regionId)
                     }
                 }
             } catch (e: Exception) {
-                Log.e("CafeTipsFragment", "지역 정보 로드 실패", e)
+                Log.e("DiscountTipsFragment", "지역 정보 로드 실패", e)
             }
         }
     }
@@ -187,19 +190,19 @@ class CafeTipsFragment : Fragment() {
     private fun updateMapCenter(latitude: Double, longitude: Double) {
         val map = kakaoMapInstance ?: return
         val pos = LatLng.from(latitude, longitude)
-        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 14))
+        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 15))
     }
 
-    private fun loadRestaurantMarkers(regionId: Long? = null) {
+    private fun loadDiscountMarkers(regionId: Long? = null) {
         lifecycleScope.launch {
             try {
-                val groups = mapRepo.fetchPostMarkers("RESTAURANT", regionId)
+                val groups = mapRepo.fetchPostMarkers("DISCOUNT", regionId)
                 if (groups.isNotEmpty()) {
                     lastGroups = groups
                     displayMarkers(groups)
                 }
             } catch (e: Exception) {
-                Log.e("CafeTipsFragment", "마커 로드 실패", e)
+                Log.e("DiscountTipsFragment", "마커 로드 실패", e)
                 Toast.makeText(context, "마커를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -248,7 +251,7 @@ class CafeTipsFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val postIds = group.markers.map { it.id }
-                val details = mapRepo.fetchPostMarkerDetails("RESTAURANT", postIds)
+                val details = mapRepo.fetchPostMarkerDetails("DISCOUNT", postIds)
                 if (details.isNotEmpty()) {
                     val name = details.first().placeName
                     val builder = LabelTextBuilder().addTextLine(name, 0)
@@ -257,7 +260,7 @@ class CafeTipsFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
-                Log.e("CafeTipsFragment", "placeName 로드 실패", e)
+                Log.e("DiscountTipsFragment", "placeName 로드 실패", e)
             }
         }
         
@@ -281,7 +284,7 @@ class CafeTipsFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val postIds = group.markers.map { it.id }
-                val details = mapRepo.fetchPostMarkerDetails("RESTAURANT", postIds)
+                val details = mapRepo.fetchPostMarkerDetails("DISCOUNT", postIds)
                 if (details.isNotEmpty()) {
                     // 첫 번째 게시글 정보를 바인딩
                     val firstPost = details.first()
@@ -291,7 +294,7 @@ class CafeTipsFragment : Fragment() {
                     halfExpandBottomSheet()
                 }
             } catch (e: Exception) {
-                Log.e("CafeTipsFragment", "마커 상세 정보 로드 실패", e)
+                Log.e("DiscountTipsFragment", "마커 상세 정보 로드 실패", e)
                 Toast.makeText(context, "상세 정보를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -301,25 +304,53 @@ class CafeTipsFragment : Fragment() {
         val postPreviewCard = binding.postPreviewCard
         val itemBinding = ItemMarkerDetailBinding.bind(postPreviewCard.root)
         
+        // 마커를 누를 때마다 항상 서버 값으로 scrapState 갱신
+        scrapState[postPreview.id] = postPreview.scraped
+        
+        // 서버 값으로 초기 상태 설정
+        val initialScraped = postPreview.scraped
+        
         itemBinding.tvPlaceName.text = postPreview.placeName
         itemBinding.tvTitle.text = postPreview.title
         itemBinding.tvAddress.text = postPreview.address
-        itemBinding.btnBookmark.setImageResource(
-            if (postPreview.scraped) R.drawable.ic_bookmini_on else R.drawable.ic_bookmini_off
-        )
+        
+        // 북마크 상태 관리
+        var current = initialScraped
+        fun renderIcon() {
+            itemBinding.btnBookmark.setImageResource(
+                if (current) R.drawable.ic_bookmini_on else R.drawable.ic_bookmini_off
+            )
+        }
+        renderIcon()
+        
         itemBinding.tvTime.text = getRelativeTimeString(postPreview.createdAt)
         
         // 북마크 클릭 리스너
         itemBinding.btnBookmark.setOnClickListener {
-            toggleBookmark(postPreview.id, postPreview.scraped) { success ->
+            val before = current
+            current = !before  // 1) 낙관적 토글
+            renderIcon()
+            
+            // 2) 서버 호출 후 결과에 따라 확정/롤백
+            toggleBookmark(postPreview.id, before) { success ->
                 if (success) {
-                    // 북마크 상태 업데이트
-                    val newScraped = !postPreview.scraped
-                    itemBinding.btnBookmark.setImageResource(
-                        if (newScraped) R.drawable.ic_bookmini_on else R.drawable.ic_bookmini_off
-                    )
+                    // 성공 시 scrapState에 저장
+                    scrapState[postPreview.id] = current
+                } else {
+                    // 실패 시 롤백
+                    current = before
+                    renderIcon()
                 }
             }
+        }
+        
+        // 게시글 클릭 시 상세 화면으로 이동
+        postPreviewCard.root.setOnClickListener {
+            val intent = Intent(requireContext(), LifeTipsDetailActivity::class.java).apply {
+                putExtra("postId", postPreview.id)
+                putExtra("scrapped", current)  // 현재 UI 상태 사용
+            }
+            startActivity(intent)
         }
         
         // 스크롤바 클릭 시 바텀시트 닫기
@@ -354,20 +385,61 @@ class CafeTipsFragment : Fragment() {
         }
     }
 
-    private fun extractDong(regionName: String): String {
-        return regionName.split(" ").lastOrNull()?.replace("동", "동") ?: "OO동"
+    private fun extractDong(full: String?): String? {
+        if (full.isNullOrBlank()) return null
+
+        // 구분자 정리 후 토큰화
+        val tokens = full.replace(",", " ")
+            .replace("·", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+
+        // 말단 행정단위(동/가/읍/면/리) 우선 탐색
+        val suffixes = listOf("동", "가", "읍", "면", "리")
+        return tokens.asReversed().firstOrNull { t -> suffixes.any { t.endsWith(it) } }
+            ?: tokens.lastOrNull() // 혹시 못 찾으면 마지막 토큰
     }
 
     // 북마크 토글 함수
     private fun toggleBookmark(id: Long, before: Boolean, onDone: (Boolean) -> Unit) {
-        // TODO: 실제 북마크 API 호출
-        // 현재는 임시로 성공 처리
-        onDone(true)
-        Toast.makeText(
-            context, 
-            if (before) "북마크가 해제되었습니다." else "북마크가 추가되었습니다.", 
-            Toast.LENGTH_SHORT
-        ).show()
+        Log.d("DiscountTipsFragment", "toggleBookmark 시작: postId=$id, before=$before")
+        lifecycleScope.launch {
+            try {
+                val api = RetrofitInstance.notificationboardApi
+                
+                if (before) {
+                    // 스크랩 취소
+                    Log.d("DiscountTipsFragment", "스크랩 취소 API 호출: postId=$id")
+                    val res = api.unscrapPost(id.toInt())
+                    Log.d("DiscountTipsFragment", "스크랩 취소 응답: isSuccessful=${res.isSuccessful}, body=${res.body()}")
+                    
+                    if (res.isSuccessful && res.body()?.result?.isSuccess == true) {
+                        onDone(true)
+                        Toast.makeText(context, "스크랩을 취소했어요.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        onDone(false)
+                        Toast.makeText(context, res.body()?.message ?: "스크랩 취소 실패", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // 스크랩 등록
+                    Log.d("DiscountTipsFragment", "스크랩 등록 API 호출: postId=$id")
+                    val res = api.scrapPost(id.toInt())
+                    Log.d("DiscountTipsFragment", "스크랩 등록 응답: isSuccessful=${res.isSuccessful}, body=${res.body()}")
+                    
+                    if (res.isSuccessful && res.body()?.result?.isSuccess == true) {
+                        onDone(true)
+                        Toast.makeText(context, "스크랩했어요.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        onDone(false)
+                        Toast.makeText(context, res.body()?.message ?: "스크랩 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("DiscountTipsFragment", "북마크 토글 중 예외 발생", e)
+                onDone(false)
+                Toast.makeText(context, "오류: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onPause() {

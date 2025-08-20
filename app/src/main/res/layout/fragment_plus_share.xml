@@ -33,39 +33,58 @@
                 android:textColor="@color/main_green"
                 android:textSize="25sp" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/ph_image_upload_container"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="34dp"
-                android:background="@drawable/ph_image_upload">
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/ic_plus"
-                    android:layout_width="29dp"
-                    android:layout_height="29dp"
-                    android:src="@drawable/ic_upload_plusbtn"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/ph_image_upload_container"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/ph_image_upload">
 
-                <TextView
-                    android:id="@+id/tv_image_count"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/ic_plus"
+                        android:layout_width="29dp"
+                        android:layout_height="29dp"
+                        android:src="@drawable/ic_upload_plusbtn"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_image_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="0/3"
+                        android:textColor="@color/notification_time"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ic_plus" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="@font/pretendard_semibold"
-                    android:text="0/7"
-                    android:textColor="@color/notification_time"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ic_plus" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/thumbs_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/rczvall21vwt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="27dp"
@@ -313,7 +332,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:fontFamily="@font/pretendard_regular"
-                android:text="년도.월.일로  기입해주세요 (ex. 25-01-01)"
+                android:text="년도.월.일로 기입해주세요 (ex. 25-01-01)"
                 android:textColor="@color/text_descript"
                 android:textSize="15sp" />
 
@@ -513,8 +532,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="8dp"
-                    android:layout_height="11dp"
+                    android:layout_width="10dp"
+                    android:layout_height="15dp"
                     android:layout_marginStart="9dp"
                     android:layout_marginEnd="3dp"
                     android:src="@drawable/ic_gps_blue" />
@@ -525,7 +544,7 @@
                     android:layout_height="wrap_content"
                     android:text="우리동네로 설정"
                     android:textColor="@color/gps_blue"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton

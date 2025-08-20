@@ -1,6 +1,7 @@
 package com.example.onenthapp
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.isVisible
@@ -58,9 +59,17 @@ fun ItemSearchResultBinding.bindSellerItem(item: SellerItem, hideCategory: Boole
     // 썸네일 이미지만 첫 번째 ImageView에 바인딩
     loadSellerImage(ivPreview1, item.thumbnailUrl)
     
-    // 나머지 이미지뷰들은 숨김 처리
-    ivPreview2.isVisible = false
-    ivPreview3.isVisible = false
+    // 나머지 이미지뷰들과 그들을 포함하는 LinearLayout을 숨김 처리 (판매자/내 물품 조회에서는 1개만 표시)
+    ivPreview2.visibility = View.GONE
+    ivPreview3.visibility = View.GONE
+    
+    // ivPreview2와 ivPreview3를 포함하는 LinearLayout을 숨김 처리
+    // imageContainer의 두 번째 자식이 LinearLayout이므로 이를 숨김
+    val imageContainer = ivPreview1.parent as? android.widget.LinearLayout
+    if (imageContainer?.childCount == 2) {
+        val secondChild = imageContainer.getChildAt(1)
+        secondChild.visibility = View.GONE
+    }
     
     // 상태 라벨
     tvStatus.text = when (item.status) {

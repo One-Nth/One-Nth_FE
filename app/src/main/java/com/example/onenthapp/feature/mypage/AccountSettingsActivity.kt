@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.content.Intent
 import android.net.Uri
@@ -16,6 +16,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
+import com.example.onenthapp.SplashActivity
 import com.example.onenthapp.model.MemberViewModel
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypost
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,15 +8,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.onenthapp.R
 import com.example.onenthapp.data.MyPostProductItem
-import java.text.NumberFormat
-import java.time.Duration
-import java.time.OffsetDateTime
+import com.example.onenthapp.formatWon
 
 class MyPostProductAdapter(
     private var items: List<MyPostProductItem>,
     private val showDelete: Boolean = false,
-    private val onDeleteClick: ((MyPostProductItem, Int) -> Unit)? = null
+    private val onDeleteClick: ((MyPostProductItem, Int) -> Unit)? = null,
+    private val onItemClick: ((MyPostProductItem) -> Unit)? = null
 ) : RecyclerView.Adapter<MyPostProductAdapter.VH>() {
 
     fun submitList(newItems: List<MyPostProductItem>) {
@@ -59,6 +59,9 @@ class MyPostProductAdapter(
 
             btnDelete.visibility = if (showDelete) View.VISIBLE else View.GONE
             btnDelete.setOnClickListener { onDeleteClick?.invoke(item, pos) }
+            
+            // 상품 클릭 시 상품 상세 조회로 이동
+            itemView.setOnClickListener { onItemClick?.invoke(item) }
         }
     }
 

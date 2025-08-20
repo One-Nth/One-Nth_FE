@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/main_white"
-    tools:context=".LifeTipsSearchActivity">
+    tools:context=".feature.board.LifeTipsSearchActivity">
 
     <!-- 툴바 -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -69,7 +69,8 @@
                 app:chipEndPadding="20dp"
                 app:chipMinHeight="32dp"
                 app:chipStrokeColor="@color/custom_chip_stroke_color"
-                app:chipStrokeWidth="1dp" />
+                app:chipStrokeWidth="1dp"
+                app:chipIconVisible="false" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_region_2"
@@ -81,7 +82,8 @@
                 app:chipEndPadding="20dp"
                 app:chipMinHeight="32dp"
                 app:chipStrokeColor="@color/custom_chip_stroke_color"
-                app:chipStrokeWidth="1dp" />
+                app:chipStrokeWidth="1dp"
+                app:chipIconVisible="false" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_region_3"
@@ -93,7 +95,8 @@
                 app:chipStartPadding="20dp"
                 app:chipEndPadding="20dp"
                 app:chipStrokeColor="@color/custom_chip_stroke_color"
-                app:chipStrokeWidth="1dp" />
+                app:chipStrokeWidth="1dp"
+                app:chipIconVisible="false" />
 
         </com.google.android.material.chip.ChipGroup>
 

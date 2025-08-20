@@ -1,8 +1,7 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -11,6 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.DeleteReviewImageRequest
 import com.example.onenthapp.data.ReviewBody
 import com.example.onenthapp.data.ReviewImage

@@ -1,10 +1,11 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.scrap
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.R
 
 class ScrapPostAdapter(private val posts: List<Map<String, String>>) :
     RecyclerView.Adapter<ScrapPostAdapter.ViewHolder>() {

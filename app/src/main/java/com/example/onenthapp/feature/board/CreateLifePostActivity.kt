@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.board
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -20,6 +20,8 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.post.PostPayload
 import com.example.onenthapp.databinding.ActivityLifetipsWriteBinding
 import com.example.onenthapp.util.TokenManager
@@ -188,7 +190,9 @@ class CreateLifePostActivity : AppCompatActivity() {
             isCloseIconVisible = true
             chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#E7F6ED"))
             setTextColor(ContextCompat.getColor(this@CreateLifePostActivity, R.color.main_green))
-            closeIconTint = ColorStateList.valueOf(ContextCompat.getColor(this@CreateLifePostActivity, R.color.main_green))
+            closeIconTint = ColorStateList.valueOf(ContextCompat.getColor(this@CreateLifePostActivity,
+                R.color.main_green
+            ))
             setOnCloseIconClickListener {
                 tagList.remove(tag)
                 binding.chipGroupTags.removeView(this)
@@ -309,7 +313,9 @@ class CreateLifePostActivity : AppCompatActivity() {
             isCloseIconVisible = true
             chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#E7F6ED"))
             setTextColor(ContextCompat.getColor(this@CreateLifePostActivity, R.color.main_green))
-            closeIconTint = ColorStateList.valueOf(ContextCompat.getColor(this@CreateLifePostActivity, R.color.main_green))
+            closeIconTint = ColorStateList.valueOf(ContextCompat.getColor(this@CreateLifePostActivity,
+                R.color.main_green
+            ))
             setOnCloseIconClickListener {
                 onClose()
                 (parent as? ChipGroup)?.removeView(this) // 안전망

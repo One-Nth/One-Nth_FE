@@ -137,7 +137,7 @@ class HomeFragment : Fragment() {
                         LatLng.from(
                             37.5665,
                             126.9780
-                        ), 14
+                        ), 12
                     )
                 )
                 kakaoMapInstance?.labelManager?.let { lm ->
@@ -230,7 +230,7 @@ class HomeFragment : Fragment() {
                     val myRegions =
                         runCatching { myRegionRepo.getMyRegions() }.getOrElse { emptyList() }
                     val main = myRegions.firstOrNull { it.main } // 첫번째 -> 메인
-                    val dong = main?.regionName?.let { extractDong(it) } ?: "OO동"
+                    val dong = extractDong(main?.regionName) ?: "OO동"
                     binding.tvMyregion.text = dong
 
                     // 2) 메인 지역 중심 좌표로 지도 이동
@@ -276,12 +276,22 @@ class HomeFragment : Fragment() {
             private fun updateMapCenter(latitude: Double, longitude: Double) {
                 val map = kakaoMapInstance ?: return
                 val pos = LatLng.from(latitude, longitude)
-                map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 16))
+                map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 15))
             }
 
-            private fun extractDong(full: String): String {
-                val re = Regex("([가-힣0-9]+동)$")
-                return re.find(full)?.groupValues?.get(1) ?: full.split(" ").lastOrNull().orEmpty()
+            private fun extractDong(full: String?): String? {
+                if (full.isNullOrBlank()) return null
+
+                // 구분자 정리 후 토큰화
+                val tokens = full.replace(",", " ")
+                    .replace("·", " ")
+                    .split(" ")
+                    .filter { it.isNotBlank() }
+
+                // 말단 행정단위(동/가/읍/면/리) 우선 탐색
+                val suffixes = listOf("동", "가", "읍", "면", "리")
+                return tokens.asReversed().firstOrNull { t -> suffixes.any { t.endsWith(it) } }
+                    ?: tokens.lastOrNull() // 혹시 못 찾으면 마지막 토큰
             }
 
             override fun getPosition(): com.kakao.vectormap.LatLng {
@@ -289,7 +299,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun getZoomLevel(): Int {
-                return 14 // 초기 줌 레벨
+                return 12 // 초기 줌 레벨
             }
         })
 
@@ -413,6 +423,7 @@ class HomeFragment : Fragment() {
     fun showMidPreview(item: MapItemPreview) {
         // ① preview_card(include된 item_search_result.xml) 바인딩
         val previewBinding = binding.previewCard
+        // 마커를 누를 때마다 항상 서버 값으로 북마크 상태 갱신
         previewBinding.bind(item) { itemId, before, onDone -> toggleBookmark(itemId, before, onDone) }
         previewBinding.root.setOnClickListener {
             onSearchItemSelected(item)
@@ -504,8 +515,12 @@ class HomeFragment : Fragment() {
                     if (current) bookmarkRepo.removePurchase(itemId) else bookmarkRepo.addPurchase(itemId) // 기본값
                 }
             }
-            if (!ok) {
-                Toast.makeText(requireContext(), "북마크 실패", Toast.LENGTH_SHORT).show()
+            if (ok) {
+                // 성공 시 토스트 메시지 표시
+                val message = if (current) "스크랩을 취소했어요." else "스크랩했어요."
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "스크랩 실패", Toast.LENGTH_SHORT).show()
             }
             onDone(ok)
         }

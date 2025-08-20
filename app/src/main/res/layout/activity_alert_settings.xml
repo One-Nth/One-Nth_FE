@@ -19,8 +19,8 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginTop="27dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -60,8 +60,8 @@
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/alertSwitch1"
-        android:layout_width="71dp"
-        android:layout_height="36dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:checked="true"
         android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,8 +88,8 @@
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/alertSwitch2"
-        android:layout_width="71dp"
-        android:layout_height="36dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:checked="true"
         android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,30 +114,32 @@
         app:layout_constraintTop_toBottomOf="@id/alertText1" />
 
     <!-- 키워드 입력 1 (버튼을 내부 오른쪽에 겹치기) -->
+
     <EditText
         android:id="@+id/alertLocationText"
         style="@style/PretendardBody5"
         android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:hint="알림 설정할 지역을 등록하세요"
-        android:singleLine="true"
-        android:gravity="start|center_vertical"
-        android:textAlignment="viewStart"
-        android:textColor="@color/light_gray"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/edittext_border2"
+        android:gravity="start|center_vertical"
+        android:hint="알림 설정할 지역을 등록하세요"
         android:paddingStart="12dp"
         android:paddingEnd="72dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintTop_toBottomOf="@id/alertText2"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textColor="@color/light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/alertText2" />
 
     <ImageButton
         android:id="@+id/btnRegisterLocation"
-        android:layout_width="43dp"
-        android:layout_height="27dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/frame_427318963"
         android:background="@android:color/transparent"
         android:layout_marginEnd="12dp"
@@ -214,7 +216,7 @@
         android:id="@+id/alertLocationText2"
         style="@style/PretendardBody5"
         android:layout_width="0dp"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:hint="알림 설정할 키워드를 등록하세요"
         android:singleLine="true"
         android:gravity="start|center_vertical"
@@ -232,8 +234,8 @@
 
     <ImageButton
         android:id="@+id/btnRegisterLocation2"
-        android:layout_width="43dp"
-        android:layout_height="27dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/frame_427318963"
         android:background="@android:color/transparent"
         android:layout_marginEnd="12dp"

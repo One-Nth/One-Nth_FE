@@ -1,9 +1,8 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypost
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +12,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.onenthapp.EditPostActivity
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.post.MyPostItem
 import com.example.onenthapp.data.post.PostRepository
 import com.example.onenthapp.model.MyPostsViewModel

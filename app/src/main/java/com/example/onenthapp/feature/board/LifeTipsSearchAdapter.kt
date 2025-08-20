@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.board
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.onenthapp.data.post.SearchPostDto
+import com.example.onenthapp.R
 import com.example.onenthapp.data.post.TipItem
 
 class LifeTipsSearchAdapter(

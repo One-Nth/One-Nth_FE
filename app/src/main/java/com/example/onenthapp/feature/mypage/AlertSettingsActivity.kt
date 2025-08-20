@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.onenthapp.KeywordAdapter
+import com.example.onenthapp.RegionSuggestionAdapter
 import com.example.onenthapp.data.map.MyRegionRepository
 import com.example.onenthapp.data.map.SimpleRegion
 import com.example.onenthapp.data.userset.UserSetRepository

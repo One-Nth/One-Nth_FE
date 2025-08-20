@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.board
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +14,11 @@ import com.example.onenthapp.data.map.MyRegion
 import kotlinx.coroutines.launch
 import java.util.Locale
 import android.view.View
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
 import com.google.android.material.chip.Chip
+import android.util.Log
+import androidx.core.content.ContextCompat
 
 
 class LifeTipsSearchActivity : AppCompatActivity() {
@@ -23,6 +27,7 @@ class LifeTipsSearchActivity : AppCompatActivity() {
     private lateinit var adapter: LifeTipsSearchAdapter
     private val myRegionRepo = MyRegionRepository()
     private var userRegions: List<MyRegion> = emptyList()
+    private var isRegionSearchInProgress = false // 지역 검색 진행 중 플래그
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,56 +96,50 @@ class LifeTipsSearchActivity : AppCompatActivity() {
         // 최대 3개의 지역을 칩에 바인딩
         val chips = listOf(binding.chipRegion1, binding.chipRegion2, binding.chipRegion3)
         
-        // 모든 칩을 숨기고 초기화
         chips.forEach { chip ->
             chip.visibility = View.GONE
             chip.text = "OO동"
-            chip.isChecked = false // 처음에는 모든 칩을 선택 해제
+            chip.isChecked = false
+            chip.chipIcon = null
+            chip.isChipIconVisible = false
+            chip.chipIconTint = null
         }
         
-        // 사용자 지역을 칩에 바인딩 (최대 3개)
         userRegions.take(3).forEachIndexed { index, region ->
             val chip = chips[index]
             chip.visibility = View.VISIBLE
-            chip.text = extractDong(region.regionName)
-            // 처음에는 아무 칩도 선택하지 않음 (키워드 검색을 먼저 수행하기 위해)
+            chip.text = extractDong(region.regionName) ?: "OO동"
+            chip.isChecked = false
+            chip.chipIcon = null
+            chip.isChipIconVisible = false
+            chip.chipIconTint = null
+            
+            chip.setChipBackgroundColorResource(R.color.custom_chip_background_color)
+            chip.chipStrokeColor = ContextCompat.getColorStateList(this, R.color.custom_chip_stroke_color)
         }
     }
 
-    private fun extractDong(regionName: String): String {
-        return regionName.split(" ").lastOrNull()?.replace("동", "동") ?: "OO동"
+    private fun extractDong(full: String?): String? {
+        if (full.isNullOrBlank()) return null
+
+        // 구분자 정리 후 토큰화
+        val tokens = full.replace(",", " ")
+            .replace("·", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+
+        // 말단 행정단위(동/가/읍/면/리) 우선 탐색
+        val suffixes = listOf("동", "가", "읍", "면", "리")
+        val result = tokens.asReversed().firstOrNull { t -> suffixes.any { t.endsWith(it) } }
+            ?: tokens.lastOrNull() // 혹시 못 찾으면 마지막 토큰
+        
+        return result
     }
 
     private fun setupRegionChips(boardType: String) {
-        var lastSelectedChipId = View.NO_ID
+        var selectedChipId = View.NO_ID
+        val query = intent.getStringExtra("query").orEmpty()
         
-        // ChipGroup의 선택 변경 리스너 설정
-        binding.cgRegionFilter.setOnCheckedChangeListener { group, checkedId ->
-            val query = intent.getStringExtra("query").orEmpty()
-            
-            if (checkedId != View.NO_ID) {
-                // 칩이 선택된 경우
-                if (checkedId == lastSelectedChipId) {
-                    // 같은 칩을 다시 클릭한 경우 - 선택 해제하고 키워드 검색
-                    group.clearCheck()
-                    lastSelectedChipId = View.NO_ID
-                    search(boardType, query)
-                } else {
-                    // 다른 칩을 선택한 경우 - 지역 기반 검색
-                    lastSelectedChipId = checkedId
-                    val selectedRegion = getSelectedRegion(checkedId)
-                    if (selectedRegion != null) {
-                        searchWithRegion(boardType, query, selectedRegion.regionName)
-                    }
-                }
-            } else {
-                // 선택된 칩이 없는 경우 - 키워드 검색
-                lastSelectedChipId = View.NO_ID
-                search(boardType, query)
-            }
-        }
-        
-        // 개별 칩 클릭 리스너로 토글 동작 구현
         val chips = listOf(
             binding.chipRegion1 to 0,
             binding.chipRegion2 to 1,
@@ -149,24 +148,38 @@ class LifeTipsSearchActivity : AppCompatActivity() {
         
         chips.forEach { (chip, index) ->
             chip.setOnClickListener {
-                if (chip.isChecked && lastSelectedChipId == chip.id) {
-                    // 이미 선택된 칩을 다시 클릭한 경우 - 선택 해제
-                    binding.cgRegionFilter.clearCheck()
+                if (selectedChipId == chip.id) {
+                    chip.isChecked = false
+                    selectedChipId = View.NO_ID
+                    isRegionSearchInProgress = false
+                    
+                    if (query.isNotBlank()) {
+                        search(boardType, query)
+                    } else {
+                        adapter.submitItems(emptyList())
+                    }
+                } else {
+                    chips.forEach { (otherChip, _) ->
+                        if (otherChip != chip) {
+                            otherChip.isChecked = false
+                        }
+                    }
+                    
+                    chip.isChecked = true
+                    selectedChipId = chip.id
+                    isRegionSearchInProgress = true
+                    
+                    val selectedRegion = getSelectedRegion(chip.id)
+                    if (selectedRegion != null) {
+                        searchWithRegionAndKeyword(boardType, query, selectedRegion.regionName)
+                    }
                 }
             }
         }
     }
-
-    private fun getSelectedRegion(chipId: Int): MyRegion? {
-        return when (chipId) {
-            R.id.chip_region_1 -> userRegions.getOrNull(0)
-            R.id.chip_region_2 -> userRegions.getOrNull(1)
-            R.id.chip_region_3 -> userRegions.getOrNull(2)
-            else -> null
-        }
-    }
-
-    private fun searchWithRegion(postType: String, keyword: String, regionName: String) {
+    
+    // 키워드와 지역을 동시에 검색하는 함수
+    private fun searchWithRegionAndKeyword(postType: String, keyword: String, regionName: String) {
         val token = TokenManager.getAccessToken()
         if (token.isNullOrEmpty()) {
             Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
@@ -175,10 +188,16 @@ class LifeTipsSearchActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
+                val extractedRegionName = extractDong(regionName)
+                if (extractedRegionName.isNullOrBlank()) {
+                    Toast.makeText(this@LifeTipsSearchActivity, "지역명을 추출할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+                
                 val resp = RetrofitInstance.postApi.searchPosts(
                     bearer = "Bearer $token",
                     postType = postType,
-                    regionName = regionName, // 지역 기반 검색
+                    regionName = extractedRegionName,
                     keyword = if (keyword.isBlank()) null else keyword,
                     page = 0,
                     size = 20
@@ -197,18 +216,42 @@ class LifeTipsSearchActivity : AppCompatActivity() {
                             imageUrls = dto.imageUrls ?: emptyList()
                         )
                     }
-                    adapter.submitItems(list)
+                    
+                    if (list.isEmpty()) {
+                        adapter.submitItems(emptyList())
+                    } else {
+                        adapter.submitItems(list)
+                    }
                 } else {
                     val err = resp.errorBody()?.string()
+                    Log.e("LifeTipsSearch", "검색 실패: ${resp.code()} $err")
                     Toast.makeText(this@LifeTipsSearchActivity, "검색 실패: ${resp.code()} $err", Toast.LENGTH_LONG).show()
+                    adapter.submitItems(emptyList())
                 }
             } catch (e: Exception) {
+                Log.e("LifeTipsSearch", "네트워크 오류", e)
                 Toast.makeText(this@LifeTipsSearchActivity, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                adapter.submitItems(emptyList())
             }
+        }
+    }
+    
+    private fun getSelectedRegion(chipId: Int): MyRegion? {
+        return when (chipId) {
+            R.id.chip_region_1 -> userRegions.getOrNull(0)
+            R.id.chip_region_2 -> userRegions.getOrNull(1)
+            R.id.chip_region_3 -> userRegions.getOrNull(2)
+            else -> null
         }
     }
 
     private fun search(postType: String, keyword: String) {
+        // 지역 검색이 진행 중일 때는 키워드 검색을 하지 않음
+        if (isRegionSearchInProgress) {
+            Log.d("LifeTipsSearch", "지역 검색 진행 중이므로 키워드 검색을 건너뜁니다.")
+            return
+        }
+        
         val token = TokenManager.getAccessToken()
         if (token.isNullOrEmpty()) {
             Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
@@ -276,3 +319,4 @@ class LifeTipsSearchActivity : AppCompatActivity() {
         }
     }
 }
+

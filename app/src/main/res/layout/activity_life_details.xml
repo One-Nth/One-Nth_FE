@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_white"
-    tools:context=".LifeTipsSearchActivity">
+    tools:context=".feature.board.LifeTipsSearchActivity">
 
     <!-- 툴바 -->
     <androidx.appcompat.widget.Toolbar
@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/ivBack"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:layout_marginStart="16dp"
             android:src="@drawable/humbleicons_arrow_up"

@@ -1,4 +1,4 @@
-package com.example.onenthapp
+package com.example.onenthapp.feature.mypage
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.onenthapp.AllMyReviewActivity
+import com.example.onenthapp.MainActivity
+import com.example.onenthapp.MyPageReviewsActivity
+import com.example.onenthapp.R
+import com.example.onenthapp.RetrofitInstance
+import com.example.onenthapp.feature.mypost.MyPostActivity
+import com.example.onenthapp.feature.scrap.ScrapActivity
 import com.example.onenthapp.util.TokenManager
 import kotlinx.coroutines.launch
 
