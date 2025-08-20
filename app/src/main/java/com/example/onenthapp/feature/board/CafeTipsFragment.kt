@@ -15,7 +15,6 @@ import com.example.onenthapp.data.map.*
 import com.example.onenthapp.databinding.FragmentTipsCafetipsBinding
 import com.example.onenthapp.databinding.ItemMarkerDetailBinding
 import com.example.onenthapp.feature.map.MyRegionActivity
-import com.example.onenthapp.LifeTipsDetailActivity
 import com.example.onenthapp.RetrofitInstance
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
@@ -191,7 +190,7 @@ class CafeTipsFragment : Fragment() {
     private fun updateMapCenter(latitude: Double, longitude: Double) {
         val map = kakaoMapInstance ?: return
         val pos = LatLng.from(latitude, longitude)
-        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 14))
+        map.moveCamera(CameraUpdateFactory.newCenterPosition(pos, 15))
     }
 
     private fun loadRestaurantMarkers(regionId: Long? = null) {
