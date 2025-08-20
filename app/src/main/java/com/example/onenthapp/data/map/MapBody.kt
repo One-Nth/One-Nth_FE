@@ -71,7 +71,7 @@ data class PostMarkerDetail(
     val createdAt: String,
     val latitude: Double,
     val longitude: Double,
-    val scraped: Boolean
+    val isScraped: Boolean
 )
 
 data class PostMarkerDetailResult(
@@ -86,5 +86,5 @@ data class PostMarkerPreview(
     val createdAt: String,
     val latitude: Double,
     val longitude: Double,
-    val scraped: Boolean
+    var scraped: Boolean
 )

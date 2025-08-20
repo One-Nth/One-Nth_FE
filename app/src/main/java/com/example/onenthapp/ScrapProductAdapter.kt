@@ -16,7 +16,8 @@ import java.time.OffsetDateTime
 
 
 class ScrapProductAdapter(
-    private var items: List<MyPostProductItem>
+    private var items: List<MyPostProductItem>,
+    private val onItemClick: ((MyPostProductItem) -> Unit)? = null
 ) : RecyclerView.Adapter<ScrapProductAdapter.VH>() {
 
     fun submitList(newItems: List<MyPostProductItem>) {
@@ -62,6 +63,9 @@ class ScrapProductAdapter(
         } else {
             h.ivProduct.setImageResource(R.drawable.rectangle_11)
         }
+
+        // 상품 클릭 시 상품 상세 조회로 이동
+        h.itemView.setOnClickListener { onItemClick?.invoke(items[position]) }
     }
 
     override fun getItemCount(): Int = items.size

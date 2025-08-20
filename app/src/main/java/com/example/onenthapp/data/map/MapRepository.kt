@@ -52,6 +52,10 @@ class MapRepository {
             // 응답에 id가 없으니 요청 순서대로 zip
             dtos.mapIndexedNotNull { idx, d ->
                 val id = postIds.getOrNull(idx) ?: return@mapIndexedNotNull null
+                
+                // 서버 응답에서 isScraped 필드 사용
+                val scraped = d.isScraped
+                
                 PostMarkerPreview(
                     id = id,
                     placeName = d.placeName,
@@ -60,7 +64,7 @@ class MapRepository {
                     createdAt = d.createdAt,
                     latitude = d.latitude,
                     longitude = d.longitude,
-                    scraped = d.scraped
+                    scraped = scraped
                 )
             }
         } else emptyList()

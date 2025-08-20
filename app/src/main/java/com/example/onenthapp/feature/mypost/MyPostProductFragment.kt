@@ -5,14 +5,19 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onenthapp.R
 import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.data.MyPostProductItem
 import com.example.onenthapp.data.post.PostRepository
+import com.example.onenthapp.RetrofitInstance
 import com.example.onenthapp.util.TokenManager
+import com.example.onenthapp.MyPostActivity
+
 import kotlinx.coroutines.launch
+//import kotlinx.coroutines.runCatching
 
 class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
 
@@ -24,8 +29,8 @@ class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
     private var fullList: List<MyPostProductItem> = emptyList()
     private var currentQuery: String = ""
 
-    private val SEARCH_KEY = "GLOBAL_SEARCH_QUERY"
-    private val SEARCH_VALUE_KEY = "q"
+    private val SEARCH_KEY = MyPostActivity.SEARCH_KEY
+    private val SEARCH_VALUE_KEY = MyPostActivity.SEARCH_BUNDLE_KEY
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,10 +41,14 @@ class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
         // ✅ 내 상품 화면: 삭제 버튼 노출 + 즉시 삭제
         adapter = MyPostProductAdapter(
             items = emptyList(),
-            showDelete = true
-        ) { item, position ->
-            deleteNow(item, position)
-        }
+            showDelete = true,
+            onDeleteClick = { item, position ->
+                deleteNow(item, position)
+            },
+            onItemClick = { item ->
+                navigateToItemDetail(item)
+            }
+        )
         recyclerView.adapter = adapter
 
         // ✅ 검색어 브로드캐스트 수신 → 상품명 기준 필터
@@ -113,5 +122,33 @@ class MyPostProductFragment : Fragment(R.layout.fragment_mypost_product) {
         }
     }
 
-
+    /** 상품 클릭 시 상품 상세 조회로 이동 */
+    private fun navigateToItemDetail(item: MyPostProductItem) {
+        // MyPostActivity의 NavHost를 사용하여 상품 상세 표시
+        val myPostActivity = requireActivity() as? MyPostActivity
+        myPostActivity?.let { activity ->
+            when (item.itemType) {
+                "같이 사요" -> {
+                    // 같이사요 상품 상세 조회
+                    activity.showProductDetail(
+                        productId = item.itemId,
+                        isShare = false,
+                        initialScraped = false
+                    )
+                }
+                "함께 나눠요" -> {
+                    // 함께나눠요 상품 상세 조회
+                    activity.showProductDetail(
+                        productId = item.itemId,
+                        isShare = true,
+                        initialScraped = false
+                    )
+                }
+                else -> {
+                    Toast.makeText(requireContext(), "알 수 없는 상품 타입입니다: ${item.itemType}", Toast.LENGTH_SHORT).show()
+                    return
+                }
+            }
+        }
+    }
 }

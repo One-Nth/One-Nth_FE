@@ -126,7 +126,6 @@ class SearchResultActivity : AppCompatActivity() {
         adapter = SearchResultAdapter(
             onItemClick = { item ->
             // 안전 가드: 잘못된 ID 방지
-            Log.d("SearchClick", "tab=${currentTab}, itemId=${item.id}, bookmarked=${item.bookmarked}")
             if (item.id <= 0L) {
                 Toast.makeText(this, "잘못된 상품입니다.", Toast.LENGTH_SHORT).show()
                 return@SearchResultAdapter
@@ -153,8 +152,11 @@ class SearchResultActivity : AppCompatActivity() {
                         HomeTabType.BUY -> if (before) bookmarkRepo.removePurchase(item.id) else bookmarkRepo.addPurchase(item.id)
                         HomeTabType.SHARE -> if (before) bookmarkRepo.removeSharing(item.id) else bookmarkRepo.addSharing(item.id)
                     }
-                    Log.d("BookmarkToggle", "tab=${currentTab}, itemId=${item.id}, before=${before}, ok=${ok}")
                     if (ok) {
+                        // 성공 시 토스트 메시지 표시
+                        val message = if (before) "스크랩을 취소했어요." else "스크랩했어요."
+                        Toast.makeText(this@SearchResultActivity, message, Toast.LENGTH_SHORT).show()
+                        
                         // 리스트의 동일 아이템만 업데이트 (null 안전)
                         val updated = searchResults.map {
                             if (it.id == item.id) it.copy(bookmarked = !before) else it
@@ -187,16 +189,13 @@ class SearchResultActivity : AppCompatActivity() {
             try {
                 val results = mutableListOf<ItemSearch>()
                 val (effectiveKeyword, isCategory) = mapCategoryKeyword(searchKeyword)
-                Log.d("SearchAPI", "keyword='${searchKeyword}', effective='${effectiveKeyword}', isCategory=${isCategory}, tab=${currentTab}")
 
                 // 각 탭별로 제목 검색(/title) 우선 + 일반 검색 보강
                 when (currentTab) {
                     HomeTabType.BUY -> {
                         // 1) 제목 검색 먼저 (카테고리여도 시도)
-                        Log.d("SearchAPI", "call /group-purchases/title")
                         try {
                             val titleRes = searchRepository.searchGroupPurchasesByTitle(effectiveKeyword)
-                            Log.d("SearchAPI", "/group-purchases/title code=${titleRes.code()} success=${titleRes.isSuccessful}")
                             if (titleRes.isSuccessful) {
                                 titleRes.body()?.result?.let { results.addAll(it) }
                             }
@@ -205,10 +204,8 @@ class SearchResultActivity : AppCompatActivity() {
                         }
 
                         // 2) 일반 검색 (중복 제거)
-                        Log.d("SearchAPI", "call /group-purchases?keyword")
                         try {
                             val generalRes = searchRepository.searchGroupPurchases(effectiveKeyword)
-                            Log.d("SearchAPI", "/group-purchases code=${generalRes.code()} success=${generalRes.isSuccessful}")
                             if (generalRes.isSuccessful) {
                                 val general = generalRes.body()?.result.orEmpty()
                                 val existing = results.map { it.id }.toHashSet()
@@ -220,10 +217,8 @@ class SearchResultActivity : AppCompatActivity() {
                     }
                     HomeTabType.SHARE -> {
                         // 1) 제목 검색 먼저 (카테고리여도 시도)
-                        Log.d("SearchAPI", "call /sharing-items/title")
                         try {
                             val titleRes = searchRepository.searchSharingItemsByTitle(effectiveKeyword)
-                            Log.d("SearchAPI", "/sharing-items/title code=${titleRes.code()} success=${titleRes.isSuccessful}")
                             if (titleRes.isSuccessful) {
                                 titleRes.body()?.result?.let { results.addAll(it) }
                             }
@@ -232,10 +227,8 @@ class SearchResultActivity : AppCompatActivity() {
                         }
 
                         // 2) 일반 검색 (중복 제거)
-                        Log.d("SearchAPI", "call /sharing-items?keyword")
                         try {
                             val generalRes = searchRepository.searchSharingItems(effectiveKeyword)
-                            Log.d("SearchAPI", "/sharing-items code=${generalRes.code()} success=${generalRes.isSuccessful}")
                             if (generalRes.isSuccessful) {
                                 val general = generalRes.body()?.result.orEmpty()
                                 val existing = results.map { it.id }.toHashSet()
@@ -248,10 +241,6 @@ class SearchResultActivity : AppCompatActivity() {
                 }
                 // id <= 0 필터링 (상세 0 호출 방지)
                 val filtered = results.filter { it.id > 0L }
-                if (filtered.size != results.size) {
-                    Log.w("SearchAPI", "filteredOutInvalidIds=${results.size - filtered.size}")
-                }
-                Log.d("SearchAPI", "resultCount=${filtered.size}")
                 searchResults = filtered
                 displaySearchResults(filtered)
                 
@@ -289,6 +278,14 @@ class SearchResultActivity : AppCompatActivity() {
             binding.tvNoResults.visibility = View.GONE
             binding.rvSearchResults.visibility = View.VISIBLE
             adapter.submitList(results)
+        }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        // 상세 페이지에서 돌아올 때 북마크 상태 갱신을 위해 검색 결과 다시 로드
+        if (searchKeyword.isNotBlank()) {
+            performSearch()
         }
     }
 }
