@@ -156,8 +156,15 @@ class AlarmActivity : AppCompatActivity() {
                 timeAgo = "방금 전",
                 navigationImageResId = R.drawable.notification_ic_1,
                 isRead = it.readStatus,
-                type = getKoreanType(it.alertType)
+                type = getKoreanDealType(it.itemType) // ✅ 여기!
             )
+        }
+    }
+    private fun getKoreanDealType(itemType: String): String {
+        return when (itemType) {
+            "PURCHASE" -> "같이사요"
+            "SHARE" -> "함께 나눠요"
+            else -> "기타"
         }
     }
 
