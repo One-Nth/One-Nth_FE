@@ -24,13 +24,9 @@ class ProductDetailFragment : Fragment() {
     private val binding get() = _binding!!
     private var mapView: MapView? = null
     private var kakaoMapInstance: KakaoMap? = null // onMapReady에서 받을 KakaoMap 객체
-    // 예시: 상품 위치 좌표 (실제로는 ViewModel이나 다른 곳에서 가져와야 함)
     private val PRODUCT_LATITUDE = 37.394660 // 서울 시청 예시 위도
     private val PRODUCT_LONGITUDE = 127.111182 // 서울 시청 예시 경도
     private val PRODUCT_MARKER_NAME = "거래 장소"
-    private val PRODUCT_MARKER_DETAIL_TEXT = "상품 상세 위치 설명" // 마커에 추가할 텍스트 예시
-
-    private lateinit var imageSliderAdapter: ImageSliderAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,19 +40,8 @@ class ProductDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupViewPagerWithDummyImages()
-
          val dotsIndicator = binding.dotsIndicator // XML의 DotsIndicator ID
          dotsIndicator.attachTo(binding.viewpagerImages)
-//        mapViewContainer = binding.layoutLocationMap // XML에서 FrameLayout의 ID
-//
-//        // MapView 초기화 및 설정
-//        try {
-//            initializeMapView()
-//        } catch (e: Exception) {
-//            // Log.e("ProductDetailFragment", "MapView initialization failed", e)
-//            // 오류 처리 (예: 사용자에게 메시지 표시)
-//        }
          startMap()
     }
 
@@ -85,9 +70,6 @@ class ProductDetailFragment : Fragment() {
             private fun setupMapAndAddMarker() {
                 val currentKakaoMap = kakaoMapInstance ?: return // KakaoMap 객체가 없으면 아무것도 하지 않음
 
-                // 카메라 위치 이동 (선택적, getPosition()에서 이미 설정했다면 중복될 수 있음)
-                // currentKakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(LatLng.from(PRODUCT_LATITUDE, PRODUCT_LONGITUDE)))
-
                 // 마커(Label) 추가
                 addMarkerToMap(currentKakaoMap, LatLng.from(PRODUCT_LATITUDE, PRODUCT_LONGITUDE))
             }
@@ -98,7 +80,6 @@ class ProductDetailFragment : Fragment() {
             ) {       val manager = kakaoMap.labelManager ?: return
                 val fullyOpaqueBlack = 0xFF000000.toInt()
                 val fullyOpaqueWhite = 0xFFFFFFFF.toInt() // .toInt()는 Long을 Int로 변환 (Kotlin)
-                //val fullyWhite =
                 // 1. LabelStyles 생성 (아이콘 + 텍스트 스타일)
                 val styles = manager.addLabelStyles(
                     LabelStyles.from(
@@ -144,50 +125,9 @@ class ProductDetailFragment : Fragment() {
             override fun getZoomLevel(): Int {
                 return 18 // 예시로 16 레벨 (상세보기에 적절한 수준)
             }
-
-            /*
-                // 필요에 따라 다른 오버라이드 메서드 구현
-                override fun getMapViewInfo(): MapViewInfo {
-                    // 지도 시작 시 App 및 MapType 설정
-                    return MapViewInfo.from(MapType.NORMAL)
-                }
-
-                override fun getViewName(): String {
-                    // KakaoMap 의 고유한 이름을 설정
-                    return "ProductDetailMap"
-                }
-
-                override fun isVisible(): Boolean {
-                    // 지도 시작 시 visible 여부를 설정
-                    return true
-                }
-                */
         })
     }
 
-    private fun setupViewPagerWithDummyImages() {
-        // 더미 이미지 리소스 ID 리스트
-        val dummyImages = listOf(
-            R.drawable.image_tissue_1, // 실제 drawable 리소스 이름으로 변경
-            R.drawable.image_tissue_2,
-            R.drawable.image_tissue_3
-            // 필요에 따라 더 많은 이미지 추가
-        )
-
-//        if (dummyImages.isEmpty()) {
-//            // 이미지가 없을 경우의 처리 (예: ViewPager 숨기기 또는 플레이스홀더 표시)
-//            binding.viewpagerImages.visibility = View.GONE
-//            binding.dotsIndicator.visibility = View.GONE // 인디케이터도 숨김
-//            return
-//        }
-
-        //imageSliderAdapter = com.example.onenthapp.feature.item.ImageSliderAdapter(dummyImages)
-        //binding.viewpagerImages.adapter = imageSliderAdapter
-
-        // ViewPager2에 indicator 연결
-        //binding.dotsIndicator.attachTo(binding.viewpagerImages)
-
-    }
     // --- MapView 생명주기 관리 (Fragment의 생명주기에 맞춰 호출 - 공식 문서 권장) ---
     override fun onResume() {
         super.onResume()
