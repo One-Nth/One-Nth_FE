@@ -1,9 +1,11 @@
 package com.example.onenthapp
 
 import android.content.Intent
+import com.google.firebase.messaging.FirebaseMessaging
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -11,12 +13,16 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.example.onenthapp.data.alarm.AlarmRepository
 import com.example.onenthapp.feature.chat.ChatActivity
 import com.example.onenthapp.databinding.ActivityMainBinding
 import com.example.onenthapp.feature.board.CreateLifePostActivity
 import com.example.onenthapp.feature.board.TipFragment
 import com.example.onenthapp.model.HomeTabType
 import com.example.onenthapp.model.SharedViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +39,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d("FCM", "수동으로 가져온 FCM 토큰: $token")
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val repository = AlarmRepository()
+                        Log.d("FCM", "registerFcmToken() 호출 시도")
+                        val response = repository.registerFcmToken(token)
+                        Log.d("FCM", "응답: ${response.code()}, 성공 여부: ${response.isSuccessful}")
+                    } catch (e: Exception) {
+                        Log.e("FCM", "FCM 토큰 등록 중 예외 발생: ${e.message}")
+                    }
+                }
+            } else {
+                Log.e("FCM", "FCM 토큰 가져오기 실패", task.exception)
+            }
+        }
 
         val navController =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
@@ -61,7 +87,9 @@ class MainActivity : AppCompatActivity() {
                     NavigationUI.onNavDestinationSelected(item, navController)
                     true
                 }
+
             }
+
         }
 
 
@@ -187,6 +215,7 @@ class MainActivity : AppCompatActivity() {
             if (!allGranted) finish()
         }
     }
+
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)

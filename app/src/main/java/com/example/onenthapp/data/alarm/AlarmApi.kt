@@ -18,7 +18,8 @@ interface AlarmApi {
     @POST("fcm/token")
     suspend fun registerFcmToken(
         @Body request: FcmTokenRequest
-    ): Response<FcmTokenResponse>
+    )
+    : Response<FcmTokenResponse>
 
     @DELETE("fcm/token")
     suspend fun deleteFcmToken(
