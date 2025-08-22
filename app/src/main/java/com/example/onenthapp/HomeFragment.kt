@@ -152,7 +152,7 @@ class HomeFragment : Fragment() {
                         LabelStyles.from(
                             LabelStyle.from(R.drawable.marker_green_72)
                                 .setAnchorPoint(0.5f, 1.0f)
-                                .setTextStyles(9.sp(requireContext()), Color.BLACK, 1.dp(requireContext()), Color.WHITE)
+                                .setTextStyles(8.sp(requireContext()), Color.BLACK, 1.dp(requireContext()), Color.WHITE)
                                 .setApplyDpScale(true)
                         )
                     )
