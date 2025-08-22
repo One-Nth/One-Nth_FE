@@ -1,5 +1,6 @@
 package com.example.onenthapp.feature.board
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -152,15 +153,15 @@ class DiscountTipsFragment : Fragment() {
                 LabelStyles.from(
                     LabelStyle.from(R.drawable.marker_gray_64)
                         .setAnchorPoint(0.5f, 1.0f) // 마커 아래에 텍스트 표시
-                        .setApplyDpScale(false)
+                        .setApplyDpScale(true)
                 )
             )
             selectedStyles = lm.addLabelStyles(
                 LabelStyles.from(
                     LabelStyle.from(R.drawable.marker_green_72)
                         .setAnchorPoint(0.5f, 1.0f) // 마커 아래에 텍스트 표시
-                        .setTextStyles(32, Color.BLACK, 2, Color.WHITE) // 텍스트 스타일 설정
-                        .setApplyDpScale(false)
+                        .setTextStyles(7.sp(requireContext()), Color.BLACK, 1.dp(requireContext()), Color.WHITE) // 텍스트 스타일 설정
+                        .setApplyDpScale(true)
                 )
             )
         }
@@ -477,3 +478,8 @@ class DiscountTipsFragment : Fragment() {
         label2Group.clear()
     }
 }
+
+
+private fun Int.dp(context: Context)=    (this * context.resources.displayMetrics.density).toInt()
+private fun Int.sp(context: Context) =
+    (this * context.resources.displayMetrics.scaledDensity).toInt()
