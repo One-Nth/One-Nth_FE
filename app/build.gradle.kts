@@ -38,6 +38,10 @@ android {
         val appKey = properties.getProperty("APP_KEY", "")
         buildConfigField("String", "APP_KEY", "\"$appKey\"")
 
+        // 🔹 manifestPlaceholders 추가
+        manifestPlaceholders["KAKAO_APP_KEY"] = appKey
+        manifestPlaceholders["KAKAO_REDIRECT_SCHEME"] = "kakao$appKey"
+
         ndk {
             abiFilters.add("arm64-v8a")
             abiFilters.add("armeabi-v7a")

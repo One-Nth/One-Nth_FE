@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.example.onenthapp.MainActivity
 import com.example.onenthapp.R
 import com.example.onenthapp.data.alarm.AlarmRepository
+import com.example.onenthapp.data.alarm.FcmTokenRequest
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
@@ -30,7 +31,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val repository = AlarmRepository()
+                Log.d("FCM", "registerFcmToken() 호출 시도")
                 val response = repository.registerFcmToken(token)
+                Log.d("FCM", "응답: ${response.code()}, 성공 여부: ${response.isSuccessful}")
+
                 if (response.isSuccessful) {
                     Log.d("FCM", "토큰 등록 성공: ${response.body()?.message}")
                 } else {

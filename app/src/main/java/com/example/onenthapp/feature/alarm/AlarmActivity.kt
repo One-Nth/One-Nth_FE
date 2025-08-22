@@ -63,7 +63,7 @@ class AlarmActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
-        // 알림 권한 체크 및 요청 후 테스트 알림 보내기
+        // 알림 권한 체크만 수행 (테스트 알림 보내기 관련 코드 삭제)
         checkNotificationPermission()
 
         // 기본 탭 데이터 로드
@@ -76,14 +76,10 @@ class AlarmActivity : AppCompatActivity() {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 // 권한 요청
                 ActivityCompat.requestPermissions(this, arrayOf(permission), REQUEST_CODE_NOTIFICATION)
-            } else {
-                // 권한 이미 있음 -> 테스트 알림 보내기
-                sendTestPushNotification()
             }
-        } else {
-            // Android 13 미만 버전은 권한 필요 없음
-            sendTestPushNotification()
+            // 권한이 이미 있으면 아무 동작 없음 (테스트 알림 보내는 부분 삭제)
         }
+        // Android 13 미만 버전은 권한 필요 없음, 별도 처리 없음
     }
 
     override fun onRequestPermissionsResult(
@@ -93,10 +89,7 @@ class AlarmActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_NOTIFICATION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 권한 승인됨
-                sendTestPushNotification()
-            } else {
+            if (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // 권한 거절됨 - 알림 설정 화면으로 이동
                 val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
                     putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
@@ -104,28 +97,11 @@ class AlarmActivity : AppCompatActivity() {
                 startActivity(intent)
                 Toast.makeText(this, "알림 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
             }
+            // 권한 승인 시 아무 동작 없음 (테스트 알림 보내는 부분 삭제)
         }
     }
 
-
-
-    private fun sendTestPushNotification() {
-        lifecycleScope.launch {
-            try {
-                val response = repository.sendTestPush()
-                if (response.isSuccessful && response.body()?.isSuccess == true) {
-                    Toast.makeText(this@AlarmActivity, "테스트 알림 발송 완료", Toast.LENGTH_SHORT).show()
-                    Log.d("AlarmActivity", "테스트 푸시 성공: ${response.body()?.message}")
-                } else {
-                    Toast.makeText(this@AlarmActivity, "테스트 알림 발송 실패", Toast.LENGTH_SHORT).show()
-                    Log.e("AlarmActivity", "실패 코드: ${response.code()}")
-                }
-            } catch (e: Exception) {
-                Toast.makeText(this@AlarmActivity, "테스트 알림 에러: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-                Log.e("AlarmActivity", "예외 발생: ${e.message}")
-            }
-        }
-    }
+    // 이하 fetchDealAlarms(), fetchPostAlarms(), map 함수 등은 그대로 유지
 
     private fun fetchDealAlarms() {
         lifecycleScope.launch {
@@ -133,6 +109,10 @@ class AlarmActivity : AppCompatActivity() {
                 val response = repository.getDealAlarms()
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
                     val dealAlarms = response.body()?.result ?: emptyList()
+                    Log.d("AlarmActivity", "Deal 알림 수신 완료: ${dealAlarms.size}개")
+                    dealAlarms.forEach {
+                        Log.d("AlarmActivity", "Deal 알림: ${it}")
+                    }
                     adapter.updateData(mapDealAlarmsToItems(dealAlarms))
                 } else {
                     Toast.makeText(this@AlarmActivity, "N분의 1 알림 조회 실패", Toast.LENGTH_SHORT).show()
@@ -149,8 +129,14 @@ class AlarmActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = repository.getPostAlarms()
+                Log.d("AlarmActivity", "PostAlarm 응답: ${response.body()}")
+
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
                     val postAlarms = response.body()?.result ?: emptyList()
+                    Log.d("AlarmActivity", "Tip 알림 수신 완료: ${postAlarms.size}개")
+                    postAlarms.forEach {
+                        Log.d("AlarmActivity", "Tip 알림: ${it}")
+                    }
                     adapter.updateData(mapPostAlarmsToItems(postAlarms))
                 } else {
                     Toast.makeText(this@AlarmActivity, "꿀팁 알림 조회 실패", Toast.LENGTH_SHORT).show()
@@ -163,7 +149,6 @@ class AlarmActivity : AppCompatActivity() {
         }
     }
 
-    // DealAlarm -> AlarmItem 변환 (탭 목록용)
     private fun mapDealAlarmsToItems(list: List<DealAlarm>): List<AlarmItem> {
         return list.map {
             AlarmItem(
@@ -171,14 +156,18 @@ class AlarmActivity : AppCompatActivity() {
                 timeAgo = "방금 전",
                 navigationImageResId = R.drawable.notification_ic_1,
                 isRead = it.readStatus,
-                type = getKoreanType(it.alertType) // <-- 여기!
+                type = getKoreanDealType(it.itemType) // ✅ 여기!
             )
         }
     }
+    private fun getKoreanDealType(itemType: String): String {
+        return when (itemType) {
+            "PURCHASE" -> "같이사요"
+            "SHARE" -> "함께 나눠요"
+            else -> "기타"
+        }
+    }
 
-
-
-    // PostAlarm -> AlarmItem 변환
     private fun mapPostAlarmsToItems(list: List<PostAlarm>): List<AlarmItem> {
         return list.map {
             AlarmItem(
@@ -201,6 +190,4 @@ class AlarmActivity : AppCompatActivity() {
             else -> "기타"
         }
     }
-
-
 }

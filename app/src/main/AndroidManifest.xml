@@ -82,7 +82,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="kakaob915f02e5deddf0811e43b08afbdbe41"
+                    android:scheme="${KAKAO_REDIRECT_SCHEME}"
                     android:host="oauth"/>
             </intent-filter>
         </activity>
