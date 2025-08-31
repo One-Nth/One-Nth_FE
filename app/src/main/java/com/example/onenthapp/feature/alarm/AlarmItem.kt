@@ -5,5 +5,6 @@ data class AlarmItem(
     val message: String,
     val timeAgo: String,
     val navigationImageResId: Int,
-    val isRead: Boolean
+    val isRead: Boolean,
+    val postId: Int? = null
 )
