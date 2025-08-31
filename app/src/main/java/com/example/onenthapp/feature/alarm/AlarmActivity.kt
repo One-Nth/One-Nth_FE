@@ -156,7 +156,8 @@ class AlarmActivity : AppCompatActivity() {
                 timeAgo = "방금 전",
                 navigationImageResId = R.drawable.notification_ic_1,
                 isRead = it.readStatus,
-                type = getKoreanDealType(it.itemType) // ✅ 여기!
+                type = getKoreanDealType(it.itemType) ,
+                postId = it.contentId
             )
         }
     }

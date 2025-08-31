@@ -145,12 +145,10 @@ class ChatRoomActivity : AppCompatActivity() {
         itemId: Int,
         itemType: String
     ) {
-        // 값 저장
         completedItemId = itemId
         completedItemType = itemType
 
         findViewById<ImageView>(R.id.img_bottom_box).visibility = View.VISIBLE
-        // 알림 텍스트
         findViewById<TextView>(R.id.cancel_notification).apply {
             visibility = View.VISIBLE
             text = if (isWriter) {
@@ -160,17 +158,14 @@ class ChatRoomActivity : AppCompatActivity() {
             }
         }
 
-        // ✅ 거래완료 관련 뷰 보이기
         val reviewButton = findViewById<ImageView>(R.id.completereivew)
         val nwonSaveButton = findViewById<ImageView>(R.id.completensave)
 
         reviewButton.visibility = View.VISIBLE
         nwonSaveButton.visibility = View.VISIBLE
 
-        // ❌ 거래확정 관련 버튼 숨기기
         findViewById<ImageView>(R.id.check_deal_cancel_btn).visibility = View.GONE
 
-        // 💬 후기 남기러 가기
         reviewButton.setOnClickListener {
             Log.d("ChatRoomActivity", "리뷰 버튼 클릭됨 - itemId: $completedItemId, itemType: $completedItemType")
 
@@ -178,9 +173,9 @@ class ChatRoomActivity : AppCompatActivity() {
                 val intent = Intent(this, WriteReviewActivity::class.java).apply {
                     putExtra("itemId", completedItemId)
                     putExtra("itemType", completedItemType)
-                    putExtra("itemName", completedItemName)             // ★ 추가
-                    putExtra("itemImageUrl", completedItemImageUrl)     // ★ 추가
-                    putExtra("itemTypeAndId", completedItemTypeAndId)   // (있으면 같이)
+                    putExtra("itemName", completedItemName)
+                    putExtra("itemImageUrl", completedItemImageUrl)
+                    putExtra("itemTypeAndId", completedItemTypeAndId)
                 }
                 startActivity(intent)
             } else {
@@ -188,7 +183,6 @@ class ChatRoomActivity : AppCompatActivity() {
             }
         }
 
-        // 💬 누적 내역 보기
         nwonSaveButton.setOnClickListener {
             val intent = Intent(this, NwonSavedActivity::class.java)
             startActivity(intent)
@@ -196,7 +190,6 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
 
-    // 수정 필요
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatRoomBinding.inflate(layoutInflater)
@@ -235,32 +228,48 @@ class ChatRoomActivity : AppCompatActivity() {
     }
     private fun handleIncomingWebSocketMessage(message: ChatMessage) {
         try {
-            val json = JSONObject(message.content)
-            val contentType = json.optString("content")
-            val itemName = json.optString("itemName", "물품")
-            val senderId = json.optInt("sendMemberId", -1)
-            val isWriter = senderId == myMemberId
-            val opponentNickname = toolbarBinding.title.text.toString()
-            when (contentType) {
-                "거래확정 폼이 작성 됨" -> {
-                    val dealConfirmationFormId = json.getInt("dealConfirmationFormId")
-                    dealConfirmationId = dealConfirmationFormId
-                    showDealConfirmedUI(isWriter, itemName, opponentNickname)
-                }
-                "거래완료 폼이 작성 됨" -> {
-                    val itemId = json.optInt("itemId", -1)
-                    val itemType = json.optString("itemType", "")
-                    showDealCompleteUI(isWriter, itemName, opponentNickname, itemId, itemType)
+            if (message.content.trim().startsWith("{")) {
+                val json = JSONObject(message.content)
+                val contentType = json.optString("content")
+
+                val itemName = json.optString("itemName", "물품")
+                val senderId = json.optInt("sendMemberId", -1)
+                val isWriter = senderId == myMemberId
+                val opponentNickname = toolbarBinding.title.text.toString()
+
+                when (contentType) {
+                    "거래확정 폼이 작성 됨" -> {
+                        val dealConfirmationFormId = json.getInt("dealConfirmationFormId")
+                        dealConfirmationId = dealConfirmationFormId
+                        showDealConfirmedUI(isWriter, itemName, opponentNickname)
+                    }
+
+                    "거래완료 폼이 작성 됨" -> {
+                        val itemId = json.optInt("itemId", -1)
+                        val itemType = json.optString("itemType", "")
+                        showDealCompleteUI(isWriter, itemName, opponentNickname, itemId, itemType)
+                    }
+
+                    else -> {
+                        // 기타 JSON 메시지 무시 또는 처리
+                    }
                 }
 
-                else -> {
-                    // 일반 메시지로 처리하거나 무시
-                }
+            } else {
+                // ✅ 내가 보낸 메시지면 무시
+                if (message.senderMemberId == myMemberId) return
+
+                // 상대방 메시지만 추가
+                chatAdapter.addMessage(message)
+                binding.chatRecyclerView.scrollToPosition(chatAdapter.itemCount - 1)
             }
+
         } catch (e: Exception) {
             Log.e("WebSocket", "거래 메시지 파싱 실패: ${e.message}")
         }
     }
+
+
     private fun setupToolbar(peerNickname: String) {
         toolbarBinding.title.text = peerNickname
         toolbarBinding.btnLeft.setOnClickListener { finish() }

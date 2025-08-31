@@ -38,29 +38,30 @@ class ChatWebSocketClient(
             }
 
 
-                override fun onMessage(ws: WebSocket, text: String) {
-                    Log.d(TAG, "Raw Message Received: $text")
+            override fun onMessage(ws: WebSocket, text: String) {
+                Log.d(TAG, "Raw Message Received: $text")
 
-                    if (text.startsWith("MESSAGE")) {
-                        try {
-                            val body = text.substringAfter("\n\n").trim('\u0000')
+                if (text.startsWith("MESSAGE")) {
+                    try {
+                        val body = text.substringAfter("\n\n").trim('\u0000')
+                        val json = JSONObject(body)
 
-                            // ✅ body 자체를 ChatMessage.content에 넘긴다!
-                            val message = ChatMessage(
-                                senderMemberId = memberId, // 또는 json.getInt("sendMemberId")로 유지해도 OK
-                                content = body,
-                                messageTime = "" // 또는 json.optString("messageTime")
-                            )
-                            onMessageReceived(message)
+                        val message = ChatMessage(
+                            senderMemberId = json.getInt("sendMemberId"),
+                            content = json.getString("content"),
+                            messageTime = json.optString("messageTime", "")
+                        )
 
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Message Parsing Failed: ${e.message}")
-                        }
+                        onMessageReceived(message)
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Message Parsing Failed: ${e.message}")
                     }
                 }
+            }
 
 
-                override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
+            override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
                 Log.e(TAG, "WebSocket Failure: ${t.message}")
             }
 
