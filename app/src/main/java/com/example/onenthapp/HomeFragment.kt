@@ -145,15 +145,15 @@ class HomeFragment : Fragment() {
                         LabelStyles.from(
                             LabelStyle.from(R.drawable.marker_gray_64)
                                 .setAnchorPoint(0.5f, 1.0f)
-                                .setApplyDpScale(false)
+                                .setApplyDpScale(true)
                         )
                     )
                     selectedStyles = lm.addLabelStyles(
                         LabelStyles.from(
                             LabelStyle.from(R.drawable.marker_green_72)
                                 .setAnchorPoint(0.5f, 1.0f)
-                                .setTextStyles(32, Color.BLACK, 2, Color.WHITE)
-                                .setApplyDpScale(false)
+                                .setTextStyles(8.sp(requireContext()), Color.BLACK, 1.dp(requireContext()), Color.WHITE)
+                                .setApplyDpScale(true)
                         )
                     )
                 }
@@ -177,12 +177,6 @@ class HomeFragment : Fragment() {
 
             private fun handleLabelClick(label: Label) {
                 val g = label2Group[label] ?: return
-                val currentSelectedTab = sharedViewModel.currentHomeTab.value
-
-                // currentMarkerType 설정 (loadMarkersByTab의 로직과 유사하게)
-//                currentMarkerType = if (currentSelectedTab == HomeTabType.BUY) {
-//                    "PURCHASEITEM"
-//                } else "SHARINGITEM"
                 // 1) 선택 표시: 이전 선택 복원, 현재 선택 하이라이트 + 텍스트(첫 제목)
                 highlightSelectedLabel(label, g)
 
@@ -466,18 +460,18 @@ class HomeFragment : Fragment() {
                         //binding.expandedContainerFragment.isVisible = false
                     }
 
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        // full: 툴바+리스트
-//                        childFragmentManager.beginTransaction()
-//                            .replace(
-//                                R.id.expandedContainerFragment,
-//                                MapItemPreviewFragment.newInstance(lastResults)
-//                            )
-//                            .commitNowAllowingStateLoss()
-                        binding.scrollBar.isVisible = false
-                        binding.midContainer.isVisible = false
-                        //binding.expandedContainerFragment.isVisible = false
-                    }
+//                    BottomSheetBehavior.STATE_EXPANDED -> {
+//                        // full: 툴바+리스트
+////                        childFragmentManager.beginTransaction()
+////                            .replace(
+////                                R.id.expandedContainerFragment,
+////                                MapItemPreviewFragment.newInstance(lastResults)
+////                            )
+////                            .commitNowAllowingStateLoss()
+//                        binding.scrollBar.isVisible = false
+//                        binding.midContainer.isVisible = false
+//                        //binding.expandedContainerFragment.isVisible = false
+//                    }
                 }
             }
 
@@ -526,6 +520,10 @@ class HomeFragment : Fragment() {
         }
     }
 }
+
+private fun Int.dp(context: Context)=    (this * context.resources.displayMetrics.density).toInt()
+private fun Int.sp(context: Context) =
+    (this * context.resources.displayMetrics.scaledDensity).toInt()
 
 
 fun ItemSearchResultBinding.bind(

@@ -50,7 +50,14 @@ android {
             // abiFilters.add("x86_64")
         }
     }
-
+    signingConfigs {
+        create("release") {
+            storeFile = file(properties.getProperty("RELEASE_STORE_FILE"))
+            storePassword = properties.getProperty("RELEASE_STORE_PASSWORD")
+            keyAlias = properties.getProperty("RELEASE_KEY_ALIAS")
+            keyPassword = properties.getProperty("RELEASE_KEY_PASSWORD")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -58,6 +65,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
